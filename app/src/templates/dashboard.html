@@ -1,0 +1,85 @@
+<!--Sidebar -->
+<div id="sidebar-wrapper">
+    <ul class="sidebar">
+        <li class="sidebar-main">
+            <input type="text" class="form-control" placeholder="search">
+        </li>
+        <li class="sidebar-title"><span>Dashboards</span></li>
+        <li class="sidebar-list" ng-repeat="d in dashboards">
+            <a href="#/dashboard/{{::d.id}}">{{::d.title}} <span class="menu-icon fa {{::d.icon}}"></span></a>
+        </li>
+    </ul>
+    <div class="sidebar-footer">
+        <div class="col-xs-4">
+            <a href="https://project.simplity.eu" target="_blank">Redmine</a>
+        </div>
+        <div class="col-xs-4">
+            <a href="https://gitlab.simplity.eu" target="_blank">Gitlab</a>
+        </div>
+        <div class="col-xs-4">
+            <a href="http://www.simplity.eu">Website</a>
+        </div>
+    </div>
+</div> 
+<!-- End Sidebar -->
+
+<div id="content-wrapper">
+    <div class="page-content">
+        <!-- Header Bar -->
+        <div class="row header">
+            <div class="col-xs-12">
+                <div class="user pull-right">
+                    <div class="item dropdown" dropdown>
+                        <a href class="dropdown-toggle" dropdown-toggle>
+                            <img src="images/avatar.jpg">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li class="dropdown-header">Joe Bloggs</li>
+                            <li class="divider"></li>
+                            <li class="link">
+                                <a href="#">Profile</a>
+                            </li>
+                            <li class="link">
+                                <a href="#">Menu Item</a>
+                            </li>
+                            <li class="link">
+                                <a href="#">Menu Item</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="link">
+                                <a href="#">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="item dropdown" dropdown>
+                        <a href class="dropdown-toggle" dropdown-toggle>
+                            <i class="fa fa-bell-o"></i>
+                        </a>
+                        <!-- <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li class="dropdown-header">
+                                Notifications
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">Server Down!</a>
+                            </li>
+                        </ul> -->
+                    </div>
+                </div>
+                <div class="meta">
+                    <div class="page">
+                        Dashboard
+                    </div>
+                    <div class="breadcrumb-links">
+                        Home
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Header Bar -->
+        <!-- Main Content -->
+        <div ng-include="'templates/dashboard.content.html'"></div>
+	</div>
+	<!-- End Page Content -->
+</div>
+<!-- End Content Wrapper

@@ -1,0 +1,9 @@
+{
+	"version": "0.1",
+	"db": {
+		"host": "192.168.10.50",
+        "user": "search",
+        "password": "-123search",
+        "database": "redmine_prod"
+	}
+}
