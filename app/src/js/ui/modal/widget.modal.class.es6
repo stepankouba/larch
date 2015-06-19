@@ -1,6 +1,6 @@
 'use strict';
 
-import LModal from '../common/modal.class.es6';
+import LModal from './modal.class.es6';
 
 let Ctrl = function ($scope, $modalInstance, ...params) {
 	// pass parameters to $scope values

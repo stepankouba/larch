@@ -10,9 +10,6 @@ function router($routeProvider, $locationProvider) {
             templateUrl: 'templates/dashboard.html',
             controller: 'MasterCtrl'
         })
-        .when('/tables', {
-            templateUrl: 'templates/tables.html'
-        })
         .when('/login', {
             templateUrl: 'templates/login.html'
         })

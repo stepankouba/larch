@@ -17,8 +17,8 @@ import DashSrvc from './dash/dash.srvc.es6';
 import DashboardCtrl from './dash/dashboard.ctrl.es6'
 
 import WidgetSrvc from './widgets/widget.srvc.es6';
-import * as rdWidget from './widgets/rdwidget.drtv.es6';
-import larchWidget from './widgets/widget.drtv.es6';
+import * as rdWidget from './widget/rdwidget.drtv.es6';
+import larchWidget from './widget/widget.drtv.es6';
 
 import TypesSrvc from './types/types.srvc.es6';
 
