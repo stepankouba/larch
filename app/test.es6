@@ -1,16 +1,6 @@
-'use strict';
+let Jasmine = require('jasmine');
+let jasmine = new Jasmine();
 
-let ar = [
-	{type: 'obj1'},
-	{type: 'obj2'}
-];
+jasmine.loadConfigFile('spec/support/jasmine.json');
 
-function* data() {
-	for (let a of ar) {
-		//yield new Promise(a);
-	}
-}
-
-for (let x of data()) {
-	console.log(x);
-}
+jasmine.execute();

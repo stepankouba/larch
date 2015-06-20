@@ -1,7 +1,8 @@
 'use strict';
 
+import { AJAXHelper } from '../common/common.lib.es6';
+
 let conf = require('../../../../master.json');
-let lib = require('../common/lib.helper.es6');
 
 let FilesSrvc = function($http) {
     return {
@@ -9,7 +10,7 @@ let FilesSrvc = function($http) {
 
 
             return $http.get(path)
-                .then(lib.handleSuccess(), lib.handleError());
+                .then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
         }
     };
 }

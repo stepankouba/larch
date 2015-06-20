@@ -6,8 +6,9 @@
  */
 const API_VER = '0.1';
 
+import { AJAXHelper } from '../common/common.lib.es6';
+
 let conf = require('../../../../master.json');
-let lib = require('../common/lib.helper.es6');
 
 let DataSrvc = function($http) {
     return {
@@ -24,7 +25,7 @@ let DataSrvc = function($http) {
             let api = systemParams.api.replace(/{(\w+)}/g, ($0, $1) => userParams[$1]);
 
             return $http.get(url + api)
-                .then(lib.handleSuccess(), lib.handleError());
+                .then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
         }
     };
 }

@@ -3,7 +3,7 @@
  */
 'use strict';
 
-let MasterCtrl = function ($scope, $cookieStore, $routeParams, DashSrvc) {
+let MasterCtrl = function ($scope, $cookieStore, $routeParams, $log, DashSrvc) {
 
     $scope.isOpen = true;
     $scope.dashboards = null;
@@ -44,7 +44,6 @@ let MasterCtrl = function ($scope, $cookieStore, $routeParams, DashSrvc) {
     this.getDashboards = function (){
         $scope.dashboardId = $routeParams.dashId;
 
-
         DashSrvc.getAll(1)
             .then(data => {
                 $scope.dashboards = data;
@@ -56,6 +55,6 @@ let MasterCtrl = function ($scope, $cookieStore, $routeParams, DashSrvc) {
     this.init();
     this.getDashboards();
 };
-MasterCtrl.$inject = ['$scope', '$cookieStore', '$routeParams', 'DashSrvc'];
+MasterCtrl.$inject = ['$scope', '$cookieStore', '$routeParams', '$log', 'DashSrvc'];
 
 export default MasterCtrl;

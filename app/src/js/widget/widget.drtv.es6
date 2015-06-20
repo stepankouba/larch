@@ -4,7 +4,7 @@
 'use strict';
 
 import LWidget from './lwidget.class.es6';
-import LWidgetModal from '../modal/widget.modal.class.es6';
+import LWidgetModal from '../ui/modal/widget.modal.class.es6';
 
 let larchWidget = function ($compile, $injector) {
     let WidgetSrvc = $injector.get('WidgetSrvc');

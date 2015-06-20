@@ -6,11 +6,13 @@ import 'angular-route';
 import 'angular-bootstrap';
 import 'babel/polyfill'; //require('babel/polyfill');
 
+import './common/error/common.error.es6';
+
 // classes
 
 import Router from './larch.routes.es6';
 
-import Loading from './common/loading.drtv.es6';
+import Loading from './ui/loading.drtv.es6';
 import MasterCtrl from './common/master.ctrl.es6';
 
 import DashSrvc from './dash/dash.srvc.es6';
@@ -27,7 +29,7 @@ import DataSrvc from './data/data.srvc.es6';
 import FilesSrvc from './files/files.srvc.es6';
 
 angular
-	.module('larch', ['ui.bootstrap', 'ngRoute', 'ngCookies'])
+	.module('larch', ['ui.bootstrap', 'ngRoute', 'ngCookies','larch.common.error'])
 	.config(Router)
 	.controller('MasterCtrl', MasterCtrl)
 	.controller('DashboardCtrl', DashboardCtrl)

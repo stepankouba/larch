@@ -1,7 +1,7 @@
 'use strict';
 
 import Handlebars from 'handlebars';
-import lib from './../common/lib.helper.es6'
+import { ObjectHelper } from './../common/common.lib.es6'
 import c3 from 'c3';
 /**
  * Class LWidget defines behaviour of widget plugins
@@ -102,7 +102,7 @@ export default class LWidget {
 					// this is due to skipping the first true resolve
 					if (typeof(val) ===  'object') {
 						// copy sepected object properties into params, to use it in other requests
-						lib.getObjProps(val[0], _this.params, array[index - 1].results);
+						ObjectHelper.copyDefinedProps(val[0], _this.params, array[index - 1].results);
 					}
 
 					return DataSrvc.receive(item, _this.params);
