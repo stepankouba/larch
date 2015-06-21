@@ -8,7 +8,7 @@ describe('DateTime Helper', () => {
 	});
 
 	it('should return string in format DD.MM - HH:MM:SS.MS', () => {
-		let d = DateTime.dateToString('2015/02/01 8:12:10.56');
+		let d = DateTime.dateToString('2015-02-01T08:12:10.56+01:00');
 
 		expect(d).toMatch('01.02 - 08:12:10.56');
 	});
