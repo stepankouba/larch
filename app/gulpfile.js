@@ -27,7 +27,7 @@ var paths = {
 		js: SRC_PATH + 'js/',
 		less: SRC_PATH + 'less/**/*.less',
 		index: SRC_PATH + 'index.html',
-		templates: SRC_PATH + 'templates/*.*',
+		templates: SRC_PATH + 'templates/**/*.*',
 		fonts: SRC_PATH + 'fonts/*.*',
 		images: SRC_PATH + 'images/*.*',
 		tests: './spec/**/*.es6'

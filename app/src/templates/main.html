@@ -2,11 +2,11 @@
 <div id="sidebar-wrapper">
     <ul class="sidebar">
         <li class="sidebar-main">
-            <input type="text" class="form-control" placeholder="search">
+            <input type="text" class="form-control" placeholder="search" ng-model="searchCriteria">
         </li>
         <li class="sidebar-title"><span>Dashboards</span></li>
-        <li class="sidebar-list" ng-repeat="d in dashboards">
-            <a href="#/dashboard/{{::d.id}}">{{::d.title}} <span class="menu-icon fa {{::d.icon}}"></span></a>
+        <li class="sidebar-list" ng-repeat="d in dashboards | filter: searchCriteria">
+            <a ng-href="#/dashboard/{{::d.id}}">{{::d.title}} <span class="menu-icon fa {{::d.icon}}"></span></a>
         </li>
     </ul>
     <div class="sidebar-footer">
@@ -78,7 +78,7 @@
         </div>
         <!-- End Header Bar -->
         <!-- Main Content -->
-        <div ng-include="'templates/dashboard.content.html'"></div>
+        <div ng-include="'templates/dash/dashboard.html'"></div>
 	</div>
 	<!-- End Page Content -->
 </div>

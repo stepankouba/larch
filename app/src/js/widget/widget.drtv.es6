@@ -4,7 +4,7 @@
 'use strict';
 
 import LWidget from './lwidget.class.es6';
-import LWidgetModal from '../ui/modal/widget.modal.class.es6';
+import LWidgetModal from './widget.modal.class.es6';
 
 let larchWidget = function ($compile, $injector) {
     let WidgetSrvc = $injector.get('WidgetSrvc');
@@ -18,7 +18,7 @@ let larchWidget = function ($compile, $injector) {
             id: '@'
         },
         transclude: true,
-        templateUrl: 'templates/widget.html',
+        templateUrl: 'templates/widget/widget.html',
         restrict: 'E',
         link: function($scope, element){
             let userParams;

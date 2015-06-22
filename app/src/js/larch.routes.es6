@@ -7,11 +7,11 @@ function router($routeProvider, $locationProvider) {
 
     $routeProvider
         .when('/dashboard/:dashId', {
-            templateUrl: 'templates/dashboard.html',
+            templateUrl: 'templates/main.html',
             controller: 'MasterCtrl'
         })
         .when('/login', {
-            templateUrl: 'templates/login.html'
+            templateUrl: 'templates/ui/login.html'
         })
         .otherwise({ redirectTo: '/dashboard/1' });
 }
