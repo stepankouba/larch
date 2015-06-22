@@ -14,7 +14,7 @@ let DateTime = {
 			[d.getMonth() + 1,d.getDate(), d.getHours(), d.getMinutes(),  d.getSeconds(), d.getMilliseconds()];
 
 		dArray = dArray.map((i) => i.toString().length === 1 ? '0' + i : i );
-
+		
 		return `${dArray[1]}.${dArray[0]} - ${dArray[2]}:${dArray[3]}:${dArray[4]}.${dArray[5]}`;
 	}
 };
