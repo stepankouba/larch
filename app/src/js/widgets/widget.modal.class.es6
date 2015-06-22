@@ -1,6 +1,6 @@
 'use strict';
 
-import LModal from '../common/modal.class.es6';
+import LModal from '../ui/modal/modal.class.es6';
 
 let Ctrl = function ($scope, $modalInstance, ...params) {
 	// pass parameters to $scope values
@@ -21,7 +21,7 @@ export default class LWidgetModal extends LModal {
 		let config = {
 			templateUrl: 'templates/widget.modal.html',
 			size: widget.modalParams.size,
-		};
+		}; 
 
 		super($injector, config);
 
