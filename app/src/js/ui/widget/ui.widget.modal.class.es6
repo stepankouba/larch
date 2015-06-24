@@ -1,10 +1,10 @@
 'use strict';
 
-import LModal from '../ui/modal/modal.class.es6'; 
+import LUIModal from '../modal/ui.modal.class.es6'; 
 
 let Ctrl = function ($scope, $modalInstance, ...params) {
 	// pass parameters to $scope values
-	LModal.prototype.passArgsToCtrl.call(Ctrl, $scope, params);
+	LUIModal.prototype.passArgsToCtrl.call(Ctrl, $scope, params);
 
 	$scope.ok = function () {
 		$modalInstance.close($scope.userParams);
@@ -16,7 +16,7 @@ let Ctrl = function ($scope, $modalInstance, ...params) {
 }
 Ctrl.$inject = ['$scope', '$modalInstance'];
 
-export default class LWidgetModal extends LModal {
+export default class LWidgetModal extends LUIModal {
 	constructor($injector, widget) {
 		let config = {
 			templateUrl: 'templates/widget/widget.modal.html',

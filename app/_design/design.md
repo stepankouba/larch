@@ -45,9 +45,15 @@ component
 		- LError
 		- LStackTrace
 
+
+directives
+	- larch-something
+
+
 module
 	.ctrl
 	.srvc
 	.drtv
 	.class
 	.lib
+	.module

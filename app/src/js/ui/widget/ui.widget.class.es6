@@ -1,7 +1,7 @@
 'use strict';
 
 import Handlebars from 'handlebars';
-import { ObjectHelper } from './../common/common.lib.es6'
+import { ObjectHelper } from '../../common/common.lib.es6'
 import c3 from 'c3';
 /**
  * Class LWidget defines behaviour of widget plugins

@@ -17,6 +17,7 @@ module.exports = function(config) {
 		files: [
 			'node_modules/angular/angular.js',
 			'node_modules/angular-mocks/angular-mocks.js',
+			'node_modules/babel/node_modules/babel-core/browser-polyfill.js',
 			//'src/js/larch.app.es6',
 			'spec/**/*.es6'
 		],

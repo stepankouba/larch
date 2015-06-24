@@ -1,6 +1,6 @@
 'use strict';
 
-import LBoard from './lboard.class.es6';
+import LBoard from './dashboard.board.class.es6';
 
 /**
  * [DashboardCtrl description]
