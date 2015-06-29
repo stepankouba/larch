@@ -8,17 +8,22 @@ import LBoard from './dashboard.board.class.es6';
  * @param {[type]} DashSrvc [description]
  */
 let DashboardCtrl = function ($scope, DashSrvc) {
-	DashSrvc.getById($scope.dashboardId)
-		.then(data => {
-			// get dashboard
-			let d = new LBoard(data);
+	$scope.$watch('dashboardId', function(){
+		if ($scope.dashboardId === undefined)
+			return false;
 
-			// get rows num
-			$scope.rows = d.getRows();
+		DashSrvc.getById($scope.dashboardId)
+			.then(data => {
+				// get dashboard
+				let d = new LBoard(data);
 
-			// get widgets with width and height set
-			$scope.widgets = d.getWidgets();
-		});
+				// get rows num
+				$scope.rows = d.getRows();
+
+				// get widgets with width and height set
+				$scope.widgets = d.getWidgets();
+			});
+	});
 }; 
 DashboardCtrl.$inject = ['$scope', 'DashSrvc'];
 

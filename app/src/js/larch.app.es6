@@ -17,7 +17,6 @@ import './widgets/widgets.module.es6';
 // classes
 import Router from './larch.routes.es6';
 
-
 angular
 	.module('larch', ['ui.bootstrap', 'ngRoute', 'ngCookies',
 		'larch.common.error',
