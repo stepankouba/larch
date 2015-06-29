@@ -64,7 +64,7 @@ export default class LUIModal {
 	 * @param  {Object} $scope scope, that should be modified
 	 * @param  {Array} params values
 	 */
-	passArgsToCtrl($scope, params) {
+	static passArgsToCtrl($scope, params) {
 		// save original length $inject
 		let origParamsLength = this.$injectOrigLength;
 
