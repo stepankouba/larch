@@ -13,7 +13,7 @@ function router($routeProvider, $locationProvider) {
         .when('/login', {
             templateUrl: 'templates/ui/login.html'
         })
-        .otherwise({ redirectTo: '/dashboard/1' });
+        .otherwise({ redirectTo: '/dashboard/home' });
 }
 
 router.$inject = ['$routeProvider', '$locationProvider'];
