@@ -4,7 +4,7 @@ import LUIModal from '../modal/ui.modal.class.es6';
 
 let Ctrl = function ($scope, $modalInstance, ...params) {
 	// pass parameters to $scope values
-	LUIModal.prototype.passArgsToCtrl.call(Ctrl, $scope, params);
+	LUIModal.passArgsToCtrl.call(Ctrl, $scope, params);
 
 	$scope.ok = function () {
 		$modalInstance.close($scope.userParams);

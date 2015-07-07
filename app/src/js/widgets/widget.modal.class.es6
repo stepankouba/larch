@@ -4,7 +4,7 @@ import LModal from '../ui/modal/modal.class.es6';
 
 let Ctrl = function ($scope, $modalInstance, ...params) {
 	// pass parameters to $scope values
-	LModal.prototype.passArgsToCtrl.call(Ctrl, $scope, params);
+	LModal.passArgsToCtrl.call(Ctrl, $scope, params);
 
 	$scope.ok = function () {
 		$modalInstance.close($scope.userParams);
