@@ -1,16 +1,31 @@
-component
-- search
--- search dashboards
--- on enter displays the found dashboard
-- grid
--- displayed
+/dashboard/:id
+	- larch.dashboard
 
-# widget
-- 
+/user/:id
 
-# dashboard
-- can be shared - has icon in the list
--- on click on the icon, the popup is displayed where I can select all the user 
+- larch.app.es6
+	- larch.ui.modal
+		- LModal
+	- larch.ui.*
+	- larch.common
+	- larch.widgets
+		- LWidgetDrtv
+	- larch.types
+		- LTypesSrvc
+	- larch.user
+	- larch.common.error
+		- LError
+		- LStackTrace
 
-# V2 command line
-- script for getting widgets from server
+
+directives
+	- larch-something
+
+
+module
+	.ctrl
+	.srvc
+	.drtv
+	.class
+	.lib
+	.module
