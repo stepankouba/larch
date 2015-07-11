@@ -13,16 +13,16 @@ let conf = require('../../../../master.json');
 let url = 'http://' + conf.url + ':' + conf.services.dash.port + '/dash/';
 
 let DashSrvc = function($http) {
-    return {
-        getAll: function(userId) {
-            return $http.get(url + 'all/' + userId)
-                .then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
-        },
-        getById: function(dashId) {
-            return $http.get(url + dashId)
-                .then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
-        }
-    };
+	return {
+		getAll: function(userId) {
+			return $http.get(url + 'all/' + userId)
+				.then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
+		},
+		getById: function(dashId) {
+			return $http.get(url + dashId)
+				.then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
+		}
+	};
 }
 DashSrvc.$inject = ['$http'];
 

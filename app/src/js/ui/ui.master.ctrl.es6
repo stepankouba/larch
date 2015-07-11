@@ -3,30 +3,24 @@
  */
 'use strict';
 
-let MasterCtrl = function ($scope, $cookieStore, $routeParams, $log, $filter, DashSrvc) {
-	$log = $log.getLogger('MasterCtrl');
+class MasterCtrl {
+	constructor($scope, $cookieStore, $log, LarchBoardSrvc) {
+		this.$log = $log.getLogger('MasterCtrl');
+		this.LarchBoard = LarchBoardSrvc;
 
-	$scope.dashboards = null;
+		//this.dashboards = null;
 
-	this.getDashboards = function (){
-		DashSrvc.getAll(1)
-			.then(data => {
-				const home = $filter('filter')(data, {home: true});
+		this.getDashboards();
+	}
 
-				if ($routeParams.dashId === 'home') {
-					$scope.dashboardId = home[0].id;
-				} else {
-					$scope.dashboardId = $routeParams.dashId;
-				}
-
-				$scope.dashboards = data;
+	getDashboards() {
+		this.LarchBoard
+			.getAll(1)
+			.catch((err) => {
+				this.$log.error(err);
 			});
-
-	};
-
-	// get dashboards
-	this.getDashboards();
-};
-MasterCtrl.$inject = ['$scope', '$cookieStore', '$routeParams', '$log', '$filter', 'DashSrvc'];
+	}
+}
+MasterCtrl.$inject = ['$scope', '$cookieStore', '$log', 'LarchBoardSrvc'];
 
 export default MasterCtrl;

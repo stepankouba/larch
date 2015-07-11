@@ -1,30 +1,26 @@
 'use strict';
 
-import LBoard from './dashboard.board.class.es6';
-
 /**
  * [DashboardCtrl description]
  * @param {[type]} $scope   [description]
  * @param {[type]} DashSrvc [description]
  */
-let DashboardCtrl = function ($scope, DashSrvc) {
-	$scope.$watch('dashboardId', function(){
-		if ($scope.dashboardId === undefined)
-			return false;
+class DashboardCtrl {
+	constructor($stateParams, $log, LarchBoardSrvc) {
+		this.LarchBoard = LarchBoardSrvc;
+		this.$log = $log.getLogger('DashboardCtrl');
 
-		DashSrvc.getById($scope.dashboardId)
-			.then(data => {
-				// get dashboard
-				let d = new LBoard(data);
-
-				// get rows num
-				$scope.rows = d.getRows();
-
-				// get widgets with width and height set
-				$scope.widgets = d.getWidgets();
+		this.LarchBoard
+			.getById($stateParams.dashId)
+			.then(() => {
+				this.rows = this.LarchBoard.getCurrentRows();
+				this.widgets = this.LarchBoard.getCurrentWidgets();
+			})
+			.catch((err) => {
+				this.$log.debug(err);
 			});
-	});
-}; 
-DashboardCtrl.$inject = ['$scope', 'DashSrvc'];
+	}
+}
+DashboardCtrl.$inject = ['$stateParams', '$log','LarchBoardSrvc'];
 
 export default DashboardCtrl;
