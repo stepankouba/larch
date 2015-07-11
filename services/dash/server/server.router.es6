@@ -27,6 +27,11 @@ module.exports = {
 				httpMethod: 'GET',
 				middleware: [api.getById]
 			},
+			{
+				path: '/dash/home',
+				httpMethod: 'GET',
+				middleware: [api.getById]
+			}
 		]);
 	}// function
 };
