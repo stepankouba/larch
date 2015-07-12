@@ -13,15 +13,14 @@ let conf = require('../../../../master.json');
 let url = 'http://' + conf.url + ':' + conf.services.dash.port + '/dash/';
 
 let DashSrvc = function($http) {
-	return {
-		getAll: function(userId) {
-			return $http.get(url + 'all/' + userId)
-				.then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
-		},
-		getById: function(dashId) {
-			return $http.get(url + dashId)
-				.then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
-		}
+	this.getAll = function(userId) {
+		return $http.get(url + 'all/' + userId)
+			.then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
+	};
+
+	this.getById = function(dashId) {
+		return $http.get(url + dashId)
+			.then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
 	};
 }
 DashSrvc.$inject = ['$http'];

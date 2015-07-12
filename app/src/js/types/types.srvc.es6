@@ -13,16 +13,17 @@ let conf = require('../../../../master.json');
 let url = 'http://' + conf.url + ':' + conf.services.types.port + '/types/';
 
 let TypesSrvc = function($http) {
-    return {
-        getAll: function(userId) {
-            return $http.get(url + 'all/' + userId)
-                .then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
-        },
-        getById: function(widgetId) {
-            return $http.get(url + widgetId)
-                .then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
-        }
-    };
+	
+	this.getAll = function(userId) {
+		return $http.get(url + 'all/' + userId)
+			.then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
+	};
+
+	this.getById = function(widgetId) {
+		return $http.get(url + widgetId)
+			.then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
+	};
+	
 }
 TypesSrvc.$inject = ['$http'];
 
