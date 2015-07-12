@@ -24,6 +24,8 @@ export default class LUIModal {
 	open() {
 		let $modal = this.injector.get('$modal');
 		this.instance = $modal.open(this.conf);
+
+		return this.instance.result;
 	}
 
 	/**
