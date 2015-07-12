@@ -3,6 +3,7 @@
 import LWidget from './ui.widget.class.es6';
 
 let WidgetFctr = function($log, WidgetSrvc, FilesSrvc) {
+	let log = $log.getLogger('WidgetFctr');
 
 	return function(id) {
 		let userParams;

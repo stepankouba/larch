@@ -6,7 +6,9 @@
 import LWidget from './ui.widget.class.es6';
 import LWidgetModal from './ui.widget.modal.class.es6';
 
-let larchWidget = function ($compile, WidgetFctr) {
+let larchWidget = function ($compile, $log, WidgetFctr) {
+	let log = $log.getLogger('WidgetDrtv');
+
 	let directive = {
 		requires: 'rdWidget',
 		scope: {
@@ -31,7 +33,7 @@ let larchWidget = function ($compile, WidgetFctr) {
 					$scope.widget.create(elBody, $compile, $scope);
 				})
 				.catch(err => {
-					console.log(err);
+					log.error(err);
 				});
 		},
 		controller: function($scope) {
@@ -55,7 +57,7 @@ let larchWidget = function ($compile, WidgetFctr) {
 			};
 		}
 	};
-	directive.$inject = ['$compile', 'WidgetFctr'];
+	directive.$inject = ['$compile', '$log', 'WidgetFctr'];
 
 	return directive;
 };
