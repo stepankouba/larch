@@ -6,12 +6,7 @@
 import LWidget from './ui.widget.class.es6';
 import LWidgetModal from './ui.widget.modal.class.es6';
 
-let larchWidget = function ($compile, $injector) {
-	let WidgetSrvc = $injector.get('WidgetSrvc');
-	let TypesSrvc = $injector.get('TypesSrvc');
-	let DataSrvc = $injector.get('DataSrvc');
-	let FilesSrvc = $injector.get('FilesSrvc');
-
+let larchWidget = function ($compile, WidgetFctr) {
 	let directive = {
 		requires: 'rdWidget',
 		scope: {
@@ -21,21 +16,10 @@ let larchWidget = function ($compile, $injector) {
 		templateUrl: 'templates/widget/widget.html',
 		restrict: 'E',
 		link: function($scope, element){
-			let userParams;
 
-			WidgetSrvc.getById($scope.id)
-				.then(data => {
-					// get widget settings
-					userParams = data.params;
-					
-					return FilesSrvc.getFile('./../larch_modules/' + data.type + '/index.js');
-				})
-				.then(file => {
-					// get the definition
-					let w = eval(file);
-
-					// create new widget with proper parameters set
-					$scope.widget = new LWidget(w, userParams);
+			WidgetFctr($scope.id)
+				.then(widget => {
+					$scope.widget = widget;
 
 					return $scope.widget.getData();
 				})
@@ -54,10 +38,7 @@ let larchWidget = function ($compile, $injector) {
 			$scope.openModal = function() {
 				let m = new LWidgetModal($injector, $scope.widget);
 
-				m.open();
-
-				m.instance
-					.result
+				m.open()
 					.then(value => {
 						$scope.widget.params = value;
 
@@ -74,7 +55,7 @@ let larchWidget = function ($compile, $injector) {
 			};
 		}
 	};
-	directive.$inject = ['$compile', '$injector'];
+	directive.$inject = ['$compile', 'WidgetFctr'];
 
 	return directive;
 };
