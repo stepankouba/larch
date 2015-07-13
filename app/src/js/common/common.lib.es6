@@ -19,22 +19,6 @@ let DateTime = {
 	}
 };
 
-
-let AJAXHelper = {
-	handleSuccess: function() {
-		return function(result) {
-			return result.data;
-		};
-	},
-	handleError: function() {
-		return function(err) {
-			console.log(err);
-			throw new Error ('larch: general error handler');
-		}
-	}
-};
-
-
 let ObjectHelper = {
 	/**
 	 * copy properties from source to target but only as they are defined in def object with following syntax:
@@ -60,4 +44,4 @@ let ObjectHelper = {
 	}
 };
 
-export { DateTime, AJAXHelper, ObjectHelper };
+export { DateTime, ObjectHelper };

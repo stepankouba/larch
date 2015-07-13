@@ -41,25 +41,3 @@ describe('ObjectHelper', () => {
 		expect(t).toEqual({});
 	});
 });
-
-describe('AJAXHelper', () => {
-	it('should have two methods', () => {
-		expect(AJAXHelper.handleSuccess).toEqual(jasmine.any(Function));
-		expect(AJAXHelper.handleError).toEqual(jasmine.any(Function));
-	})
-
-	it('should have handleSuccess method returning function returning data', () => {
-		let fn = AJAXHelper.handleSuccess();
-
-		expect(fn({data: 1, name: 2})).toEqual(1);
-		expect(fn({name: 2})).toEqual(undefined);
-	});
-
-	it('should have handleError method', () => {
-		let fn = AJAXHelper.handleError();
-
-		//expect(fn(new Error('testing err'))).toEqual(new Error(''))
-	});
-
-});
-

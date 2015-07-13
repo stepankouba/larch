@@ -2,7 +2,7 @@
 
 import angular from 'angular';
 import 'angular-cookies';
-import 'angular-route';
+import 'angular-ui-router';
 import 'angular-bootstrap';
 import 'babel/polyfill';
 
@@ -18,7 +18,7 @@ import './widgets/widgets.module.es6';
 import Router from './larch.routes.es6';
 
 angular
-	.module('larch', ['ui.bootstrap', 'ngRoute', 'ngCookies',
+	.module('larch', ['ui.bootstrap', 'ui.router', 'ngCookies',
 		'larch.common.error',
 		'larch.ui',
 		'larch.dashboard',

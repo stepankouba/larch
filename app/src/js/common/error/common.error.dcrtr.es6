@@ -30,9 +30,7 @@ let decorator = function($provide) {
 		});
 
 		$delegate.getLogger = function(moduleName) {
-			const logger = Object.assign({moduleName: moduleName}, $delegate);
-
-			return logger;
+			return Object.assign({moduleName: moduleName}, $delegate);
 		};
 
 		return $delegate;

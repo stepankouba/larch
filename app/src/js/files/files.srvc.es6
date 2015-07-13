@@ -1,19 +1,14 @@
 'use strict';
 
-import { AJAXHelper } from '../common/common.lib.es6';
-
 let conf = require('../../../../master.json');
 
-let FilesSrvc = function($http) {
-    return {
-		getFile: function(path) {
-
-
-            return $http.get(path)
-                .then(AJAXHelper.handleSuccess(), AJAXHelper.handleError());
-        }
-    };
+let FilesSrvc = function($http, RestErrorSrvc) {
+	
+	this.getFile = function(path) {
+		return $http.get(path)
+			.then(RestErrorSrvc.success(), RestErrorSrvc.error('FilesSrvc'));
+	};
 }
-FilesSrvc.$inject = ['$http'];
+FilesSrvc.$inject = ['$http', 'RestErrorSrvc'];
 
 export default FilesSrvc;

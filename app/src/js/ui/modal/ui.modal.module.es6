@@ -1,3 +1,6 @@
 'use strict';
 
-angular.module('larch.ui.modal', []);
+import LUIModal from './ui.modal.class.es6';
+
+angular.module('larch.ui.modal', [])
+	.factory('LUIModal', LUIModal);

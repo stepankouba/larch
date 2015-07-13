@@ -2,10 +2,10 @@
 <div id="sidebar-wrapper">
     <ul class="sidebar">
         <li class="sidebar-main">
-            <input type="text" class="form-control input-sm" placeholder="search" ng-model="searchCriteria">
+            <input type="text" class="form-control input-sm" placeholder="search" ng-model="MasterCtrl.searchCriteria">
         </li>
         <li class="sidebar-title"><span>Dashboards</span></li>
-        <li class="sidebar-list" ng-repeat="d in dashboards | filter: searchCriteria">
+        <li class="sidebar-list" ng-repeat="d in MasterCtrl.LarchBoard.dashboards | filter: MasterCtrl.searchCriteria">
             <a ng-href="#/dashboard/{{::d.id}}">{{::d.title}} <span class="menu-icon fa {{::d.icon}}"></span></a>
         </li>
     </ul>
@@ -78,7 +78,7 @@
         </div>
         <!-- End Header Bar -->
         <!-- Main Content -->
-        <div ng-include="'templates/dash/dashboard.html'"></div>
+        <div ui-view></div>
 	</div>
 	<!-- End Page Content -->
 </div>
