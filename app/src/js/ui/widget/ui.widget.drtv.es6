@@ -6,7 +6,7 @@
 import LWidget from './ui.widget.class.es6';
 import LWidgetModal from './ui.widget.modal.class.es6';
 
-let larchWidget = function ($compile, $log, WidgetFctr) {
+let larchWidget = function ($compile, $log, WidgetFctr, LWidgetModal) {
 	let log = $log.getLogger('WidgetDrtv');
 
 	let directive = {
@@ -38,7 +38,7 @@ let larchWidget = function ($compile, $log, WidgetFctr) {
 		},
 		controller: function($scope) {
 			$scope.openModal = function() {
-				let m = new LWidgetModal($injector, $scope.widget);
+				let m = new LWidgetModal($scope.widget);
 
 				m.open()
 					.then(value => {
@@ -57,7 +57,8 @@ let larchWidget = function ($compile, $log, WidgetFctr) {
 			};
 		}
 	};
-	directive.$inject = ['$compile', '$log', 'WidgetFctr'];
+
+	directive.$inject = ['$compile', '$log', 'WidgetFctr', 'LWidgetModal'];
 
 	return directive;
 };
