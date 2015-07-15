@@ -1,0 +1,20 @@
+<ul class="sidebar">
+	<li class="sidebar-main">
+		<input type="text" class="form-control input-sm" placeholder="search" ng-model="SidebarCtrl.searchCriteria">
+	</li>
+	<li class="sidebar-title"><span>Dashboards</span></li>
+	<li class="sidebar-list" ng-repeat="d in SidebarCtrl.LarchBoard.dashboards | filter: SidebarCtrl.searchCriteria">
+		<a ng-href="#/dashboard/{{::d.id}}">{{::d.title}} <span class="menu-icon fa {{::d.icon}}"></span></a>
+	</li>
+</ul>
+<div class="sidebar-footer">
+	<div class="col-xs-4">
+		<a href="https://project.simplity.eu" target="_blank">Redmine</a>
+	</div>
+	<div class="col-xs-4">
+		<a href="https://gitlab.simplity.eu" target="_blank">Gitlab</a>
+	</div>
+	<div class="col-xs-4">
+		<a href="http://www.simplity.eu">Website</a>
+	</div>
+</div>

@@ -16,8 +16,22 @@
 </head>
 <body ng-app="larch">
 <!--<div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak> -->
-<div id="page-wrapper" class="open" ui-view>
-    
+<div id="page-wrapper" class="open">
+    <!--Sidebar -->
+    <div id="sidebar-wrapper" ui-view="sidebar">
+    </div> 
+    <!-- End Sidebar -->
+
+    <div id="content-wrapper">
+        <div class="page-content">
+            <!-- Header Bar -->
+            <div class="row header" ui-view="header"></div>
+            <!-- End Header Bar -->
+            <!-- Main Content -->
+            <div ui-view></div>
+    	</div>
+    	<!-- End Page Content -->
+    </div>
 </div>
 <!-- End Page Wrapper -->
 </body>
