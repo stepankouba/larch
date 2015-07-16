@@ -5,20 +5,17 @@
 				<img src="images/avatar.jpg">
 			</a>
 			<ul class="dropdown-menu dropdown-menu-right" role="menu">
-				<li class="dropdown-header">Joe Bloggs</li>
+				<li class="dropdown-header">{{HeaderCtrl.LarchUser.current.username}}</li>
 				<li class="divider"></li>
-				<li class="link">
-					<a href="#">Profile</a>
+				<li class="link" ng-show="!HeaderCtrl.LarchUser.current">
+					<a href="" ng-click="HeaderCtrl.login();">login</a>
 				</li>
-				<li class="link">
-					<a href="#">Menu Item</a>
-				</li>
-				<li class="link">
-					<a href="#">Menu Item</a>
+				<li class="link" ng-show="HeaderCtrl.LarchUser.current">
+					<a href="#" ng-click="HeaderCtrl.showDetail();">get user detail</a>
 				</li>
 				<li class="divider"></li>
-				<li class="link">
-					<a href="#">Logout</a>
+				<li class="link" ng-show="HeaderCtrl.LarchUser.current">
+					<a href="#" ng-click="HeaderCtrl.logout();">Logout</a>
 				</li>
 			</ul>
 		</div>
@@ -26,7 +23,7 @@
 			<a href class="dropdown-toggle" dropdown-toggle>
 				<i class="fa fa-bell-o"></i>
 			</a>
-			<!-- <ul class="dropdown-menu dropdown-menu-right" role="menu">
+			<ul class="dropdown-menu dropdown-menu-right" role="menu">
 				<li class="dropdown-header">
 					Notifications
 				</li>
@@ -34,7 +31,7 @@
 				<li>
 					<a href="#">Server Down!</a>
 				</li>
-			</ul> -->
+			</ul>
 		</div>
 	</div>
 	<div class="meta">

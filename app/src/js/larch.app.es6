@@ -13,9 +13,13 @@ import './data/data.module.es6';
 import './files/files.module.es6';
 import './types/types.module.es6';
 import './widgets/widgets.module.es6';
+import './user/user.module.es6';
 
 // classes
 import Router from './larch.routes.es6';
+import Config from './larch.config.es6';
+import AuthIntrcptr from './larch.auth.es6';
+
 
 angular
 	.module('larch', ['ui.bootstrap', 'ui.router', 'ngCookies',
@@ -25,9 +29,12 @@ angular
 		'larch.data',
 		'larch.files',
 		'larch.types',
-		'larch.widgets'
+		'larch.widgets',
+		'larch.user'
 		])
+	.factory('AuthIntrcptr', AuthIntrcptr)
 	.config(Router)
+	.config(Config)
 	;
 
 
