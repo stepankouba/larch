@@ -45,7 +45,7 @@ let larchWidget = function ($compile, $log, WidgetFctr, LWidgetModal) {
 						$scope.widget.params = value;
 
 						// set null to display loader
-						$scope.data = null;
+						$scope.data = undefined;
 						return $scope.widget.getData();
 					})
 					.then(data => {

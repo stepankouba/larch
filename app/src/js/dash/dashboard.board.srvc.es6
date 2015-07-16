@@ -2,9 +2,9 @@ const WIDGET_WIDTH = 3;
 
 let LarchBoardSrvc = function(DashSrvc) {
 	
-	this.id = null;
-	this.dashboards = null;
-	this.dashboard = null;
+	this.id = undefined;
+	this.dashboards = undefined;
+	this.dashboard = undefined;
 
 	/**
 	 * gets and stores list of all the dashboards from db

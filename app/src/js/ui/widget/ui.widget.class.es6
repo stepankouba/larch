@@ -54,7 +54,7 @@ export default class LWidget {
 		}
 	}
 
-	create(element, $compile = null, $scope = null){
+	create(element, $compile = undefined, $scope = undefined){
 		this.rootElement = element;
 		this.$compile = $compile;
 		this.$scope = $scope;
