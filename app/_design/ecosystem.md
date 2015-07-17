@@ -12,6 +12,7 @@ Three objects may be shared:
 - Widget template
 	- JS, HTML, CSS, ...
 	- something like larch CLI
+		- CLI supports creating new widget similar as 'npm init'
 - Widget
 	- may be shared with predefined settings
 	- the same as above + settings

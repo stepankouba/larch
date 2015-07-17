@@ -59,7 +59,7 @@ Forgot password
 			- opens dialog, where user
 				- confirm, what to share, how to share
 				- sharing with settings or without
-
+	- display dashboard as wallboard - i.e. fullscreen
 
 
 
