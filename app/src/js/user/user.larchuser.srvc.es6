@@ -11,7 +11,7 @@ let LarchUser = function($log, $cookies, UserSrvc){
 		UserSrvc.login(username, password)
 			.then(data => {
 				this.current = data.user;
-				$cookies.putObject('larch.user', data.token);
+				$cookies.putObject('larch.user', data);
 			})
 			.catch(err => {
 				log.error(err);
@@ -33,7 +33,11 @@ let LarchUser = function($log, $cookies, UserSrvc){
 
 	this.isLogged = function() {
 		//if (this.current || )
-	}
+	};
+
+	this.getDetails = function() {
+
+	};
 };
 LarchUser.$inject = ['$log', '$cookies', 'UserSrvc'];
 

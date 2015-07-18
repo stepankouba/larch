@@ -6,7 +6,7 @@ function AuthIntrcptr($cookies, $log) {
 		request: function (config) {
 			config.headers = config.headers || {};
 			if ($cookies.getObject('larch.user')) {
-				config.headers.Authorization = 'Bearer ' + $cookies.getObject('larch.user');
+				config.headers.Authorization = 'Bearer ' + $cookies.getObject('larch.user').token;
 			}
 			return config;
 		},
