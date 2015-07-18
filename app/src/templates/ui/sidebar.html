@@ -2,9 +2,11 @@
 	<li class="sidebar-main">
 		<input type="text" class="form-control input-sm" placeholder="search" ng-model="SidebarCtrl.searchCriteria">
 	</li>
-	<li class="sidebar-title"><span>Dashboards</span></li>
+	<li class="sidebar-title"><span>Dashboards<a href="" ng-click="SidebarCtrl.newDashboard();" class="menu-icon fa fa-plus-square"></a></span></li>
 	<li class="sidebar-list" ng-repeat="d in SidebarCtrl.LarchBoard.dashboards | filter: SidebarCtrl.searchCriteria">
-		<a ng-href="#/dashboard/{{::d.id}}">{{::d.title}} <span class="menu-icon fa {{::d.icon}}"></span></a>
+		<a ng-href="#/dashboard/{{::d.id}}" ng-class="{'selected': d.id === SidebarCtrl.LarchBoard.dashboard.id}">
+			{{::d.title}} <span class="menu-icon"><i class="fa fa-cogs"></i> <i class="fa fa-share-alt-square"></i></span>
+		</a>
 	</li>
 </ul>
 <div class="sidebar-footer">

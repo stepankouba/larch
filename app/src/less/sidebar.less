@@ -4,134 +4,106 @@
  * Sidebar
  */
 #sidebar-wrapper {
-    background: @sidebarBaseColor;
+	background: @sidebarBaseColor;
 }
 
 ul.sidebar .sidebar-main a,
 .sidebar-footer,
 ul.sidebar .sidebar-list a:hover,
 #page-wrapper:not(.open) ul.sidebar .sidebar-title.separator {
-    /* Sidebar header and footer color */
-    background: @sidebarHeaderColor;
+	/* Sidebar header and footer color */
+	background: @sidebarHeaderColor;
 }
 
 ul.sidebar {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    text-indent: 20px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    li {
-        a {
-            color: #fff;
-            display: block;
-            float: left;
-            text-decoration: none;
-            width: @sidebarWidth;
-        }
-    }
-    .sidebar-main {
-        // height: 65px;
-        // a {
-        //     font-size: 18px;
-        //     line-height: 60px;
-        // }
-        // a:hover {
-        //     cursor: pointer;
-        // }
-        // .menu-icon {
-        //     float: right;
-        //     font-size: 18px;
-        //     padding-right: 28px;
-        //     line-height: 60px;
-        // }
-        
-        padding: 10px 5px;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	text-indent: 10px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	li {
+		a {
+			display: block;
+			float: left;
+			text-decoration: none;
+			width: @sidebarWidth;
+			color: #fff;
+		}
+	}
+	.sidebar-main {
+		padding: 10px 5px;
 
-        .form-control {
-            
-        }
-    }
-    .sidebar-title {
-        color: @sidebarTitleColor;
-        font-size: 12px;
-        height: 35px;
-        line-height: 40px;
-        text-transform: uppercase;
-        transition: all .6s ease 0s;
-    }
-    .sidebar-list {
-        height: 40px;
-        a {
-            text-indent: 25px;
-            font-size: 12px;
-            color: #b2bfdc;
-            line-height: 40px;
-        }
-        a:hover {
-            color: #fff;
-            border-left: 3px solid @sidebarMenuItemHover;
-            text-indent: 22px;
-            .menu-icon {
-                text-indent: 25px;
-            }
-        }
-        .menu-icon {
-            float: right;
-            padding-right: 29px;
-            line-height: 40px;
-            width: 70px;
-        }
-    }
+		.form-control {}
+
+	}
+	.sidebar-title {
+		color: @sidebarTitleColor;
+		font-size: 14px;
+		height: 35px;
+		line-height: 40px;
+		text-transform: uppercase;
+		transition: all .6s ease 0s;
+	}
+	.sidebar-list {
+		height: 40px;
+		a {
+			text-indent: 15px;
+			font-size: 14px;
+			color: #b2bfdc;
+			line-height: 40px;
+
+			&:hover, &.selected {
+				color: #fff;
+				border-left: 3px solid @sidebarMenuItemHover;
+				text-indent: 12px;
+			}
+
+
+		}
+	}
+	.menu-icon {
+		display: inline-block;
+		float: right;
+		
+		line-height: 40px;
+		width: 65px;
+		text-indent: 15px;
+
+		i {
+			display: inline-block;
+			padding-right: 5px;
+			text-indent: 0px;
+			color: rgb(143,143,143);
+
+			&:hover {
+				color: rgb(255, 255, 255);
+			}
+		}
+	}
 }
-#page-wrapper:not(.open) {
-    ul.sidebar {
-        bottom: 0;
-        .sidebar-title {
-            display: none;
-            height: 0px;
-            text-indent: -100px;
-        }
-        .sidebar-title.separator {
-            display: block;
-            height: 2px;
-            margin: 13px 0;
-        }
-        .sidebar-list {
-            a:hover {
-                span {
-                    border-left: 3px solid #e99d1a;
-                    text-indent: 22px;
-                }
-            }
-        }
-    }
-    .sidebar-footer {
-        display: none;
-    }
-}
+
 .sidebar-footer {
-    position: absolute;
-    height: 40px;
-    bottom: 0;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    transition: all .6s ease 0s;
-    text-align: center;
-    div {
-        a {
-            color: #b2bfdc;
-            font-size: 12px;
-            line-height: 43px;
-        }
-        a:hover {
-            color: #ffffff;
-            text-decoration: none;
-        }
-    }
+	position: absolute;
+	height: 40px;
+	bottom: 0;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	transition: all .6s ease 0s;
+	text-align: center;
+	div {
+		a {
+			color: #b2bfdc;
+			font-size: 12px;
+			line-height: 43px;
+		}
+		a:hover {
+			color: #ffffff;
+			text-decoration: none;
+		}
+	}
 }
