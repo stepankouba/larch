@@ -58,6 +58,8 @@ let LarchBoardSrvc = function(DashSrvc) {
 
 		return result;
 	};
+
+	
 };
 LarchBoardSrvc.$inject = ['DashSrvc'];
 

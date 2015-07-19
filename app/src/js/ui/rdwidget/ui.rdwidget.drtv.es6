@@ -6,7 +6,7 @@
 export function widget() {
     let directive = {
         transclude: true,
-        template: '<div class="widget" ng-transclude></div>',
+        template: '<div class="widget" ng-transclude draggable="true"></div>',
         restrict: 'EA'
     };
     return directive;
