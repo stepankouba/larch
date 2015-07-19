@@ -40,7 +40,7 @@
 			token: 'text'
 		},
 		displayParams: {
-			widgetHeight: 'medium'
+			widgetHeight: 'large'
 		},
 		systemParams: [
 			{
