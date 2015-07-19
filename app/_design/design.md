@@ -79,6 +79,14 @@ Forgot password
 - can be shared - has icon in the list
 -- on click on the icon, the popup is displayed where I can select all the user 
 
+## behavior
+- Guide lines create rows
+	- guide lines always are 150px 
+	- User may add as may rows as he wants to
+	- by default 4 rows and 4 columns are created 
+- widget has it's default width and height 
+	-
+
 # V2 command line
 - script for getting widgets from server
 
