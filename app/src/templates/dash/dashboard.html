@@ -1,8 +1,4 @@
 <div class="col-md-12">
-	<div class="row" ng-repeat="(row, count) in DashboardCtrl.rows">
-		<div ng-repeat="w in DashboardCtrl.widgets | filter:{y: row}" class="col-md-{{::w.width}} larch-widget">
-			<larch-widget id="{{::w.widgetId}}"></larch-widget>
-		</div>
-	</div>
+	<larch-dashboard></larch-dashboard>
 
 </div>
