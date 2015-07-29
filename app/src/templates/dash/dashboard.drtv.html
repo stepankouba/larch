@@ -1,20 +1,26 @@
 <button ng-click="ctrl.toggleGrid()">grid</button>
-<div style="position: absolute; z-index: 10;">
-	<div class="row" ng-repeat="(index, row) in userGrid">
-		<!-- <div ng-repeat="w in DashDrtvCtrl.widgets | filter:{y: row}" class="col-md-{{::w.width}} larch-widget">
-			<larch-widget id="{{::w.widgetId}}"></larch-widget>
-		</div> -->
-		<div ng-repeat="(index, cell) in row" class="widget" larch-drag>
-			<div class="widget-body medium"
-				style="top: {{::widgets[cell].y}}px; left: {{::widgets[cell].x}}px; width: {{::widgets[cell].width}}px; height: {{::widgets[cell].height}}px;">{{::widgets[cell].name}}</div>
-		</div>
+<div>
+	<!-- <div ng-repeat="w in DashDrtvCtrl.widgets | filter:{y: row}" class="col-md-{{::w.width}} larch-widget">
+		<larch-widget id="{{::w.widgetId}}"></larch-widget>
+	</div> -->
+	<!-- <div ng-repeat="widget in widgets" class="widget"
+		style="top: {{::widget.y}}px; left: {{::widget.x}}px; width: {{::widget.width}}px; height: {{::widget.height}}px;"
+		larch-drag>
+		<div class="widget-body medium">{{::widget.name}}</div>
+	</div> -->
+
+	<div class="widget"
+		style="top: 10px; left: 10px; width: 200px; height: 150px;"
+		larch-drag>
+		<div class="widget-body">name</div>
 	</div>
+	
 </div>
 
-<div class="larch-grid" ng-show="ctrl.showGrid">
+<!-- <div class="larch-grid" ng-show="ctrl.showGrid">
 	<div class="row" ng-repeat="(row, count) in ctrl.gridRows">
 		<div ng-repeat="cell in ctrl.gridColumns" class="widget" larch-droppable>
 			<div class="widget-body medium">{{::cell}}</div>
 		</div>
 	</div>
-</div>
+</div> -->
