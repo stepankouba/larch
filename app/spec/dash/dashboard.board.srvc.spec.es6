@@ -35,11 +35,6 @@ describe('LarchBoardSrvc', function(){
 		httpBackend.flush();
 	});
 
-	it('should perform proper getCurrentRows', function(){
-		LarchBoardSrvc.dashboard = TestData[0];
-		expect(LarchBoardSrvc.getCurrentRows()).toEqual({'1':1, '2': 3});
-	});
-
 	it('should perform proper getCurrentWidgets', function(){
 		const WIDGET_WIDTH = 3;
 
