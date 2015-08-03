@@ -6,7 +6,7 @@
  */
 const API_VER = '0.1';
 
-let conf = require('../../../../master.json');
+let conf = require('../../master.app.json');
 
 let DataSrvc = function($http, RestErrorSrvc) {
 	

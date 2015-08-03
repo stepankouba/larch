@@ -3,7 +3,7 @@
 let express = require('express');
 let	server = module.exports = express();
 let bodyParser = require('body-parser');
-let master = require('../../master.json');
+let master = require('../master.services.json');
 let router = require('./server/server.router.es6');
 let morgan = require('morgan');
 

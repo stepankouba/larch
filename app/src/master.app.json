@@ -1,0 +1,23 @@
+{
+	"url": "localhost",
+	"services": {
+		"log": {
+			"port": 9001
+		},
+		"user": {
+			"port": 9002
+		},
+		"redmine": {
+			"port": 9003
+		},
+		"dash": {
+			"port": 9004
+		},
+		"widgets": {
+			"port": 9005
+		},
+		"types": {
+			"port": 9006
+		}
+	}
+}

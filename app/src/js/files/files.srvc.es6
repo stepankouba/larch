@@ -1,6 +1,6 @@
 'use strict';
 
-let conf = require('../../../../master.json');
+let conf = require('../../master.app.json');
 
 let FilesSrvc = function($http, RestErrorSrvc) {
 	

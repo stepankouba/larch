@@ -1,3 +1,7 @@
+# Technical comments
+80% / 20% test coverage
+
+
 /dashboard/:id
 	- larch.dashboard
 

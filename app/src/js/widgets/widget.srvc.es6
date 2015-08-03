@@ -1,6 +1,6 @@
 'use strict';
 
-let conf = require('../../../../master.json');
+let conf = require('../../master.app.json');
 
 let url = 'http://' + conf.url + ':' + conf.services.widgets.port + '/widgets/';
 
