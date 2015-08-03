@@ -42,7 +42,12 @@
 		modalParams: null,
 		typeParams: null,
 		displayParams: {
-			widgetHeight: 'small'
+			position: {
+				top: '380px',
+				left: '240px',
+				width: '200px',
+				height: '160px'
+			}
 		},
 		systemParams: {
 		        api: '/redmine/spent/lastweek',

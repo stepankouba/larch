@@ -40,7 +40,12 @@
 			token: 'text'
 		},
 		displayParams: {
-			widgetHeight: 'large'
+			position: {
+				top: '380px',
+				left: '20px',
+				width: '1000px',
+				height: '350px'
+			}
 		},
 		systemParams: [
 			{

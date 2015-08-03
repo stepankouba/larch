@@ -47,7 +47,12 @@
 			month: 'number'
 		},
 		displayParams: {
-			widgetHeight: 'small'
+			position: {
+				top: '380px',
+				left: '460px',
+				width: '560px',
+				height: '160px'
+			}
 		},
 		systemParams: {
 		        api: '/redmine/version/{projects}/{month}',

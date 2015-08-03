@@ -52,7 +52,12 @@
         	user: 'text'
         },
         displayParams: {
-			widgetHeight: 'large'
+			position: {
+				top: '20px',
+				left: '20px',
+				width: '1000px',
+				height: '350px'
+			}
 		},
         systemParams: {
         	api: '/redmine/issues/{user}/log/{month}',

@@ -92,7 +92,12 @@
 			token: 'text'
 		},
 		displayParams: {
-			widgetHeight: 'large',
+			position: {
+				top: '20px',
+				left: '20px',
+				width: '1000px',
+				height: '350px'
+			},
 			c3: {
 				axis: {
 					x: {
