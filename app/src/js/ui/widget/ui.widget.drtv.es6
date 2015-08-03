@@ -14,7 +14,7 @@ let larchWidget = function ($compile, $log, WidgetFctr, LWidgetModal) {
 		scope: {
 			id: '@'
 		},
-		transclude: true,
+		
 		templateUrl: 'templates/widget/widget.html',
 		restrict: 'E',
 		link: function($scope, element){

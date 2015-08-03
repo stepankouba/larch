@@ -8,11 +8,11 @@ let larchDashboardDrtv = function ($log) {
 
 	class larchDashboardCtrl {
 		constructor($scope, $element) {
-			log.debug('controller');
-			this.element = angular.element($element.children()[0]);
+			
+			this.element = angular.element($element.parent()[0]);//angular.element($element.children()[0]);
 			
 			this.showGrid = false;
-			// 
+			
 			this.toggleGrid = function() {
 				this.showGrid = !this.showGrid;
 
@@ -24,19 +24,17 @@ let larchDashboardDrtv = function ($log) {
 	larchDashboardCtrl.$inject = ['$scope', '$element'];
 
 	let directive = {
-		requires: '^larchDrag',
-		scope: {},
+		scope: {
+			widgets: '='
+		},
 		transclude: true,
+		replace: true,
 		templateUrl: 'templates/dash/dashboard.drtv.html',
 		controllerAs: 'ctrl',
 		bindToController: true,
 		restrict: 'E',
 		link: function larchDashboardDrtvLink($scope, element){
-			$scope.widgets = [
-				{id: 1, name: 'test1', width: 200, height: 100, x: 0, y:0},
-				/*{id: 2, name: 'test2', width: 100, height: 100, x: 200, y:0},
-				{id: 3, name: 'test3', width: 200, height: 100, x: 200, y:100}*/
-			];
+			
 		},
 		controller: larchDashboardCtrl
 	};

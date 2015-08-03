@@ -77,7 +77,7 @@ export default class LWidget {
 					let html = t({data: $scope.data, params: this.params});
 					element.append(html);
 				} else if (this.config.useC3) {
-					
+					// create c3 chart 
 					c3.generate(Object.assign(this.displayParams.c3, {bindto: element[0], data: $scope.data }));
 				}
 			})

@@ -82,13 +82,16 @@ function dragDrtv($log, $document) {
 					$document.unbind('mouseup');
 				}
 
+				elem.toggleClass('widget-moving');
+
 				return false;
 			}
 
 			function mouseDown(e) {
 				e.preventDefault();
 
-				if (!moving) {
+				// just waiting for left button on mouse (don't do anything on others)
+				if (!moving && e.button === 0) {
 					moving = true;
 
 					mousePos.x = e.clientX;
@@ -111,8 +114,10 @@ function dragDrtv($log, $document) {
 			scope.$on('grid', (e, showGrid) => {
 				if (showGrid) {
 					elem.bind('mousedown', mouseDown);
+					elem.toggleClass('widget-moving');
 				} else {
 					elem.unbind('mousedown');
+					elem.toggleClass('widget-moving');
 				}
 			});
 		}

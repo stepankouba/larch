@@ -1,9 +1,9 @@
-<rd-widget>
+<rd-widget ng-style="widget.displayParams.position">
 	<rd-widget-header icon="fa-tasks" title="{{::widget.title}} {{widget.params}}">
 		<a href="" ng-show="data && widget.params" ng-click="openModal();">Settings</a>
 	</rd-widget-header>
 	
-	<rd-widget-body ng-show="data" classes="{{::widget.displayParams.widgetHeight}} no-padding" id="{{::widget.id}}">		
+	<rd-widget-body ng-show="data" classes="no-padding" id="{{::widget.id}}">		
 	</rd-widget-body>
 
 	<div ng-show="!data">

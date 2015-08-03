@@ -34,30 +34,31 @@ let LarchBoardSrvc = function(DashSrvc) {
 	};
 	
 	this.getCurrentWidgets = function() {
-		return this.dashboard.widgets.map(item => {
-			item.width = item.w * WIDGET_WIDTH;
-			item.height = item.h;
+		// return this.dashboard.widgets.map(item => {
+		// 	item.width = item.w * WIDGET_WIDTH;
+		// 	item.height = item.h;
 
-			return item; 
-		});
+		// 	return item; 
+		// });
+		return this.dashboard.widgets;
 	};
 
-	this.getCurrentRows = function() {
-		let result = {};
+	// this.getCurrentRows = function() {
+	// 	let result = {};
 
-		// count rows in 
-		this.dashboard.widgets.forEach(item => {
-			let row = item.y.toString();
+	// 	// count rows in 
+	// 	this.dashboard.widgets.forEach(item => {
+	// 		let row = item.y.toString();
 
-			if (row in result) {
-				result[row]++;
-			} else {
-				result[row] = 1;
-			}
-		});
+	// 		if (row in result) {
+	// 			result[row]++;
+	// 		} else {
+	// 			result[row] = 1;
+	// 		}
+	// 	});
 
-		return result;
-	};
+	// 	return result;
+	// };
 
 	
 };
