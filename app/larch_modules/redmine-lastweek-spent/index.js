@@ -44,8 +44,8 @@
 		displayParams: {
 			position: {
 				top: '380px',
-				left: '240px',
-				width: '200px',
+				left: '340px',
+				width: '300px',
 				height: '160px'
 			}
 		},
