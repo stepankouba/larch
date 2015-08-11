@@ -24,7 +24,7 @@ var paths = {
 		images: BUILD_PATH + 'images'
 	},
 	src: {
-		js: SRC_PATH + 'js/',
+		js: SRC_PATH + 'js-new/',
 		less: SRC_PATH + 'less/**/*.less',
 		index: SRC_PATH + 'index.html',
 		templates: SRC_PATH + 'templates/**/*.*',
@@ -36,7 +36,7 @@ var paths = {
 
 gulp.task('app', function(){
 	browserify({
-		entries: paths.src.js + 'larch.app.es6',
+		entries: paths.src.js + 'larch.es6',
 		debug: true
 	})
 		.transform(babelify)
