@@ -1,3 +1,33 @@
 <div id="larch-dashboard-content">
-	<larch-dashboard widgets="DashboardCtrl.widgets"></larch-dashboard>
+	{{#each widgets}}
+		<div class="widget larch-widget" style="height: {{height}}; width: {{width}}; top: {{top}}; left: {{left}};">
+			<div class="widget-header">
+				<div class="row larch-header-row">
+					<div class="pull-left">
+						<i class="fa" ng-class="icon"></i> {{title}} 
+					</div>
+					<div class="pull-right col-xs-6 col-sm-2">
+						<a href="" ng-show="data && widget.params" ng-click="openModal();">Settings</a>			
+					</div>
+				</div>
+			</div>
+
+			<div class="widget-body" ng-class="classes">
+				<div class="widget-content" id="widget{{widgetId}}"></div>
+			</div>
+			<!-- <div ng-show="!data">
+				<larch-loading>	
+			</div> -->
+		</div>
+	{{/each}}
+	<!-- <rd-widget ng-style="widget.displayParams.position">
+		<rd-widget-header icon="fa-tasks" title="{{::widget.title}} {{widget.params}}">
+			
+		</rd-widget-header>
+		
+		<rd-widget-body ng-show="data" classes="no-padding" id="{{::widget.id}}">		
+		</rd-widget-body>
+
+		
+	</rd-widget> -->
 </div>

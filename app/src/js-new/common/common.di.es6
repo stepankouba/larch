@@ -1,28 +1,29 @@
-'use strict';
-
-//import {ArrayLib} from './larch.lib.es6';
-
 const CTRLR = 'controller';
 const CLASS = 'class';
 const SINGL = 'singleton';
 
 let Injector = {
+	instances: {
+		[CTRLR]: new Map(),
+		[CLASS]: new Map(),
+		[SINGL]: new Map()
+	},
 	/**
 	 * creates new injector object
 	 */
 	create() {
 		let injector = Object.create(Injector.prototype);
 
+		// share DI instances accross different instances of Injector
+		// TODO - need to think if this is wise and desired
+		injector.instances = this.instances;
+
 		return injector;
 	},
 	prototype: {
-		instances: {
-			[CTRLR]: new Map(),
-			[CLASS]: new Map(),
-			[SINGL]: new Map()
-		},
 		_add(name, type, fn) {
 			if (typeof fn !== 'function' && typeof fn !== 'object') {
+				console.log(name, type, fn);
 				throw new Error('not a proper injector call');
 			}
 
@@ -88,7 +89,7 @@ let Injector = {
 			this._add(name, CLASS, fn);
 		},
 
-		_resolve(fn) {
+		_resolve(fn, thisArg = null) {
 			let deps = fn.$injector;
 			let args = [];
 			let errors = [];
@@ -107,14 +108,14 @@ let Injector = {
 			}
 
 			if (errors.length) {
-				throw new Error(`following dependencies could not be resolved: ${errors}`);
+				throw new Error(`${fn.name}: following dependencies could not be resolved: ${errors}`);
 			}
-			
-			return fn.apply(null, args);
+
+			return fn.apply(thisArg, args);
 		},
 
-		invoke(fn) {
-			this._resolve(fn);
+		invoke(fn, thisArg = null) {
+			this._resolve(fn, thisArg);
 		}
 	}
 };

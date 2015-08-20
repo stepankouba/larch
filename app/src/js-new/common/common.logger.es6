@@ -15,21 +15,21 @@ let LoggerFn = function() {
 				}
 
 				// add time and namespace
-				params.unshift(Date.now(), ' - ', this.ns, ' - ');
+				params.unshift(`${new Date()}: ${this.ns}: `);
 
 				console[type].apply(console, params);
 			},
 			log: function loggerLog(params){
-				this._output('log', Array.prototype.slice.call(arguments));
+				this._output('log', [].slice.call(arguments));
 			},
 			error: function loggerError(params) {
-				this._output('error', Array.prototype.slice.call(arguments));
+				this._output('error', [].slice.call(arguments));
 			},
 			info: function loggerError(params) {
-				this._output('info', Array.prototype.slice.call(arguments));
+				this._output('info', [].slice.call(arguments));
 			},
 			warning: function loggerWarning(params) {
-				this._output('warn', Array.prototype.slice.call(arguments));
+				this._output('warn', [].slice.call(arguments));
 			}
 		}
 	};

@@ -1,22 +1,30 @@
 'use strict';
 
+//import 'babel/polyfill';
+
 import Larch from './larch.app.es6';
+import init from './larch.init.es6';
+import routes from './larch.routes.es6';
+import views from './larch.views.es6';
+import services from './larch.services.es6';
+import models from './larch.models.es6';
+import components from './larch.components.es6';
 
 let App = Larch.createApp();
 
-// App.initViews();
+App.services(services);
 
-let init = function(Logger, HTTPer) {
-	let logger = Logger.create('app.init');
-};
-init.$injector = ['larch.Logger', 'larch.HTTPer'];
+App.models(models);
+
+App.components(components);
+
+App.views(views);
+
+App.routes(routes);
 
 App.init(init);
 
-App.routes([{
-		templateUrl: './dash/dashboard.html',
-		url: '/dashboard/{{id}}',
-		main: true,
-		controller: function() { console.log('testing here') }
-	}
-]);
+// import modules, views, controllers, services
+// App.initViews();
+// 
+// App.initRoutes();

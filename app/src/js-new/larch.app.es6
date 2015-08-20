@@ -1,10 +1,14 @@
 'use strict';
 
-import Injector from './larch.di.es6';
-import Logger from './larch.common.logger.es6';
-import HTTPer from './larch.common.httper.es6';
-import Viewer from './larch.common.viewer.es6';
-import Router from './larch.common.router.es6';
+import Injector from './common/common.di.es6';
+import Logger from './common/common.logger.es6';
+import HTTPer from './common/common.httper.es6';
+import Viewer from './common/common.viewer.es6';
+import Router from './common/common.router.es6';
+
+let logger;
+
+// TODO - create custom errors objects: https://github.com/angular/angular.js/blob/291d7c467fba51a9cb89cbeee62202d51fe64b09/src/minErr.js
 
 let Larch = {
 	createApp(name = 'larch') {
@@ -20,7 +24,7 @@ let Larch = {
 	},
 	prototype: {
 		_initApp() {
-			// create app injector
+			// create main injector
 			this.Injector = Injector.create();
 
 			// include main deps
@@ -29,35 +33,66 @@ let Larch = {
 			this.Injector.singleton('larch.Viewer', Viewer);
 			this.Injector.singleton('larch.Router', Router);
 
-			// init viewer
-			// this._initViewer();
+			logger = this.Injector.get('larch.Logger').create('larch.app');
 		},
-		_initViewer() {
+
+		models(models) {
+			models.forEach(obj => this.Injector.singleton(obj.name, obj.model));
+		},
+
+		components(components) {
+			components.forEach(obj => {
+				this.Injector[obj.type](obj.name, obj.functor);
+			});
+		},
+
+		views(views) {
 			let Viewer = this.Injector.get('larch.Viewer');
 
-			Viewer.parse();
+			views.forEach(view => Viewer.addView(view));
 		},
 
 		routes(routeDef = []) {
-			let routesAdd = (Router) => {
-				Router.conf();
+			let Router = this.Injector.get('larch.Router');
 
-				routeDef.forEach(route => Router.add(route));
+			Router.conf();
 
-				this.Router = Router;
-				this.Router.navigate('');
-				this.Router.navigateToMain();
-			};
-			routesAdd.$injector = ['larch.Router'];
-
-			this.Injector.invoke(routesAdd);
+			routeDef.forEach(route => Router.add(route));
+		},
+		services(services){
+			services.forEach(srvc => {
+				if (!srvc.type || !srvc.name || !srvc.functor) {
+					logger.error(`can not initiate servce ${srvc}`);
+				} else {
+					this.Injector[srvc.type](srvc.name, srvc.functor);
+				}
+			});
 		},
 		init(fn) {
 			// init
 			this.Injector.invoke(fn);
+			// im
+			this.run();
 		}, 
 		run(fn) {
-			this.Injector.invoke(fn);
+			// initial router and viewer run
+			this._runRouter();
+			this._runViews();
+
+			if (typeof fn === 'function') {
+				this.Injector.invoke(fn);
+			}
+		},
+		_runRouter() {
+			let Router = this.Injector.get('larch.Router');
+
+			Router.navigateToMain(false);
+		},
+
+		_runViews() {
+			let Viewer = this.Injector.get('larch.Viewer');
+
+			Viewer.parse();
 		}
 	}
 };

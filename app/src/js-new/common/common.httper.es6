@@ -4,7 +4,7 @@ let HTTPerFn = function(Logger) {
 	let logger = Logger.create('larch.HTTPer');
 
 	let HTTPer = {
-		get(url, callback) {
+		get(url, conf = {}) {
 			let promise = new Promise((resolve, reject) => {
 				let xhr = new XMLHttpRequest();
 
@@ -13,7 +13,8 @@ let HTTPerFn = function(Logger) {
 				xhr.onload = function (e) {
 					if (xhr.readyState === 4) {
 						if (xhr.status === 200) {
-							resolve(xhr.responseText);
+							// if json set true, parse output as JSON, otherwise return plain textside
+							resolve(conf.json ? JSON.parse(xhr.responseText) : xhr.responseText);
 						} else {
 							logger.error(xhr.statusText);
 							reject(xhr.statusText);

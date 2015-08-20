@@ -8,7 +8,12 @@ let array = {
 
 let global = {
 	document: {
-		
+		base() {
+			let base = document.getElementsByTagName('base')[0];
+
+			// before returning remove the ending slash, because all the routes use slash at the beginning
+			return base.getAttribute('href').slice(0, -1);
+		}
 	},
 	window: {
 		location() {
