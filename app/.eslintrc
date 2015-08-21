@@ -1,0 +1,13 @@
+{
+	"env": {
+		"browser": 1,
+		"es6": 1
+	},
+	"ecmaFeatures": {
+        "modules": true
+    },
+	"rules": {
+		"quotes": [2, "single"],
+		"indent": [2, "tab"]
+	}
+}
