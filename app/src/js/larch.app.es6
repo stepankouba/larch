@@ -20,7 +20,7 @@ import Router from './larch.routes.es6';
 import Config from './larch.config.es6';
 import AuthIntrcptr from './larch.auth.es6';
 
-
+ 
 angular
 	.module('larch', ['ui.bootstrap', 'ui.router', 'ngCookies',
 		'larch.common.error',
