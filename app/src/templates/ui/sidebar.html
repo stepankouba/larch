@@ -2,12 +2,15 @@
 	<li class="sidebar-main">
 		<input type="text" class="form-control input-sm" placeholder="search" ng-model="SidebarCtrl.searchCriteria">
 	</li>
-	<li class="sidebar-title"><span>Dashboards<a href="" ng-click="SidebarCtrl.newDashboard();" class="menu-icon fa fa-plus-square"></a></span></li>
-	<li class="sidebar-list" ng-repeat="d in SidebarCtrl.LarchBoard.dashboards | filter: SidebarCtrl.searchCriteria">
-		<a ng-href="#/dashboard/{{::d.id}}" ng-class="{'selected': d.id === SidebarCtrl.LarchBoard.dashboard.id}">
-			{{::d.title}} <span class="menu-icon"><i class="fa fa-cogs"></i> <i class="fa fa-share-alt-square"></i></span>
+	<li class="sidebar-title"><span>Dashboards<a href="" data-on-click="new('test', 15);" class="menu-icon fa fa-plus-square"></a></span></li>
+	{{#each dashboards}}
+	<li class="sidebar-list" >
+		<a href="" class="{{toggle-class id ../route 'selected'}}">
+			{{title}} <span class="menu-icon"><i class="fa fa-cogs"></i> <i class="fa fa-share-alt-square"></i></span>
 		</a>
+		<!-- ng-class="{'selected': d.id === SidebarCtrl.LarchBoard.dashboard.id}" -->
 	</li>
+	{{/each}}
 </ul>
 <div class="sidebar-footer">
 	<div class="col-xs-4">

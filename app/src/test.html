@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en" xmlns:ng="http://angularjs.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>larch</title>
+	<!-- STYLES -->
+	<!-- build:css lib/css/main.min.css -->
+	<link rel="stylesheet" type="text/css" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../node_modules/font-awesome/css/font-awesome.min.css">
+	<!-- endbuild -->
+	<!-- SCRIPTS -->
+    <style type="text/css">
+        html, body {
+            height: 100%;
+        }
+
+        .full-page {
+            height: 90%;
+            position: relative;
+            border: 1px solid red;
+        }
+
+        .widget {
+            cursor: move;
+        }
+    </style>
+</head>
+<body>
+    <div class="container pull-right full-page" id="parent">
+        
+    </div>
+</body>
+<script type="text/javascript">
+    'use strict';
+
+    // const
+    var ROWS = 4;
+    var COLS = 6;
+    var MIN_HEIGHT = 100;
+    var MAX_HEIGHT = 300;
+    var MIN_WIDTH = 100;
+    var MAX_WIDTH = 400;
+    var MARGIN = {
+        top: 10, right: 10, bottom: 10, left: 10
+    };
+
+    var parent = document.getElementById('parent');
+
+    // widgets defs
+    var widgets = [
+        {id: 1, row: 0, col: 0, width: 1, height: 1},
+        {id: 2, row: 1, col: 0, width: 1, height: 3},
+        {id: 3, row: 1, col: 1, width: 2, height: 1},
+        {id: 4, row: 2, col: 1, width: 2, height: 2},
+        {id: 5, row: 0, col: 4, width: 2, height: 4}
+    ];
+
+    var mouse = {};
+    var element;
+
+
+    function getCoords() {
+        // get parent width and height
+        var parentPos = parent.getBoundingClientRect();
+
+        // divide by ROWS and COLS, Math.floor
+        var width = Math.floor(parentPos.width / COLS);
+        var height = Math.floor(parentPos.height / ROWS);
+        
+        // reduce with margin
+        width = width - MARGIN.right - MARGIN.left;
+        height = height - MARGIN.top - MARGIN.bottom;
+
+        // compare with min max width
+        width = (width > MAX_WIDTH) ? MAX_WIDTH : ((width < MIN_WIDTH) ? MIN_WIDTH : width);
+        height = (height > MAX_HEIGHT) ? MAX_HEIGHT : ((height < MIN_HEIGHT) ? MIN_HEIGHT : height);
+
+        return {width: width, height: height};
+    }
+
+    function createElement(id) {
+        return document.getElementById(id) || document.createElement('div');
+    }
+
+    function styleElement(coords, item, elem) {
+        elem.classList.add('widget');
+
+        elem.style.position = 'absolute';
+        elem.style.top = item.row * coords.height + 'px';
+        elem.style.left = item.col * coords.width + 'px';
+        elem.style.width = item.width * coords.width + 'px';
+        elem.style.height = item.height * coords.height + 'px';
+        elem.style.border = 'solid 1px grey';
+        elem.setAttribute('id', 'widget-' + item.id);
+        elem.setAttribute('data-widget-id', item.id);
+
+        elem.innerHTML = 'test value - ' + item.id;
+
+        elem.addEventListener('mousedown', mousedown);
+
+        return elem;
+    }
+
+    function placeWidgets(widgets, elem, coords) {
+        widgets.forEach(function(item){
+            var widgetEl = styleElement(coords, item, createElement('widget-' + item.id));
+
+            if (!document.getElementById('widget-' + item.id)) {
+                elem.appendChild(widgetEl);
+            }
+        });
+    }
+
+    function resizeEventHandler(e) {
+        var coords = getCoords();
+        placeWidgets(widgets, parent, coords);
+    }
+
+    function mouseup(e) {
+        e.preventDefault();
+
+        document.removeEventListener('mousemove', mousemove);
+        document.removeEventListener('mouseup', mouseup);
+    }
+
+    function mousedown(e) {
+        e.preventDefault();
+        
+        element = e.target;
+
+        document.addEventListener('mousemove', mousemove);
+        document.addEventListener('mouseup', mouseup);
+
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    } 
+
+    function mousemove(e) {
+        e.preventDefault();
+
+        var elementPos = {
+            x: parseInt(element.style.left) + e.clientX - mouse.x,
+            y: parseInt(element.style.top) + e.clientY - mouse.y
+        };
+
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+
+        element.style.left = elementPos.x + 'px';
+        element.style.top = elementPos.y + 'px';
+
+        highlightNearest(element.getAttribute('data-widget-id'), elementPos.x, elementPos.y);
+    }
+
+    function highlightNearest(id, x, y) {
+        // var coords = getCoords();
+
+        // // find proper ROW and COL
+        // var row = Math.floor(x / coords.width);
+        // var col = Math.floor(y / coords.height);
+
+        // var widget = widgets.filter(function(item){
+        //     return item.id === parseInt(id);
+        // })[0];
+
+        // var div = {id: 9999, width:widget.width, height: widget.height, row: row, col: col};
+
+        // var widgetEl = styleElement(coords, item, createElement('widget-' + item.id));
+
+        // if (!document.getElementById('widget-' + item.id)) {
+        //     elem.appendChild(widgetEl);
+        // }
+
+    }
+
+    function init() {
+        // get margin definition from css styles
+
+        // create initial height and width
+        var coords = getCoords();
+
+        // place widgets in the parent
+        placeWidgets(widgets, parent, coords);
+        
+        // add event listeners on window.resize
+        window.onresize = resizeEventHandler;
+    }
+
+    init();
+</script>
+
+</html>

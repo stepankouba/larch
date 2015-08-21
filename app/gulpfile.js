@@ -12,6 +12,7 @@ var karma = require('gulp-karma');
 
 var BUILD_PATH = './build/';
 var SRC_PATH = './src/';
+var NODE_MODULES_PATH = './node_modules/';
 
 var paths = {
 	build: {
@@ -21,22 +22,28 @@ var paths = {
 		css: BUILD_PATH + 'css',
 		index: BUILD_PATH,
 		templates: BUILD_PATH + 'templates',
-		images: BUILD_PATH + 'images'
+		images: BUILD_PATH + 'images',
+		bootstrap: BUILD_PATH + 'css/bootstrap',
+		fontawesome: BUILD_PATH + 'css/font-awesome/css',
+		fontawesome_fonts: BUILD_PATH + 'css/font-awesome/fonts'
 	},
 	src: {
-		js: SRC_PATH + 'js/',
+		js: SRC_PATH + 'js-new/',
 		less: SRC_PATH + 'less/**/*.less',
 		index: SRC_PATH + 'index.html',
 		templates: SRC_PATH + 'templates/**/*.*',
 		fonts: SRC_PATH + 'fonts/*.*',
 		images: SRC_PATH + 'images/*.*',
-		tests: './spec/**/*.es6'
+		tests: './spec/**/*.es6',
+		bootstrap: NODE_MODULES_PATH + '/bootstrap/dist/**/*.*',
+		fontawesome: NODE_MODULES_PATH + '/font-awesome/css/*.*',
+		fontawesome_fonts: NODE_MODULES_PATH + '/font-awesome/fonts/*.*' 
 	}
 };
 
 gulp.task('app', function(){
 	browserify({
-		entries: paths.src.js + 'larch.app.es6',
+		entries: paths.src.js + 'larch.es6',
 		debug: true
 	})
 		.transform(babelify)
@@ -58,6 +65,20 @@ gulp.task('less', function(){
 		.pipe(less())
 		.pipe(concat('larch.css'))
 		.pipe(gulp.dest(paths.build.css)); 
+});
+
+gulp.task('bootstrap', function(){
+	return gulp.src(paths.src.bootstrap)
+		.pipe(gulp.dest(paths.build.bootstrap));
+});
+
+gulp.task('fontawesome', function(){
+	return gulp.src(paths.src.fontawesome)
+		.pipe(gulp.dest(paths.build.fontawesome));
+});
+gulp.task('fontawesome_fonts', function(){
+	return gulp.src(paths.src.fontawesome_fonts)
+		.pipe(gulp.dest(paths.build.fontawesome_fonts));
 });
 
 gulp.task('index', function(){
@@ -114,7 +135,22 @@ gulp.task('webserver', function() {
 	connect.server({
 		root: [__dirname], //https://github.com/AveVlad/gulp-connect/issues/54
 		livereload: true,
-		port: 3333
+		port: 3333,
+		// middleware proxy for development
+		middleware: function(connect, opt) {
+			return [
+				function(req, res, next) {
+					// only in case url is following format: /build/dashboard/1
+					// and not in these cases: /build/index.html#/dashboard/1
+					if (req.url.indexOf('build') > -1 && req.url.indexOf('#') === -1 
+						&& !req.url.match(/\..{2,4}$/g)) {
+						req.url = '/build/index.html';
+					}
+
+					next();
+				}
+			];
+		}
 	});
 });
 
@@ -124,6 +160,6 @@ gulp.task('livereload', function() {
 		.pipe(connect.reload());
 });
 
-gulp.task('production', ['app', 'compress','less', 'index', 'templates', 'assets', 'images']);
-gulp.task('build', ['app', 'test', 'less', 'index', 'templates', 'assets', 'images']);
+gulp.task('production', ['app', 'compress','less', 'index', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
+gulp.task('build', ['app', 'test', 'less', 'index', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
 gulp.task('default', ['build', 'webserver', 'livereload', 'watch'])

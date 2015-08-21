@@ -1,3 +1,19 @@
+# app architecture without angularjs
+
+Viewer
+- components and views dispatch actions
+- register event handlers to re
+
+Dispather
+- register actions and their functors
+	- actions are registered by Models
+
+
+Model
+- emit events 
+
+
+
 # Technical comments
 80% / 20% test coverage
 

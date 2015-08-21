@@ -1,38 +1,37 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:ng="http://angularjs.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <base href="http://localhost:3333/build/">
+
     <title>larch</title>
     <!-- STYLES -->
     <!-- build:css lib/css/main.min.css -->
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="./css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../node_modules/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="./css/larch.css">
     <link rel="stylesheet" type="text/css" href="../node_modules/c3/c3.css" >
     <!-- endbuild -->
     <!-- SCRIPTS -->
 </head>
-<body>
+<body ng-app="larch">
 <!--<div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak> -->
 <div id="page-wrapper" class="open">
     <!--Sidebar -->
-    <div id="sidebar-wrapper" data-view="ui.sidebar">
+    <div id="sidebar-wrapper" ui-view="sidebar">
     </div> 
     <!-- End Sidebar -->
 
     <div id="content-wrapper">
         
             <!-- Header Bar -->
-            <div class="row header" data-view="ui.header"></div>
+            <div class="row header" ui-view="header"></div>
             <!-- End Header Bar -->
             <!-- Main Content -->
-            <div class="row" data-router=""></div>
+            <div class="row" ui-view></div>
+        
         <!-- End Page Content -->
     </div>
-</div>
-<div id="modal-div">
 </div>
 <!-- End Page Wrapper -->
 </body>
