@@ -15,7 +15,7 @@ let Injector = {
 		let injector = Object.create(Injector.prototype);
 
 		// share DI instances accross different instances of Injector
-		// TODO - need to think if this is wise and desired
+		// TODO: need to think if this is wise and desired
 		injector.instances = this.instances;
 
 		return injector;

@@ -8,8 +8,7 @@ import Router from './common/common.router.es6';
 
 let logger;
 
-// TODO - create custom errors objects: https://github.com/angular/angular.js/blob/291d7c467fba51a9cb89cbeee62202d51fe64b09/src/minErr.js
-
+// TODO: create custom errors objects: https://github.com/angular/angular.js/blob/291d7c467fba51a9cb89cbeee62202d51fe64b09/src/minErr.js
 let Larch = {
 	createApp(name = 'larch') {
 		let app = Object.create(Larch.prototype);

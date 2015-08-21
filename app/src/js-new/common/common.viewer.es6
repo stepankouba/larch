@@ -81,7 +81,7 @@ let ViewerFn = function(HTTPer, Logger) {
 		},
 
 		_compileTemplate(view) {
-			// TODO - remove compiling of a template, so that recompile() is invoked on already compiled template (i.e. save time)
+			// TODO: remove compiling of a template, so that recompile() is invoked on already compiled template (i.e. save time)
 			let t = Handlebars.compile(view.template);
 			let html = t(view.scope);
 			
@@ -127,7 +127,7 @@ let ViewerFn = function(HTTPer, Logger) {
 				return Promise.resolve(template);
 			} else {
 				let view = this.views.get(viewId);
-				// TODO this is wrong URL!!!!
+				// TODO: this is wrong URL!!!!
 				let url = window.location.origin + '/build/templates/' + view.templateUrl;
 
 				return HTTPer.get(url)

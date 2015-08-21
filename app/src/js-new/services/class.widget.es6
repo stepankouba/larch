@@ -1,8 +1,8 @@
 import Handlebars from 'handlebars';
 import {copyDefinedProps} from '../lib/lib.assign.es6';
 
-// TODO remove c3 dependency from here, so it is part of widget definition
-// TODO widget should have it's render function
+// TODO: remove c3 dependency from here, so it is part of widget definition
+// TODO: widget should have it's render function
 import c3 from 'c3';
 
 /**
@@ -21,7 +21,7 @@ let WidgetClass = function(FileSrvc, DataSrvc, Logger) {
 
 			w.templateId = ['../larch_modules', w.name , w.templateUrl].join('/');
 
-			// TODO - paths support need to be added
+			// TODO: paths support need to be added
 			// this.loadPaths();
 			
 			return w;
@@ -34,8 +34,8 @@ let WidgetClass = function(FileSrvc, DataSrvc, Logger) {
 			loadPaths() {
 				let p = Object.keys(this.paths);
 
-				// TODO check already loaded files
-				// TODO a cache here
+				// TODO: check already loaded files
+				// TODO: a cache here
 				p.forEach(item => {
 					let path = this.paths[item];
 					let fileref = document.createElement('script');
@@ -52,7 +52,7 @@ let WidgetClass = function(FileSrvc, DataSrvc, Logger) {
 			 * @return {[type]} [description]
 			 */
 			loadTemplate() {
-				// TODO a cache here, if several same widgets are loaded
+				// TODO: a cache here, if several same widgets are loaded
 				if (this.templateUrl) {
 					return FileSrvc.getFile(this.templateId);
 				} else {
@@ -87,7 +87,7 @@ let WidgetClass = function(FileSrvc, DataSrvc, Logger) {
 				this.rootElement = element;
 				
 				// if there is a custom transofrm data function
-				// TODO - make this UDF functionality general
+				// TODO: make this UDF functionality general
 				if (this.udf.transformData) {
 					this.data = this.udf.transformData(this.data);
 				}
