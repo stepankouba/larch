@@ -28,7 +28,7 @@ var paths = {
 		fontawesome_fonts: BUILD_PATH + 'css/font-awesome/fonts'
 	},
 	src: {
-		js: SRC_PATH + 'js-new/',
+		js: SRC_PATH + 'js/',
 		less: SRC_PATH + 'less/**/*.less',
 		index: SRC_PATH + 'index.html',
 		templates: SRC_PATH + 'templates/**/*.*',
