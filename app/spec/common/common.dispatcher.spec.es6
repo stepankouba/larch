@@ -1,4 +1,4 @@
-import Dispatcher from '../../src/js-new/common/common.dispatcher.es6';
+import Dispatcher from '../../src/js/common/common.dispatcher.es6';
 
 const acts = {
 	EDIT_USER: 'editUser',
