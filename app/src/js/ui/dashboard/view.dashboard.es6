@@ -21,7 +21,7 @@ ctrl.$injector = ['model.Widgets', 'model.Dashboards', 'larch.Logger'];
 
 export default {
 	id: 'ui.dashboard',
-	templateUrl: './dash/dashboard.html',
+	templateUrl: './dash/dashboard.hbs',
 	scope: {},
 	controller: ctrl
 };

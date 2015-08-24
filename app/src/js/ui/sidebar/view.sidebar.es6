@@ -37,7 +37,7 @@ ctrl.$injector = ['model.Dashboards', 'larch.Router', 'component.Modal','larch.L
 
 let View = {
 			id: 'ui.sidebar',
-			templateUrl: './ui/sidebar.html',
+			templateUrl: './ui/sidebar.hbs',
 			scope: {},
 			methods: {},
 			controller: ctrl
