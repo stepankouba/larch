@@ -1,11 +1,14 @@
-'use strict';
+import express from 'express';
+import bodyParser from 'body-parser';
+import morgan from 'morgan';
+import { logger } from '../lib/';
 
-let express = require('express');
+//let express = require('express');
 let	server = express();
-let bodyParser = require('body-parser');
+//let bodyParser = require('body-parser');
 let master = require('../master.services.json');
 let router = require('./server/server.router.es6');
-let morgan = require('morgan');
+//let morgan = require('morgan');
 
 // support json encoded params
 server.use( bodyParser.json() );
@@ -17,7 +20,7 @@ server.use((req, res, next) => {
     next();
 });
 
-server.use(morgan('dev'));
+server.use(morgan('dev', {stream: logger.stream}));
 
 // create routes
 router.createRoutes(server);

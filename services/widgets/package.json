@@ -13,5 +13,6 @@
     "express": "^4.12.4",
     "morgan": "^1.5.3",
     "rethinkdbdash": "^2.0.10"
-  }
+  },
+  "devDependencies": {}
 }

@@ -2,13 +2,13 @@
  * @file Server routes definition
  * @author Stepan Kouba <stepan.kouba.work@gmail.com>
  */
-'use strict';
+
+import api from './server.api.es6';
 
 let lib = require('../../lib/lib.server.es6');
-let conf = require('../local.json');
-let api = require('./server.api.es6');
+let conf = require('../local.json'); 
 
-module.exports = {
+export default {
 
 	/**
 	 * [createRoutes description]

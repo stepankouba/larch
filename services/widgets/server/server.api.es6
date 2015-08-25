@@ -1,5 +1,3 @@
-'use strict';
-
 let r = require('rethinkdbdash')();
 let conf = require('../local.json');
 let lib = require('../../lib/lib.server.es6');
@@ -42,4 +40,4 @@ let service = {
 
 };
 
-module.exports = service;
+export default service;
