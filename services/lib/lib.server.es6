@@ -1,12 +1,10 @@
-'use strict';
-
 /**
  * @fileOverview 
  * @author 
  * @license [url] [description]
  */
 
-module.exports = {
+export default {
 	/**
 	 * [createRoutes description]
 	 * @param  {[type]} app    [description]
