@@ -6,13 +6,13 @@
 import winston from 'winston';
 import RethinkLogger from './lib.rethinklogger.es6';
 
-let conf = require('./local.json');
+const conf = require('./local.json');
 
 // by default winston throw errors
 winston.emitErrs = true;
 
 // create new logger for RethinkDB and console
-let logger = new winston.Logger({
+const logger = new winston.Logger({
 	transports: [
 		new RethinkLogger({
 			db: conf.db.database,
@@ -32,9 +32,14 @@ let logger = new winston.Logger({
 
 // add stream support for morgan
 logger.stream = {
-	write: function(message, encoding) {
+	/**
+	 * write method for morgan use
+	 * @param  {string} message  text
+	 * @param  {string} encoding encoding
+	 */
+	write(message, encoding) {
 		logger.info(message);
 	}
-}
+};
 
 export default logger;
