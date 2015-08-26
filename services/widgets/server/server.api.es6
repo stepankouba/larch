@@ -1,13 +1,14 @@
-let r = require('rethinkdbdash')();
-let conf = require('../local.json');
-let lib = require('../../lib/lib.server.es6');
+import RethinkDb from 'rethinkdbdash';
 
-let service = {
-	getAll: function(req, res, next) {
-		let userId = parseInt(req.params.userId);
+const r = RethinkDb();
+const conf = require('../local.json');
+
+const service = {
+	getAll(req, res, next) {
+		const userId = parseInt(req.params.userId, 10);
 
 		if (!userId) {
-			lib.paramErrorHandler(400, res, 'userId not specified');
+			return next(new Error('userId is not specified'));
 		}
 
 		r.db(conf.db.database)
@@ -17,14 +18,13 @@ let service = {
 			.then(result => {
 				res.send(result);
 			})
-			.error(lib.rethinkErrorHandler(500, res));
+			.error(err => next(err));
 	},
-
-	getById: function(req, res, next) {
-		let widgetId = parseInt(req.params.widgetId);
+	getById(req, res, next) {
+		const widgetId = parseInt(req.params.widgetId, 10);
 
 		if (!widgetId) {
-			lib.paramErrorHandler(400,res, 'widgetId not specified');
+			return next(new Error('widgetId not specified'));
 		}
 
 		r.db(conf.db.database)
@@ -34,10 +34,8 @@ let service = {
 			.then(result => {
 				res.send(result);
 			})
-			.error(lib.rethinkErrorHandler(500, res));
-	},
-
-
+			.error(err => next(err));
+	}
 };
 
 export default service;

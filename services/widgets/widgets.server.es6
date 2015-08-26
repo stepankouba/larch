@@ -1,31 +1,10 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import morgan from 'morgan';
-import { logger } from '../lib/';
+import { Service } from '../lib/';
+import routes from './server/server.router.es6';
 
-//let express = require('express');
-let	server = express();
-//let bodyParser = require('body-parser');
-let master = require('../master.services.json');
-let router = require('./server/server.router.es6');
-//let morgan = require('morgan');
+const service = Service.create('widgets');
 
-// support json encoded params
-server.use( bodyParser.json() );
+service.init();
 
-server.use((req, res, next) => {
-	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3333');
-	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
-	res.setHeader('Access-Control-Allow-Credentials', 'true');
-    next();
-});
+service.defineRoutes(routes);
 
-server.use(morgan('dev', {stream: logger.stream}));
-
-// create routes
-router.createRoutes(server);
-
-// based on master definition
-server.listen(master.services.widgets.port);
-
-console.log('widgets.server.es6: server started...');
+service.run();
