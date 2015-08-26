@@ -11,23 +11,22 @@ let r;
 /**
  * RethinkLogger constructor used for Winston logger
  * DB and Collection have to exists already!!!!
- * 
+ *
  * @param {Object} options with following items
  * @param {string} options.host host specification
  * @param {number} options.port port specification
  * @param {string} [options.name='rethinkdb'] name of the logger
- * @param {string} [options.level] winston logger level 
+ * @param {string} [options.level] winston logger level
  * @param {string} [options.collection] db collection to write in
  */
-let RethinkLogger = function(options = {}) {
+const RethinkLogger = function(options = {}) {
 	this.options = Object.assign({}, options);
 
 	this.name = this.options.name || 'rethinkdb';
 	this.level = this.options.level || 'info';
 
 	// create connection to db
-	//r = RethinkDb({host: this.options.host, port: this.options.port});
-	r = RethinkDb();
+	r = RethinkDb({host: this.options.host, port: this.options.port});
 };
 Object.setPrototypeOf(RethinkLogger, winston.Transport);
 
@@ -42,16 +41,14 @@ RethinkLogger.prototype.log = function(level, msg, meta, callback) {
 	// store in db
 	r.db('larch_log').table('log')
 		.insert({
-			level: level,
+			level,
 			message: msg,
 			timestamp: new Date(),
 			metadata: meta
 		}).run()
-		.then(function() {
-			callback(null, true);
-		})
+		.then(() => callback(null, true))
 		.error(err => console.log(err));
 };
-//winston.transports.RethinkLogger = RethinkLogger;
+// winston.transports.RethinkLogger = RethinkLogger;
 
 export default RethinkLogger;
