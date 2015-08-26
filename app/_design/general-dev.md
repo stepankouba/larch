@@ -1,7 +1,8 @@
-# tools to be used
+# tools to be used within Sublime
 docblock - https://github.com/spadgos/sublime-jsdocs/
 todoreview - https://packagecontrol.io/packages/TodoReview
 handlebars - snytax highlighter for handlebars - https://packagecontrol.io/packages/Handlebars
+fold comments - https://packagecontrol.io/packages/Fold%20Comments
 
 ## global tools
 eslint - http://eslint.org
