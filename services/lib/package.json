@@ -9,8 +9,11 @@
   "author": "Stepan Kouba",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.13.3",
+    "express": "^4.13.3",
     "express-jwt": "^3.0.1",
-    "jsonwebtoken": "^5.0.4",
+    "jsonwebtoken": "^5.0.5",
+    "morgan": "^1.6.1",
     "rethinkdbdash": "^2.1.6",
     "winston": "^1.0.1"
   },
