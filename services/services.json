@@ -1,19 +1,6 @@
 {
     "apps" : [
         {
-            "name"              : "larch.services.log",
-            "script"            : "log.server.es6",
-            "args"              : [""],
-            "watch"             : true,
-            "merge_logs"        : false,
-            "cwd"               : "./log/",
-            "exec_interpreter"  : "babel-node",
-            // "env": {
-            //     "NODE_ENV": "production",
-            //     "AWESOME_SERVICE_API_TOKEN": "xxx"
-            // }
-        },
-        {
             "name"              : "larch.services.redmine",
             "script"            : "redmine.server.es6",
             "args"              : [""],

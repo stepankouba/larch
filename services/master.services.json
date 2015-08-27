@@ -1,9 +1,6 @@
 {
 	"url": "localhost",
 	"services": {
-		"log": {
-			"port": 9001
-		},
 		"user": {
 			"port": 9002
 		},
