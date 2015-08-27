@@ -2,7 +2,8 @@
 	"env": {
 		"browser": 0,
 		"es6": 1,
-		"node": 1
+		"node": 1,
+        "jasmine": 1
 	},	
 	"ecmaFeatures": {
         "modules": true,
