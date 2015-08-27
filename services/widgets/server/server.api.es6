@@ -4,33 +4,35 @@ const r = RethinkDb();
 const conf = require('../local.json');
 
 const service = {
-	getAll(req, res, next) {
-		const userId = parseInt(req.params.userId, 10);
-
-		if (!userId) {
-			return next(new Error('userId is not specified'));
+	getById(req, res, next) {
+		if (!req.params.id) {
+			return next(new Error('getById: id not specified'));
 		}
+
+		const ids = req.params.id.indexOf(',') > -1 ? req.params.id.split(',') : [req.params.id];
 
 		r.db(conf.db.database)
 			.table('widgets')
-			.filter({owner: userId})
+			.getAll(...ids)
 			.run()
 			.then(result => {
 				res.send(result);
 			})
 			.error(err => next(err));
 	},
-	getById(req, res, next) {
-		const widgetId = parseInt(req.params.widgetId, 10);
-
-		if (!widgetId) {
-			return next(new Error('widgetId not specified'));
+	getByText(req, res, next) {
+		if (!req.query.phrase) {
+			return next(new Error('getByText: phrase not specified'));
 		}
+
+		const phrase = `(?i)(\b)?${req.query.phrase}(\b)?`;
 
 		r.db(conf.db.database)
 			.table('widgets')
-			.get(widgetId)
-			.run()
+			.filter(w => {
+				return w('name').match(phrase) || w('title').match(phrase) || w('source')('name').match(phrase) ||
+					w('desc').match(phrase);
+			})
 			.then(result => {
 				res.send(result);
 			})

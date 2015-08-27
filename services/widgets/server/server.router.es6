@@ -6,15 +6,15 @@ import api from './server.api.es6';
 
 export default [
 	{
-		path: '/widgets/all/:userId',
-		httpMethod: 'GET',
-		requiresAuth: false,
-		middleware: [api.getAll]
-	},
-	{
-		path: '/widgets/:widgetId',
+		path: '/widget/:id',
 		httpMethod: 'GET',
 		requiresAuth: false,
 		middleware: [api.getById]
+	},
+	{
+		path: '/widgets',
+		httpMethod: 'GET',
+		requiresAuth: false,
+		middleware: [api.getByText]
 	}
 ];
