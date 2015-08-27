@@ -59,6 +59,7 @@ const Service = {
 			this.server.use(bodyParser.json());
 
 			this.server.use((req, res, next) => {
+				// TODO: this Allow Origin has to be set correctly
 				res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3333');
 				res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
 				res.setHeader('Access-Control-Allow-Credentials', 'true');
