@@ -66,6 +66,8 @@ method: GET
 route: /widget/:id
 method: GET
 
+- may be 1 id or list of id's separated by comma
+
 ## get widget assets
 route: /widget/:id/asset/:name
 method: GET
