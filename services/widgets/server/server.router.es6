@@ -12,6 +12,12 @@ export default [
 		middleware: [api.getById]
 	},
 	{
+		path: '/widget/:name/:version/asset/:asset',
+		httpMethod: 'GET',
+		requiresAuth: false,
+		middleware: [api.getAssetsById]
+	},
+	{
 		path: '/widgets',
 		httpMethod: 'GET',
 		requiresAuth: false,

@@ -61,4 +61,18 @@ describe('Widgets service API tests', () => {
 		});
 	});
 
+	describe('get asseet by name, version and asset name', () => {
+		beforeEach(done => {
+			r = Request.create('GET', '/widget/test/1.0/asset/test.html', conf);
+
+			r.request(done, {json: false});
+		});
+
+		it('should get error from /widget/test/1.0/asset/test.html', () => {
+			expect(r.error).toBeUndefined();
+			expect(r.data).not.toBeUndefined();
+			expect(r.data.startsWith('<!DOCTYPE html>')).toBeTruthy();
+		});
+	});
+
 });
