@@ -17,12 +17,12 @@ const Request = {
 				method: type
 			};
 		},
-		request(done) {
+		request(done, conf = {json: true}) {
 			const request = http.request(this.options, res => {
 				res.setEncoding('utf8');
 				res.on('data', data => {
 					if (res.statusCode === 200) {
-						this.data = JSON.parse(data);
+						this.data = conf.json ? JSON.parse(data) : data;
 					} else {
 						this.error = {code: res.statusCode, data};
 					}
