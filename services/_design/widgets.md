@@ -44,12 +44,11 @@ method: POST
 
 - can be done only via CLI application
 - user has to be authenticated and must be one of the authors of the widget
-- application has to be authenticated as well
 - get JSON and tar.gz from request
 - process it (TODO: need to be specified, what exactly does this mean)
 	- if widget already exists, adds new version
 	- store assets on file system in directory
-		- larch_modules
+		- registry
 			- widget name
 				- versions 
 - store in DB
@@ -69,5 +68,5 @@ method: GET
 - may be 1 id or list of id's separated by comma
 
 ## get widget assets
-route: /widget/:id/asset/:name
+route: /widget/:name/:version/asset/:asset
 method: GET
