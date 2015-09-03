@@ -5,10 +5,11 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
-import logger from './lib.logger.es6';
+import Logger from './lib.logger.es6';
 import Auth from './lib.service.auth.es6';
+import Conf from './lib.service.conf.es6';
 
-const conf = require('../master.services.json');
+let logger;
 
 /**
  * Service object
@@ -17,6 +18,7 @@ const conf = require('../master.services.json');
  * @namespace
  */
 const Service = {
+	instance: {},
 	/**
 	 * create a new service object
 	 * @param  {string} name name of the service
@@ -33,18 +35,17 @@ const Service = {
 		service.name = name;
 
 		/**
-		 * Full name 
+		 * Full name
 		 * @type {string}
 		 * @name Sevice.fullname
 		 */
 		service.fullname = `${service.name}.service`;
 
-		/**
-		 * configuration object taken from master.services.json
-		 * @type {string}
-		 * @name Service.conf
-		 */
-		service.conf = conf.services[name] || {port: 9999};
+		// create logger
+		logger = Logger.create(service.fullname);
+
+		// initiate instance
+		Service.instance = service;
 
 		return service;
 	},
@@ -52,8 +53,15 @@ const Service = {
 		/**
 		 * init server with all the middlewares, error handling and logging
 		 */
-		init() {
+		init(conf) {
 			this.server = express();
+
+			/**
+			 * configuration object taken from master.services.json
+			 * @type {Object}
+			 * @name Service.conf
+			 */
+			this.conf = Conf.setConfiguration(conf);
 
 			// receive JSON objects from body of requests
 			this.server.use(bodyParser.json());
@@ -69,15 +77,19 @@ const Service = {
 			// logging of incomming requests
 			this.server.use(morgan('dev', {stream: logger.stream}));
 
-			this.server.use(this._errorHandler);
+			this.server.use(this._errorHandler());
+
+			// allow using logger within services
+			this.server.logger = logger;
 		},
 		/**
 		 * start a service
 		 * Just starts an express server on particular port
 		 */
 		run() {
+			logger.info('port is: ', this.conf.port);
 			this.server.listen(this.conf.port);
-			logger.info(this.fullname, ': service started');
+			logger.info('service started', Date.now());
 		},
 		/**
 		 * define routes before the service is started
@@ -113,23 +125,19 @@ const Service = {
 		},
 		/**
 		 * internal service error handler for the APIs
-		 *
-		 * @param  {err}   err  error if defined
-		 * @param  {Object}   req  request object
-		 * @param  {Object}   res  response object
-		 * @param  {Function} next next function
+		 * @return {Function} middleware
 		 */
-		_errorHandler(err, req, res, next) {
-			const error = {error: 'error occured'};
+		_errorHandler() {
+			return (err, req, res, next) => {
+				// if development env, add the whole stack
+				if (this.env === 'development') {
+					err.fullError = err;
+				}
 
-			logger.error(this.fullname, ': ', err);
+				logger.error('error occured', err);
 
-			// if development env, add the whole stack
-			if (process.env.NODE_ENV === 'development') {
-				error.fullError = err;
-			}
-
-			res.status(500).json(error);
+				res.status(500).json(err);
+			};
 		}
 	}
 };
