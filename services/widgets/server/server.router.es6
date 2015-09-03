@@ -11,6 +11,12 @@ export default [
 		requiresAuth: false,
 		middleware: [api.getById]
 	},
+	// {
+	// 	path: '/widget',
+	// 	httpMethod: 'POST',
+	// 	requiresAuth: false,
+	// 	middleware: [api.postWidgetUpload().single('widget'),api.postWidget()]
+	// },
 	{
 		path: '/widget/:name/:version/asset/:asset',
 		httpMethod: 'GET',

@@ -1,11 +1,11 @@
 import { Request } from '../../lib.test/';
 
-const conf = require('../../master.services.json');
+const conf = require('../local.json').environments.test;
 
-describe('Widgets service API tests', () => {
+describe('(api) Widgets service tests', () => {
 	let r;
 
-	describe('get widget by single id', () => {
+	fdescribe('get widget by single id', () => {
 		beforeEach(done => {
 			r = Request.create('GET', '/widget/1', conf);
 
@@ -74,5 +74,17 @@ describe('Widgets service API tests', () => {
 			expect(r.data.startsWith('<!DOCTYPE html>')).toBeTruthy();
 		});
 	});
+
+	// describe('post assets and JSON to /widget', () => {
+	// 	beforeEach(done => {
+	// 		r = Request.create('POST', '/widget', conf);
+
+	// 		r.requestMultipart(done, {data: {test: 'value', say: 'fuck you'}}, {json: false});
+	// 	});
+
+	// 	it('should post a JSON file to /widget', () => {
+	// 		expect(r.error).toBeUndefined();
+	// 	});
+	// });
 
 });

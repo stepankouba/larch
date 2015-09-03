@@ -1,0 +1,72 @@
+[
+	{
+		"name": "redmine-issues-log",
+		"title": "Redmine issue log",
+		"shared": "shared",
+		"versions": [
+			{
+				"version": "1.0.0",
+				"desc": "This is description is just testing and may including also some <strong>formating</strong>",
+				"assets": {
+					"template": "index.html",
+					"js": "index.js",
+					"readme": "readme.md",
+					"screenshots": ["one.jpg", "two.jpg"]
+				},
+				"source": {
+					"name": "redmine",
+					"version": "=2.0",
+					"authorization": "token",
+					"url": "https://git.simplity.eu"
+				},
+				"config": {
+					"paths": ["c3js", "jquery"],
+					"modal": {
+						"size": "large"
+					},
+					"display": [{"width": 3, "height": 1 }, {"width": 1, "height": 3}],
+					"params": {
+						"month": "number",
+						"user": "text"
+					}
+				}
+			}
+		],
+		"auhtors": ["koubas"],
+		"tags": ["redmine", "testing"]
+	},
+	{
+		"name": "gitlab-commits",
+		"title": "Gitlab commits overview",
+		"shared": "private",
+		"versions": [
+			{
+				"version": "1.0.0",
+				"desc": "This is description is just testing and may including also some <strong>formating</strong>",
+				"assets": {
+					"template": "index.html",
+					"js": "index.js",
+					"readme": "readme.md"
+				},
+				"source": {
+					"name": "gitlab",
+					"version": "1.0",
+					"authorization": "token",
+					"url": "https://git.simplity.eu"
+				},
+				"config": {
+					"paths": [],
+					"modal": {
+						"size": "medium"
+					},
+					"display": [{"width": 3, "height": 1 }, {"width": 1, "height": 3}],
+					"params": {
+						"project": "text"
+					}
+				}
+			}
+		],
+		"auhtors": ["koubas"],
+		"tags": ["redmine", "testing"]
+	}
+]
