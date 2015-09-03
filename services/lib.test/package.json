@@ -1,0 +1,14 @@
+{
+  "name": "lib.test",
+  "version": "0.1.0",
+  "description": "library for testing services",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stepan Kouba",
+  "license": "MIT",
+  "dependencies": {
+    "restler": "^3.3.0"
+  }
+}
