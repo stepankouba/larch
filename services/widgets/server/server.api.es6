@@ -95,7 +95,7 @@ const api = {
 	/**
 	 * post widget function inserted from api.post.es6
 	 */
-	// postWidget: Registry.postWidget,
+	postWidget: Registry.postWidget,
 	/**
 	 * create multer middleware for file uploads
 	 * @return {Function} multer middleware

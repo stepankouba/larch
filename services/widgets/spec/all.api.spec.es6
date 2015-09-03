@@ -1,11 +1,12 @@
 import { Request } from '../../lib.test/';
+import path from 'path';
 
 const conf = require('../local.json').environments.test;
 
 describe('(api) Widgets service tests', () => {
 	let r;
 
-	fdescribe('get widget by single id', () => {
+	describe('get widget by single id', () => {
 		beforeEach(done => {
 			r = Request.create('GET', '/widget/1', conf);
 
@@ -75,16 +76,16 @@ describe('(api) Widgets service tests', () => {
 		});
 	});
 
-	// describe('post assets and JSON to /widget', () => {
-	// 	beforeEach(done => {
-	// 		r = Request.create('POST', '/widget', conf);
+	describe('post assets and JSON to /widget', () => {
+		beforeEach(done => {
+			r = Request.create('POST', '/widget', conf);
 
-	// 		r.requestMultipart(done, {data: {test: 'value', say: 'fuck you'}}, {json: false});
-	// 	});
+			r.requestMultipart(done, {data: {test: 'value', say: 'fuck you'}}, path.resolve(__dirname, './data/test.tar.gz'));
+		});
 
-	// 	it('should post a JSON file to /widget', () => {
-	// 		expect(r.error).toBeUndefined();
-	// 	});
-	// });
+		it('should post a JSON file to /widget', () => {
+			expect(r.error).toBeUndefined();
+		});
+	});
 
 });
