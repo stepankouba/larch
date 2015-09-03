@@ -12,6 +12,7 @@ Configuration file is used to setup
 	}
 
 ## commands
+- login - creates a token for user
 - init - creates a sample larch configuration file
 - create widget - creates a larch.package.json based on the set of questions, creates index.html and index.widget.js
 - publish widget - sends a widget, if existing, new version is created
@@ -21,6 +22,11 @@ Configuration file is used to setup
 - test source - test connecting to a site with required inputs
 
 In general CLI has to authenticate as well in a 
+
+## testing correct widget structure
+this method will be used by publish and test commands
+
+will use semver for checking proper versioning
 
 ## publish a widget from CLI
 

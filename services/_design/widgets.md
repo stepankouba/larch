@@ -1,3 +1,6 @@
+# General definition
+Widget holds a detailed info about widget - template. Particular settings for particular user are stored in dashbord, where each widget has it's user defined settings
+
 # Use cases
 - Find a widget by name, description
 - create a new widget from CLI
@@ -37,13 +40,14 @@
 	}
 
 # methods
+- user has to be authenticated and must be one of the authors of the widget
 
 ## create a widget
-route: /widgets/
+route: /widget/
 method: POST
 
+- Widget JSON definition is in body in {data: {...}}
 - can be done only via CLI application
-- user has to be authenticated and must be one of the authors of the widget
 - get JSON and tar.gz from request
 - process it (TODO: need to be specified, what exactly does this mean)
 	- if widget already exists, adds new version
