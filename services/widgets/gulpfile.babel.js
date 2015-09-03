@@ -1,7 +1,7 @@
 import gulp from 'gulp';
 import cp from 'child_process';
 import RethinkDB from 'rethinkdbdash';
-import Jasmine from 'jasmine';
+import jasmine from 'gulp-jasmine';
 import SpecReporter from 'jasmine-spec-reporter';
 import pm2 from 'pm2';
 
@@ -9,8 +9,11 @@ const exec = cp.exec;
 const r = RethinkDB();
 
 const PATHS = {
-	src: ['./widgets.server.es6', './server/*.es6'],
-	dist: './dist',
+	src: ['./*.server.es6', './server/*.es6', '../lib/**/*.es6'],
+	tests: {
+		unit: './spec/**/*.unit.spec.es6',
+		api: './spec/**/*.api.spec.es6',
+	},
 	jasmine: {
 		apiConfig: './spec/support/jasmine.api.json',
 		unitConfig: './spec/support/jasmine.unit.json',
@@ -32,30 +35,27 @@ gulp.task('setup-db', cb => {
 });
 
 gulp.task('test-unit', ['setup-db'], cb => {
-	const jasmine = new Jasmine();
-	jasmine.loadConfigFile(PATHS.jasmine.unitConfig);
-	jasmine.configureDefaultReporter({print: () => undefined});
-	jasmine.addReporter(new SpecReporter());
-
-	jasmine.onComplete(r => {
-		return cb();
-	});
-
-	jasmine.execute();
-
+	return gulp.src(PATHS.tests.unit)
+		.pipe(jasmine({
+			reporter: new SpecReporter()
+		}))
+		.on('error', function(err) {
+			// Make sure failed tests cause gulp to exit non-zero
+			console.log(err);
+			this.emit('end'); // instead of erroring the stream, end it
+		});
 });
 
 gulp.task('test-api', ['pm2'], cb => {
-	const jasmine = new Jasmine();
-	jasmine.loadConfigFile(PATHS.jasmine.apiConfig);
-	jasmine.configureDefaultReporter({print: () => undefined});
-	jasmine.addReporter(new SpecReporter());
-
-	jasmine.onComplete(r => {
-		return cb();
-	});
-
-	jasmine.execute();
+	return gulp.src(PATHS.tests.api)
+		.pipe(jasmine({
+			reporter: new SpecReporter()
+		}))
+		.on('error', function(err) {
+			// Make sure failed tests cause gulp to exit non-zero
+			console.log(err);
+			this.emit('end'); // instead of erroring the stream, end it
+		});
 
 });
 
@@ -102,11 +102,9 @@ gulp.task('pm2', ['test-unit'], cb => {
 	});
 });
 
-gulp.task('default', ['setup-db', 'test-unit', 'pm2', 'test-api','clean-db'], cb => {
-	cb();
-	process.exit();	
+gulp.task('watch', () => {
+	gulp.watch([PATHS.src, PATHS.tests.unit, PATHS.tests.api],
+		['setup-db', 'test-unit', 'pm2', 'test-api','clean-db']);
 });
 
-// watch 
-
-// default - create new db, unit tests, restart pm2, api tests, cleandb, watch
+gulp.task('default', ['setup-db', 'test-unit', 'pm2', 'test-api','clean-db', 'watch']);

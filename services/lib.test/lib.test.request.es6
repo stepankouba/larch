@@ -54,14 +54,14 @@ const Request = {
 
 			request.end();
 		},
-		requestMultipart(done, body, files) {
+		requestMultipart(done, body, file) {
 			const o = this.conf;
 
 			rest.post(`${o.protocol}//${o.hostname}:${o.port}${o.path}`, {
 				multipart: true,
 				data: {
 					'data': JSON.stringify(body),
-					'widget': rest.file('test.tar.gz', 'binary', 3034)
+					'widget': rest.file(file, 'binary', 3034)
 				}
 			}).on('complete', (result, res) => {
 				if (result instanceof Error) {

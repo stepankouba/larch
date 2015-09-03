@@ -22,6 +22,7 @@
     "babel-core": "^5.8.23",
     "gulp": "^3.9.0",
     "gulp-exec": "^2.1.1",
+    "gulp-jasmine": "^2.0.1",
     "jasmine": "^2.3.2",
     "jasmine-spec-reporter": "^2.4.0"
   }
