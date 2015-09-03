@@ -1,6 +1,29 @@
 {
 	"version": "0.1",
-	"db": {
-        "database": "larch_widgets"
+	"environments": {
+		"production": {
+			"protocol": "http:",
+			"url": "localhost",
+			"port": 9005,
+			"db": {
+			    "database": "larch_widgets"
+			}
+		},
+		"development": {
+			"protocol": "http:",
+			"url": "localhost",
+			"port": 9105,
+			"db": {
+			    "database": "larch_widgets"
+			}
+		},
+		"test": {
+			"protocol": "http:",
+			"url": "localhost",
+			"port": 9205,
+			"db": {
+			    "database": "larch_widgets"
+			}
+		}
 	}
 }
