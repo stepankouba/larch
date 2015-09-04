@@ -45,7 +45,7 @@ const Registry = {
 				}
 
 				this.newHasToBeInserted = false;
-				this.currentId = result[0].id;
+				this.currentWidget = result[0];
 
 				// if widget exists in db, compare versions, if greater in JSON proceed, if not exit
 				if (semver.gt(this.json.versions.version, result[0].versions[0].version)) {
@@ -114,20 +114,30 @@ const Registry = {
 			const conf = Service.instance.conf;
 
 			return new Promise((resolve, reject) => {
+				let widget;
+
 				if (this.newHasToBeInserted) {
-					r.db(conf.db.database)
-						.table('widgets')
-						.insert(this.json)
-						.then(result => resolve(result))
-						.error(err => reject(err));
+					// this replaces versions key from send json with array
+					// which is then used
+					widget = this.json;
+					widget.versions = [this.json.versions];
 				} else {
-					// r.db(conf.db.database)
-					// 	.table('widgets')
-					// 	.get(this.currentId)
-					// 	.update({versions: r.row('versions').prepend(this.json)})
-					// 	.then(result => resolve(result))
-					// 	.error(err => reject(err));
+					// update onyl selected attributes
+					widget = this.currentWidget;
+					widget.title = this.json.title;
+					widget.shared = this.json.shared;
+					widget.authors = this.json.authors;
+					widget.tags = this.json.tags;
+
+					// add the newest version at the begenning of the versions array
+					widget.versions.unshift(this.json.versions);
 				}
+
+				r.db(conf.db.database)
+					.table('widgets')
+					.insert(widget, {conflict: 'replace'})
+					.then(result => resolve(result))
+					.error(err => reject(err));
 			});
 		}
 

@@ -1,0 +1,30 @@
+{
+	"name": "twitter-overview",
+	"title": "Twitter overview of the tweets",
+	"shared": "public",
+	"versions": {
+		"version": "1.5.0",
+		"desc": "This is description is just testing and may including also some <strong>formating</strong>",
+		"assets": {
+			"template": "index.html",
+			"js": "index.js",
+			"readme": "readme.md"
+		},
+		"source": {
+			"name": "twitter",
+			"version": "^1.0",
+			"authorization": "token",
+			"url": "https://www.twitter.com"
+		},
+		"config": {
+			"paths": [],
+			"modal": {
+				"size": "medium"
+			},
+			"display": [{"width": 3, "height": 1 }, {"width": 1, "height": 3}],
+			"params": {}
+		}
+	},		
+	"auhtors": ["koubas"],
+	"tags": ["twitter", "testing"]
+}

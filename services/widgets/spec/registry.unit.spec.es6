@@ -1,8 +1,10 @@
 import fs from 'fs';
 import Registry from '../server/server.registry.es6';
 import { Service } from '../../lib/';
+import RethinkDB from 'rethinkdbdash';
 
 const conf = require('../local.json').environments.test;
+const r = RethinkDB();
 
 describe('(unit) Registry tests', () => {
 	beforeEach(() => {
@@ -103,6 +105,56 @@ describe('(unit) Registry tests', () => {
 			})
 			.catch(err => {
 				expect(err).toBeFalsy();
+				done();
+			});
+	});
+
+	it('should save a JSON to registry', done => {
+		Registry.json = require('./data/widget-save.json');
+		Registry.newHasToBeInserted = true;
+
+		const fn = Registry._saveToRegistry();
+
+		fn()
+			.then(result => {
+				r.db(conf.db.database)
+					.table('widgets')
+					.filter({name: Registry.json.name})
+					.then(res => {
+						expect(res[0].name).toBe(Registry.json.name);
+						done();
+					})
+					.catch(err => {
+						expect(err).toBeUndefined();
+						done();
+					});
+			});
+	});
+
+	it('should update the JSON in registry', done => {
+		Registry.currentWidget = require('./data/widgets.json')[0];
+		Registry.json = require('./data/widget-save.json');
+		Registry.newHasToBeInserted = false;
+
+		const fn = Registry._saveToRegistry();
+
+		fn()
+			.then(result => {
+				r.db(conf.db.database)
+					.table('widgets')
+					.get(Registry.currentWidget.id)
+					.then(res => {
+						expect(res.versions.length).toBe(2);
+						expect(res.versions[0].version).toBe(Registry.json.versions.version);
+						done();
+					})
+					.catch(err => {
+						expect(err).toBeUndefined();
+						done();
+					});
+			})
+			.catch(err => {
+				expect(err).toBeUndefined();
 				done();
 			});
 	});

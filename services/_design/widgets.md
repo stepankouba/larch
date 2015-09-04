@@ -13,30 +13,32 @@ Widget holds a detailed info about widget - template. Particular settings for pa
 	{
 		id: UNIQUE string created by DB,
 		name: UNIQUE string,
-		version: Version identification,
-		auhtors: Array of username that correspond to user registry,
-		desc: longer text description with MD highlighting,
-		source: Name of the Source system used, including the way of auth {
-			name: String,
-			url: if not default,
-			auth: one of available auth methods
-		},
-		assets: {
-			template: 'index.html',
-			js: 'index.js'
-		},
-		tags: Array of tags,
 		title: String defining title,
-		config: {
-			paths: Array of used libraries. Available are jQuery, c3js
-			modal: {
-				size: ['small', 'medium', 'large']
+		versions: {
+			version: Version identification,
+			desc: longer text description with MD highlighting,
+			source: Name of the Source system used, including the way of auth {
+				name: String,
+				url: if not default,
+				auth: one of available auth methods
 			},
-			display: Array of objects: [{
-				width, height
-				}],
-			params: {}
+			assets: {
+				template: 'index.html',
+				js: 'index.js'
+			},
+			config: {
+				paths: Array of used libraries. Available are jQuery, c3js
+				modal: {
+					size: ['small', 'medium', 'large']
+				},
+				display: Array of objects: [{
+					width, height
+					}],
+				params: {}
+			}
 		}
+		tags: Array of tags,
+		auhtors: Array of username that correspond to user registry,
 	}
 
 # methods
