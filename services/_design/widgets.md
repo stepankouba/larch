@@ -24,7 +24,9 @@ Widget holds a detailed info about widget - template. Particular settings for pa
 			},
 			assets: {
 				template: 'index.html',
-				js: 'index.js'
+				js: 'index.js',
+				readme: 'readme.md'
+				screenshots: [...]
 			},
 			config: {
 				paths: Array of used libraries. Available are jQuery, c3js
