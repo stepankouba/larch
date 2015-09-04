@@ -22,7 +22,7 @@
 			"url": "localhost",
 			"port": 9205,
 			"db": {
-			    "database": "larch_widgets"
+			    "database": "larch_widgets_test"
 			}
 		}
 	}
