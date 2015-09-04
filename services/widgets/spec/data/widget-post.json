@@ -1,0 +1,32 @@
+{
+	"name": "github-history-pr",
+	"title": "Github history prs",
+	"shared": "public",
+	"versions": {
+		"version": "1.0.0",
+		"desc": "This is description is just testing and may including also some <strong>formating</strong>",
+		"assets": {
+			"template": "index.html",
+			"js": "index.js",
+			"readme": "readme.md"
+		},
+		"source": {
+			"name": "github",
+			"version": "1.0",
+			"authorization": "token",
+			"url": "https://git.simplity.eu"
+		},
+		"config": {
+			"paths": [],
+			"modal": {
+				"size": "medium"
+			},
+			"display": [{"width": 3, "height": 1 }, {"width": 1, "height": 3}],
+			"params": {
+				"project": "text"
+			}
+		}
+	},		
+	"auhtors": ["koubas"],
+	"tags": ["github", "testing"]
+}

@@ -10,10 +10,10 @@ describe('(unit) Registry tests', () => {
 	});
 
 	it('should request DB by _requestDB with 1 result', done => {
-		Registry._requestDB('Gitlab merge requests')
+		Registry._requestDB('redmine-issues-log')
 			.then(result => {
 				expect(result.length).toBe(1);
-				expect(result[0].name).toBe('Gitlab merge requests');
+				expect(result[0].title).toBe('Redmine issue log');
 				done();
 			});
 	});
@@ -26,30 +26,37 @@ describe('(unit) Registry tests', () => {
 			});
 	});
 
-	it('should check if _isWidgetInRegistry is working with proper results', done => {
+	it('should check if _isWidgetInRegistry to return true', done => {
 		Registry.json = {
-			name: 'Gitlab merge requests',
-			version: '1.5.0'
+			name: 'gitlab-commits',
+			versions: {version: '1.5.0'}
 		};
 
-		Registry._isWidgetInRegistry([{
-			name: 'Gitlab merge requests',
-			versions: ['1.0.0', '0.6.0']
+		const fn = Registry._isWidgetInRegistry();
+		fn([{
+			name: 'gitlab-commits',
+			versions: [{version: '1.0.0'}, {version: '0.6.0'}]
 		}]).then(isInDB => {
+			expect(Registry.newHasToBeInserted).toBeFalsy();
 			expect(isInDB).toBeTruthy();
+			done();
+		}).catch(err => {
+			console.log(err);
+			expect(err instanceof Error).toBeFalsy();
 			done();
 		});
 	});
 
-	it('should check if _isWidgetInRegistry is working with proper results', done => {
+	it('should check if _isWidgetInRegistry to throw error', done => {
 		Registry.json = {
-			name: 'Gitlab merge requests',
-			version: '1.0.0'
+			name: 'gitlab-commits',
+			versions: {version: '1.0.0'}
 		};
 
-		Registry._isWidgetInRegistry([{
-			name: 'Gitlab merge requests',
-			versions: ['1.0.0', '0.6.0']
+		const fn = Registry._isWidgetInRegistry();
+		fn([{
+			name: 'gitlab-commits',
+			versions: [{version: '1.0.0'}, {version: '0.6.0'}]
 		}]).then(isInDB => {})
 		.catch(err => {
 			expect(err instanceof Error).toBeTruthy();
@@ -63,7 +70,8 @@ describe('(unit) Registry tests', () => {
 			version: '1.0.0'
 		};
 
-		Registry._createDir(false)
+		const fn = Registry._createDir();
+		fn(false)
 			.then(result => {
 				fs.stat(`${Registry.REGISTRY_PATH}/${Registry.json.name}`, (err, s) => {
 					expect(err).toBeFalsy();
@@ -79,13 +87,15 @@ describe('(unit) Registry tests', () => {
 		};
 		Registry.json = {
 			name: 'Gitlab merge requests',
-			version: '1.5.0'
+			versions: {version: '1.5.0'}
 		};
 
-		Registry._saveToDir()
+		const fn = Registry._saveToDir();
+
+		fn()
 			.then(res => {
 				expect(res).toBeTruthy();
-				fs.stat(`${Registry.REGISTRY_PATH}/${Registry.json.name}/${Registry.json.version}/test.html`, (err, s) => {
+				fs.stat(`${Registry.REGISTRY_PATH}/${Registry.json.name}/${Registry.json.versions.version}/test.html`, (err, s) => {
 					expect(err).toBeFalsy();
 					expect(s.isFile()).toBeTruthy();
 					done();

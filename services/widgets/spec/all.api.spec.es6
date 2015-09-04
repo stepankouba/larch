@@ -22,15 +22,15 @@ describe('(api) Widgets service tests', () => {
 
 	describe('get widget by multiple ids', () => {
 		beforeEach(done => {
-			r = Request.create('GET', '/widget/1,2,3', conf);
+			r = Request.create('GET', '/widget/1,2', conf);
 
 			r.request(done);
 		});
 
-		it('should get id from /widget/1,2,3', () => {
+		it('should get id from /widget/1,2', () => {
 			expect(r.error).toBeUndefined();
 			expect(r.data).not.toBeUndefined();
-			expect(r.data.length).toBe(3);
+			expect(r.data.length).toBe(2);
 		});
 	});
 
@@ -50,7 +50,7 @@ describe('(api) Widgets service tests', () => {
 
 	describe('get phrase search', () => {
 		beforeEach(done => {
-			r = Request.create('GET', '/widgets?phrase=Accurity', conf);
+			r = Request.create('GET', '/widgets?phrase=commits', conf);
 
 			r.request(done);
 		});
@@ -58,7 +58,7 @@ describe('(api) Widgets service tests', () => {
 		it('should get error from /widgets?phrase', () => {
 			expect(r.error).toBeUndefined();
 			expect(r.data).not.toBeUndefined();
-			expect(r.data.length).toBeGreaterThan(1);
+			expect(r.data.length).toBe(2);
 		});
 	});
 
@@ -69,7 +69,7 @@ describe('(api) Widgets service tests', () => {
 			r.request(done, {json: false});
 		});
 
-		it('should get error from /widget/test/1.0/asset/test.html', () => {
+		it('should get error from /widget/test/1.0.0/asset/test.html', () => {
 			expect(r.error).toBeUndefined();
 			expect(r.data).not.toBeUndefined();
 			expect(r.data.startsWith('<!DOCTYPE html>')).toBeTruthy();
@@ -78,13 +78,21 @@ describe('(api) Widgets service tests', () => {
 
 	describe('post assets and JSON to /widget', () => {
 		beforeEach(done => {
+			const data = require('./data/widget-post.json');
 			r = Request.create('POST', '/widget', conf);
 
-			r.requestMultipart(done, {data: {test: 'value', say: 'fuck you'}}, path.resolve(__dirname, './data/test.tar.gz'));
+			r.requestMultipart(done, data, path.resolve(__dirname, './data/testfile.tar.gz'));
 		});
 
-		it('should post a JSON file to /widget', () => {
+		it('should post a JSON file to /widget', done => {
 			expect(r.error).toBeUndefined();
+
+			const rr = Request.create('GET', '/widgets?phrase=github', conf);
+
+			rr.request(() => {
+				expect(rr.data.length).toBe(2);
+				done();
+			});
 		});
 	});
 
