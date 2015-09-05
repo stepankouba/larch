@@ -1,0 +1,11 @@
+#!/bin/sh
+basedir=`dirname "$0"`
+
+CLI_JS="$basedir/index.js"
+
+NODE_EXE="$basedir/node.exe"
+if ! [ -x "$NODE_EXE" ]; then
+  NODE_EXE=node
+fi
+
+"$NODE_EXE" "$CLI_JS" "$@"
