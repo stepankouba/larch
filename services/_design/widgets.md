@@ -16,7 +16,7 @@ Widget holds a detailed info about widget - template. Particular settings for pa
 		title: String defining title,
 		versions: {
 			version: Version identification,
-			desc: longer text description with MD highlighting,
+			description: longer text description with MD highlighting,
 			source: Name of the Source system used, including the way of auth {
 				name: String,
 				url: if not default,
