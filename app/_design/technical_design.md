@@ -1,5 +1,9 @@
-# app architecture without angularjs
+# ES6 usage
+front end app tries to avoid using Babeljs polyfill, so that we can simplify the code after browserify. Polyfill adds some 800kB to the code. Therefore for ... of iterations should not be used.
 
+On the other hand CLI may use them, since there is no requirements for code simplification.
+
+# app architecture without angularjs
 Viewer
 - components and views dispatch actions
 - register event handlers to re
