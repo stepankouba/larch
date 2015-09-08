@@ -31,10 +31,10 @@ export function fileExisting(fileName = FILE_NAME) {
  * @param  {Object} output Object created by read function
  * @return {Promise.<Boolean|Error>}
  */
-export function save() {
+export function save(fileName = FILE_NAME) {
 	return function saveInt(output) {
 		return new Promise((resolve, reject) => {
-			fs.writeFile(FILE_NAME, JSON.stringify(output, null, 4), err => {
+			fs.writeFile(fileName, JSON.stringify(output, null, 4), err => {
 				if (err) {
 					reject(err);
 				} else {
