@@ -22,7 +22,7 @@ commands.forEach(command => {
 		return;
 	}
 
-	const file = `./larch.${command}.es6`;
+	const file = `./${command}.es6`;
 
 	larch[command] = require(file);
 });
