@@ -3,13 +3,19 @@
  * @author Stepan Kouba
  */
 import express from 'express';
+import https from 'https';
+import http from 'http';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import Logger from './lib.logger.es6';
 import Auth from './lib.service.auth.es6';
 import Conf from './lib.service.conf.es6';
+import fs from 'fs';
 
 let logger;
+
+let httpsKey;
+let httpsCert;
 
 /**
  * Service object
@@ -75,12 +81,17 @@ const Service = {
 			});
 
 			// logging of incomming requests
-			this.server.use(morgan('dev', {stream: logger.stream}));
+			this.server.use(morgan('combined', {stream: logger.stream}));
 
 			this.server.use(this._errorHandler());
 
 			// allow using logger within services
 			this.server.logger = logger;
+
+			// import key and certificates
+			/* eslint no-sync:false */
+			httpsKey = fs.readFileSync('../larchservices-key.pem');
+			httpsCert = fs.readFileSync('../larchservices-cert.pem');
 		},
 		/**
 		 * start a service
@@ -88,7 +99,14 @@ const Service = {
 		 */
 		run() {
 			logger.info('port is: ', this.conf.port);
-			this.server.listen(this.conf.port);
+
+			const options = {
+				key: httpsKey,
+				cert: httpsCert
+			};
+
+			//this.server.listen(this.conf.port);
+			https.createServer(options, this.server).listen(this.conf.port);
 			logger.info('service started', Date.now());
 		},
 		/**
