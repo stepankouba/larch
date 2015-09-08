@@ -27,16 +27,6 @@ Widget holds a detailed info about widget - template. Particular settings for pa
 				js: 'index.js',
 				readme: 'readme.md'
 				screenshots: [...]
-			},
-			config: {
-				paths: Array of used libraries. Available are jQuery, c3js
-				modal: {
-					size: ['small', 'medium', 'large']
-				},
-				display: Array of objects: [{
-					width, height
-					}],
-				params: {}
 			}
 		}
 		tags: Array of tags,
