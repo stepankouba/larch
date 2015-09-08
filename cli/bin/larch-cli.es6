@@ -2,12 +2,14 @@
  * larch-cli.es6
  */
 import { larch } from '../src/larch.es6';
+import logger from '../src/logger.es6';
 
 // omit first two args from node call (e.g. node larch-cli.es6 test widget)
 const args = process.argv.slice(2);
 
 // if no command or command is not in larch
 if (args.length === 0 || !(args[0] in larch)) {
+	logger.log('no command used, printing default help for all commands');
 	args[0] = 'help';
 	args[1] = 'all_commands';
 }
@@ -19,26 +21,36 @@ if (args.length === 0 || !(args[0] in larch)) {
  * @return {boolean} result of check
  */
 function properUsage(cmd, args = []) {
-	if (larch[cmd].subdommands) {
+	let subcmd;
+
+	if (larch[cmd].subcommands) {
+		logger.log('subcommands required');
+
 		// command requries subcommands, but there aren't any
 		if (args.length === 0) {
+			logger.log('subcommands required but not passed');
 			return false;
 		}
 
-		const subcmd = args.shift();
+		subcmd = args.shift(1);
 
-		if (!(subcmd in larch[cmd].subdommands)) {
+		if (larch[cmd].subcommands.indexOf(subcmd) === -1) {
+			logger.log('wrong subcommand passed');
 			return false;
 		}
 	}
 
 	// if command requires checking of args
 	if (larch[cmd].argsLength !== false) {
+		logger.log('command requires checking of args length');
+
 		if (args.length !== larch[cmd].argsLength) {
+			logger.log('wrong length of arguments');
 			return false;
 		}
 	}
 
+	logger.log('right command invoke');
 	return true;
 }
 
