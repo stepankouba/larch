@@ -14,7 +14,39 @@ const rl = readline.createInterface({
  * @param  {string} t text to be shown as question
  * @return {Function}  function, which should be called with cb, which is passed to question method
  */
-function ask(t) {
+function ask(t, isHidden = false) {
+	/**
+	 * handler of hidden inputs
+	 */
+	function hiddenInput() {
+		const stdin = process.openStdin();
+
+		/**
+		 * data handler for stdout, which hides input chars and replace them with *
+		 * @param  {string|Buffer} char entered data
+		 */
+		const onDataHandler = function(char) {
+			// to string
+			char = `${char}`;
+
+			switch (char) {
+				case '\n': case '\r': case '\u0004':
+					// Remove this handler
+					stdin.removeListener('data',onDataHandler);
+					break;
+				default:
+					process.stdout.write(`\x1b[2K\x1b[200D${t}${Array(rl.line.length + 1).join('*')}`);
+					break;
+			}
+		};
+
+		process.stdin.on('data', onDataHandler);
+	}
+
+	if (isHidden) {
+		hiddenInput();
+	}
+
 	return function(cb) {
 		rl.question(t, cb);
 	};
@@ -65,7 +97,7 @@ function readInt() {
 			const question = (val.default !== false) ? `${val.text} (${val.default}) ` : `${val.text} `;
 
 			// wait for answer
-			const answer = yield ask(question);
+			const answer = yield ask(question, val.isHidden);
 
 			// create tree of objects based on the key structure (dot delimited string)
 			const keys = k.split('.');
