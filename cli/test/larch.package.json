@@ -1,0 +1,28 @@
+{
+    "name": "test",
+    "title": "testing",
+    "tags": [
+        "sdd"
+    ],
+    "authors": [
+        "koubas",
+        "pepa"
+    ],
+    "versions": {
+        "version": "1.0.0",
+        "description": "no description",
+        "source": {
+            "name": "test",
+            "url": "https://",
+            "auth": "te"
+        },
+        "assets": {
+            "template": "index.html",
+            "js": "index.es6",
+            "readme": "",
+            "screenshots": [
+                ""
+            ]
+        }
+    }
+}
