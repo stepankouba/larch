@@ -44,7 +44,6 @@ const create = {
 			})
 			.catch(err => {
 				logger.error(err);
-				process.exit();
 			});
 	}
 };

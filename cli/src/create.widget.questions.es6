@@ -50,7 +50,7 @@ export default {
 	},
 	'versions.assets.js': {
 		text: 'Where the widget\'s core javascript file is located?',
-		default: 'index.js'
+		default: 'index.es6'
 	},
 	'versions.assets.readme': {
 		text: 'Any readme to be used with the widget (MD syntax reaquired)?',

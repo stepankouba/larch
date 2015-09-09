@@ -31,6 +31,7 @@ const Logger = {
 		},
 		error(...params) {
 			this._output('error', params);
+			process.exit(1);
 		},
 		info(...params) {
 			this._output('info', params);
