@@ -1,5 +1,6 @@
 import { larchRead, larchFS } from '../lib/';
 import questions from './login.questions.es6';
+import logger from './logger.es6';
 
 // TODO: replace this with real login call, when user service is implemented
 function loginAPI(user) {
@@ -27,7 +28,7 @@ const login = {
 			.then(loginAPI)
 			.then(larchFS.save('./.larchrc'))
 			.catch(err => {
-				console.log(err);
+				logger.error(err);
 				process.exit(1);
 			});
 	}

@@ -1,4 +1,5 @@
 import { version as larchVersion } from './larch.es6';
+import logger from './logger.es6';
 
 const version = {
 	subcommands: false,
@@ -14,7 +15,7 @@ const version = {
 	},
 
 	invoke() {
-		console.log(`larch cli version: ${larchVersion}`);
+		logger.info(`larch cli version: ${larchVersion}`);
 		process.exit();
 	}
 };

@@ -1,4 +1,5 @@
 import { larch, commands } from './larch.es6';
+import logger from './logger.es6';
 
 // definition of all help text
 const allHelp = [
@@ -41,9 +42,9 @@ const help = {
 		}
 
 		if (subcommand === 'all_commands') {
-			console.log(allHelp);
+			logger.info(allHelp);
 		} else {
-			console.log(larch[subcommand].usage());
+			logger.info(larch[subcommand].usage());
 		}
 
 		process.exit();

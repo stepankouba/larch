@@ -33,9 +33,7 @@ const Logger = {
 			this._output('error', params);
 		},
 		info(...params) {
-			if (this.level === logLevels.DEBUG) {
-				this._output('info', params);
-			}
+			this._output('info', params);
 		},
 		warning(...params) {
 			if (this.level === logLevels.DEBUG) {

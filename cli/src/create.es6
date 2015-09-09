@@ -1,5 +1,6 @@
 import questions from './create.widget.questions.es6';
-import { larchRead, larchFS } from '../lib/';
+import { larchRead, LarchFS } from '../lib/';
+import logger from './logger.es6';
 
 const create = {
 	subcommands: ['widget', 'source'],
@@ -29,20 +30,20 @@ const create = {
 	invoke(subcommand, args = []) {
 		// test the subcommand
 		if (!subcommand || this.subcommands.indexOf(subcommand) === -1) {
-			console.log(this.usage());
+			logger.error(this.usage());
 			process.exit();
 		}
 
-		const doesExist = larchFS.fileExisting();
+		const doesExist = LarchFS.fileExisting();
 
 		doesExist()
 			.then(larchRead(questions))
-			.then(larchFS.save())
+			.then(LarchFS.save())
 			.then(() => {
 				process.exit();
 			})
 			.catch(err => {
-				console.log(err);
+				logger.error(err);
 				process.exit();
 			});
 	}
