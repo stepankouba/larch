@@ -1,4 +1,4 @@
-import { larchRead, larchFS } from '../lib/';
+import { larchRead, LarchFS } from '../lib/';
 import questions from './login.questions.es6';
 import logger from './logger.es6';
 
@@ -6,7 +6,13 @@ import logger from './logger.es6';
 function loginAPI(user) {
 	// let {username, password} = user;
 
-	return Promise.resolve({token: 1234567890});
+	// TODO: remove this somewhere, where it makes more sense. REGISTRY URL has to be configurable in .larchrc
+	const obj = {
+		registryURL: 'https://localhost:9205',
+		token: 1234567890
+	};
+
+	return Promise.resolve(obj);
 }
 
 const login = {
@@ -26,7 +32,7 @@ const login = {
 
 		read()
 			.then(loginAPI)
-			.then(larchFS.save('./.larchrc'))
+			.then(LarchFS.save('./.larchrc'))
 			.catch(err => {
 				logger.error(err);
 				process.exit(1);
