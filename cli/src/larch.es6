@@ -13,7 +13,7 @@ export const commands = [
 	'create',
 	// 'create',
 	// 'test',
-	// 'publish'
+	'publish'
 ];
 
 // add the commands to the larch object, which serves as container for commands
