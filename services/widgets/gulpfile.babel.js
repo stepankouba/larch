@@ -71,6 +71,7 @@ gulp.task('pm2', ['test-unit'], cb => {
 	pm2.connect(() => {
 		// store service name
 		const conf = require(PATHS.pm2.JSON).apps[0];
+		conf.args = ['test'];
 		PATHS.pm2.processName = conf.name;
 
 		pm2.list((err, list) => {
