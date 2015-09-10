@@ -90,8 +90,8 @@ const Service = {
 
 			// import key and certificates
 			/* eslint no-sync:false */
-			httpsKey = fs.readFileSync('../larchservices-key.pem');
-			httpsCert = fs.readFileSync('../larchservices-cert.pem');
+			httpsKey = fs.readFileSync('../larchservices-key.pem', 'utf8');
+			httpsCert = fs.readFileSync('../larchservices-cert.pem', 'utf8');
 		},
 		/**
 		 * start a service
@@ -105,8 +105,8 @@ const Service = {
 				cert: httpsCert
 			};
 
-			//this.server.listen(this.conf.port);
 			https.createServer(options, this.server).listen(this.conf.port);
+			
 			logger.info('service started', Date.now());
 		},
 		/**

@@ -93,7 +93,7 @@ const Registry = {
 			return new Promise((resolve, reject) => {
 				const version = this.json.versions.version;
 				// save to file
-				const dest = `${this.REGISTRY_PATH}/${this.json.name}/${version}/`;
+				const dest = `${this.REGISTRY_PATH}/${this.json.name}/${version}`;
 				const gzip = zlib.createGunzip();
 
 				const file = fs.createReadStream(this.file.path)
@@ -103,7 +103,18 @@ const Registry = {
 					.on('end', () => resolve(true))
 					.on('error', err => reject(err));
 
-				file.pipe(gzip).pipe(extractor);
+				file.pipe(gzip)
+					.pipe(tar.Parse())
+					.on('entry', item => {
+						if (item.type !== 'Directory') {
+							const filename = path.basename(item.path);
+							item.pipe(
+								fs.createWriteStream(`${dest}/${filename}`)
+									.on('error', err => reject(err))
+								);
+						}
+					})
+					.on('end', () => resolve(true));
 			});
 		}
 
@@ -154,10 +165,12 @@ const Registry = {
 
 		this._requestDB(this.json.name)
 			.then(this._isWidgetInRegistry())
+			// TODO: check wether only owner is updating the widget
+			// .then(this._checkOwner())
 			.then(this._createDir())
 			.then(this._saveToDir())
 			.then(this._saveToRegistry())
-			.then(result => res.json({value: 'OK'}))
+			.then(result => res.json(result))
 			.catch(err => next(err));
 	},
 	postWidget() {

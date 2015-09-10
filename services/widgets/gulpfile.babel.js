@@ -109,3 +109,4 @@ gulp.task('watch', () => {
 });
 
 gulp.task('default', ['setup-db', 'test-unit', 'pm2', 'test-api','clean-db', 'watch']);
+gulp.task('unit', ['setup-db', 'test-unit', 'clean-db', 'watch']);
