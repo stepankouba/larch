@@ -32,7 +32,7 @@ const login = {
 
 		read()
 			.then(loginAPI)
-			.then(LarchFS.save('./.larchrc'))
+			.then(LarchFS.save('./larchrc.json'))
 			.catch(err => {
 				logger.error(err);
 				process.exit(1);

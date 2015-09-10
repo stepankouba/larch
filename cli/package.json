@@ -11,6 +11,17 @@
   "dependencies": {
     "babel": "^5.8.23",
     "express": "^4.13.3",
-    "restler": "^3.3.0"
+    "fstream": "^1.0.7",
+    "restler": "^3.3.0",
+    "semver": "^5.0.1",
+    "tar": "^2.2.0",
+    "validator": "^4.0.5"
+  },
+  "devDependencies": {
+    "babel-core": "^5.8.23",
+    "gulp": "^3.9.0",
+    "gulp-jasmine": "^2.0.1",
+    "jasmine-spec-reporter": "^2.4.0",
+    "nock": "^2.10.0"
   }
 }

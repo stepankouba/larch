@@ -4,7 +4,7 @@ import WidgetValidator from './publish.widget.validator.es6';
 
 const publish = {
 	subcommands: false,
-	argsLength: 0,
+	argsLength: false,
 
 	usage() {
 		const text = [
@@ -28,21 +28,27 @@ const publish = {
 		}
 
 		try {
-			rc = require(`${currentDir}/.larchrc`);
+			rc = require(`${currentDir}/larchrc.json`);
 		} catch (e) {
 			logger.error('user is not logged in. Use larch login command before larch publish');
+		}
+
+		// optional argument specifying registry url
+		if (args && args[0]) {
+			LarchRegistry.registryURL = args[0];
 		}
 
 		// perform checks on json
 		LarchRegistry.testConf(conf, WidgetValidator)
 			.then(LarchRegistry.createGzip(currentDir))
-			// .then(LarchRegistry.postToServer(conf, rc.token))
-			.then(() => {
-				logger.log('OK');
+			.then(LarchRegistry.postToServer(conf, rc.token))
+			.then(res => {
+				logger.info('package was succesfully stored in the registry.');
+				logger.info(`visit: www.larch.io/widget/${res.id}`);
 				process.exit();
 			})
 			.catch(err => {
-				logger.error(err);
+				logger.error(err.stack);
 			});
 	}
 };

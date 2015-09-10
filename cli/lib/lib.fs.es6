@@ -49,23 +49,23 @@ export function save(fileName = FILE_NAME) {
 };
 
 export function createGzip(dir) {
-	return function _createGzip() {
-		return new Promise((resolve, reject) => {
-			const gzip = zlib.createGzip();
+	return new Promise((resolve, reject) => {
+		const gzip = zlib.createGzip();
 
-			const packer = tar.Pack({ noProprietary: true })
-				.on('error', err => reject(err));
+		const packer = tar.Pack({ noProprietary: true })
+			.on('error', err => reject(err));
 
-			// This must be a "directory"
-			const fstr = fstream.Reader({ path: dir, type: 'Directory' })
-				.on('error', err => reject(err));
+		// This must be a "directory"
+		const fstr = fstream.Reader({ path: dir, type: 'Directory' })
+			.on('error', err => reject(err));
 
-			const gzipDest = fs.createWriteStream(`${dir}/larch.package.tar.gz`)
-				.on('finish', () => resolve(`${dir}/larch.package.tar.gz`));
+		const gzipDest = fs.createWriteStream(`${dir}/larch.package.tar.gz`)
+			.on('finish', () => {
+				resolve(`${dir}/larch.package.tar.gz`);
+			});
 
-			fstr.pipe(packer)
-				.pipe(gzip)
-				.pipe(gzipDest);
-		});
-	};
+		fstr.pipe(packer)
+			.pipe(gzip)
+			.pipe(gzipDest);
+	});
 };

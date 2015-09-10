@@ -3,7 +3,7 @@ import path from 'path';
 
 describe('fs unit tests', () => {
 	it('should create Gzip', done => {
-		LarchFS.createGzip(path.resolve('./test/'))()
+		LarchFS.createGzip(path.resolve('./test/'))
 			.then(res => {
 				expect(res).toContain('larch.package.tar.gz');
 				done();
