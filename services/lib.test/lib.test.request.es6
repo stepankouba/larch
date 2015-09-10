@@ -1,5 +1,5 @@
-import http from 'http';
-import rest from 'restler';
+import restler from 'restler';
+import fs from 'fs';
 
 const Request = {
 	create(type, url, conf) {
@@ -40,7 +40,7 @@ const Request = {
 		 * @param  {Object}   conf optional conf
 		 */
 		request(done, conf = {json: true}) {
-			const request = rest.request(this.getFullUrl(), {
+			const request = restler.request(this.getFullUrl(), {
 				method: this.conf.method
 			});
 
@@ -59,15 +59,16 @@ const Request = {
 				this.error = err;
 				done();
 			});
-
-			//request.end();
 		},
 		requestMultipart(done, body, file) {
-			rest.post(this.getFullUrl(), {
+			/* eslint no-sync:false */
+			const fstat = fs.statSync(file);
+
+			restler.post(this.getFullUrl(), {
 				multipart: true,
 				data: {
 					'data': JSON.stringify(body),
-					'widget': rest.file(file, 'binary', 3034)
+					'widget': restler.file(file, 'binary', fstat.size)
 				}
 			}).on('complete', (result, res) => {
 				if (result instanceof Error) {
