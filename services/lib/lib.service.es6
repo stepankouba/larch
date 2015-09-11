@@ -53,6 +53,8 @@ const Service = {
 		// initiate instance
 		Service.instance = service;
 
+		Service.Auth = Auth;
+
 		return service;
 	},
 	prototype: {
