@@ -3,7 +3,7 @@
         {
             "name"              : "larch.services.widgets",
             "script"            : "service.js",
-            "args"              : ["test"],
+            "args"              : ["development"],
             "watch"             : false,
             "merge_logs"        : false,
             "cwd"               : "./",
