@@ -69,6 +69,9 @@ const Service = {
 			 */
 			this.conf = Conf.setConfiguration(conf);
 
+			// logging of incomming requests
+			// this.server.use(morgan('combined', {stream: logger.stream}));
+
 			// receive JSON objects from body of requests
 			this.server.use(bodyParser.json());
 
@@ -79,11 +82,6 @@ const Service = {
 				res.setHeader('Access-Control-Allow-Credentials', 'true');
 				next();
 			});
-
-			// logging of incomming requests
-			this.server.use(morgan('combined', {stream: logger.stream}));
-
-			this.server.use(this._errorHandler());
 
 			// allow using logger within services
 			this.server.logger = logger;
@@ -140,6 +138,9 @@ const Service = {
 					logger.error('createRoutes has no method defined in app', route);
 				}
 			});
+
+			// last error handler
+			app.use(this._errorHandler());
 		},
 		/**
 		 * internal service error handler for the APIs
@@ -152,9 +153,11 @@ const Service = {
 					err.fullError = err;
 				}
 
-				logger.error('error occured', err);
+				logger.error('error occured', err.stack ? err.stack : err);
 
-				res.status(500).json(err);
+				const responseCode = err.responseCode || 500;
+
+				res.status(responseCode).json(err);
 			};
 		}
 	}
