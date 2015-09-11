@@ -28,9 +28,19 @@ const PATHS = {
 
 gulp.task('setup-db', cb => {
 	exec(`rethinkdb import -f ${PATHS.jasmine.data} --table ${PATHS.jasmine.db}.${PATHS.jasmine.table}`, (err, stdout, stderr) => {
-		// console.log(stdout);
 		console.error(stderr);
-		return cb(err);
+
+		// create additional tables
+		if (!err) {
+			r.db(PATHS.jasmine.db)
+				.tableCreate('tokens', {primaryKey: 'username'})
+				.then(res => {
+					cb();
+				})
+				.catch(err => cb(err));
+		} else {
+			return cb(err);
+		}
 	});
 });
 
@@ -72,7 +82,7 @@ gulp.task('pm2', ['test-unit'], cb => {
 		// store service name
 		const conf = require(PATHS.pm2.JSON).apps[0];
 		conf.args = ['test'];
-		conf.name = `${conf.name}_test`;
+		conf.name = conf.name.endsWith('_test') ? conf.name : `${conf.name}_test`;
 		PATHS.pm2.processName = conf.name;
 
 		pm2.list((err, list) => {
