@@ -1,38 +1,52 @@
-'use strict';
+// import RethinkDb from 'rethinkdbdash';
+// import { Service } from '../../lib/';
+import Auth from './server.auth.es6';
 
-let lib = require('../../lib/lib.server.es6');
-let helpers = require('./server.helpers.es6');
+// const r = RethinkDb();
 
-let user = {
-	byId: function(req, res, next) {
-		let id = req.params.id;
+const user = {
+	// byId: function(req, res, next) {
+	// 	let id = req.params.id;
 
-		if (!id) {
-			res.status(500);
-		} else {
-			res.send(helpers.byId(id));
-		}
-	},
-	login: function(req, res, next) {
-		if (!req.body.username || !req.body.password) {
-			return res.status(401).send('no user and / or password');
-		}
-
-		if (helpers.authenticate(req.body.username, req.body.password)) {
-			let data = helpers.login(req.body.username);
-
-			res.json(data);
-		} else {
-			res.status(401).send('username and / or password does not match');
-		}
-	},
-	logout: function(req, res, next) {
-		if (req.user) {
-			console.log('token set', req.user.username);
+	// 	if (!id) {
+	// 		res.status(500);
+	// 	} else {
+	// 		res.send(helpers.byId(id));
+	// 	}
+	// },
+	/**
+	 * login user and if corret
+	 * @param  {[type]}   req  [description]
+	 * @param  {[type]}   res  [description]
+	 * @param  {Function} next [description]
+	 * @return {[type]}        [description]
+	 */
+	login(req, res, next) {
+		if (!req.query.username || !req.query.password) {
+			return next({responseCode: 400, msg: 'no username or password specified'});
 		}
 
-		res.send('logout');
+		const username = req.query.username;
+		const password = req.query.password;
+
+		Auth.login(username, password)
+			.then(data => res.json(data))
+			.catch(err => {
+				if (err === false) {
+					return next({responseCode: 401, msg: 'wrong username and / or password'});
+				} else {
+					return next(err);
+				}
+			});
 	}
+	// ,
+	// logout: function(req, res, next) {
+	// 	if (req.user) {
+	// 		console.log('token set', req.user.username);
+	// 	}
+
+	// 	res.send('logout');
+	// }
 };
 
-module.exports = user;
+export default user;

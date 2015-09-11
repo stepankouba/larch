@@ -1,29 +1,12 @@
-'use strict';
+import { Service } from '../lib/';
+import routes from './server/server.router.es6';
 
-let express = require('express');
-let	server = module.exports = express();
-let bodyParser = require('body-parser');
-let master = require('../master.services.json');
-let router = require('./server/server.router.es6');
-let morgan = require('morgan');
+const conf = require('./local.json');
 
-// support json encoded params
-server.use( bodyParser.json() );
-server.use( bodyParser.urlencoded({extended: true}) );
+const service = Service.create('user');
 
-server.use((req, res, next) => {
-	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3333');
-	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
-	res.setHeader('Access-Control-Allow-Credentials', 'true');
-    next();
-});
+service.init(conf);
 
-server.use(morgan('dev'));
+service.defineRoutes(routes);
 
-// create routes
-router.createRoutes(server);
-
-// based on master definition
-server.listen(master.services.user.port);
-
-console.log('user.server.es6: server started...');
+service.run();
