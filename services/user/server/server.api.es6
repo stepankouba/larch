@@ -1,25 +1,25 @@
-// import RethinkDb from 'rethinkdbdash';
-// import { Service } from '../../lib/';
+import RethinkDb from 'rethinkdbdash';
+import { Service } from '../../lib/';
 import Auth from './server.auth.es6';
+import isEmail from 'isEmail';
 
-// const r = RethinkDb();
+const r = RethinkDb();
 
 const user = {
-	// byId: function(req, res, next) {
-	// 	let id = req.params.id;
-
-	// 	if (!id) {
-	// 		res.status(500);
-	// 	} else {
-	// 		res.send(helpers.byId(id));
-	// 	}
-	// },
+	/**
+	 * returns current user
+	 * @param  {Object}   req  [description]
+	 * @param  {Object}   res  [description]
+	 * @param  {Function} next [description]
+	 */
+	getCurrent(req, res, next) {
+		res.json({user: req.user});
+	},
 	/**
 	 * login user and if corret
-	 * @param  {[type]}   req  [description]
-	 * @param  {[type]}   res  [description]
+	 * @param  {Object}   req  [description]
+	 * @param  {Object}   res  [description]
 	 * @param  {Function} next [description]
-	 * @return {[type]}        [description]
 	 */
 	login(req, res, next) {
 		if (!req.query.username || !req.query.password) {
@@ -38,15 +38,114 @@ const user = {
 					return next(err);
 				}
 			});
-	}
-	// ,
-	// logout: function(req, res, next) {
-	// 	if (req.user) {
-	// 		console.log('token set', req.user.username);
-	// 	}
+	},
+	/**
+	 * logout
+	 * @param  {Object}   req  [description]
+	 * @param  {Object}   res  [description]
+	 * @param  {Function} next [description]
+	 */
+	logout(req, res, next) {
+		const username = req.user.username;
 
-	// 	res.send('logout');
-	// }
+		delete req.user;
+
+		Auth.logout(username)
+			.then(() => res.json({msg: 'logged out'}))
+			.catch(err => next(err));
+	},
+	/**
+	 * update only allowed properties (name, auths and settings)
+	 * @param  {Object}   req  [description]
+	 * @param  {Object}   res  [description]
+	 * @param  {Function} next [description]
+	 */
+	update(req, res, next) {
+		const obj = req.body;
+		const availableFields = ['name', 'auths', 'settings'];
+		const update = {};
+		const conf = Service.instance.conf;
+
+		Object.keys(obj).forEach(key => {
+			if (availableFields.indexOf(key) > -1) {
+				update[key] = obj[key];
+			}
+		});
+
+		if (Object.keys(update).length === 0) {
+			return res.json({msg: 'nothing to update'});
+		}
+
+		r.db(conf.db.database)
+			.table('users')
+			.get(req.user.id)
+			.update(update, {returnChanges: 'always'})
+			.run()
+			.then(result => {
+				const user = result.changes[0].new_val;
+				delete user.login;
+				delete user.password;
+
+				return Promise.resolve(user);
+			})
+			.then(Auth.createUserAndToken)
+			.then(result => res.json(result))
+			.catch(err => next(err));
+
+	},
+	/**
+	 * sign in new user
+	 * @param  {Object}   req  [description]
+	 * @param  {Object}   res  [description]
+	 * @param  {Function} next [description]
+	 */
+	signin(req, res, next) {
+		// check posted values
+		const user = req.body;
+		if (!user.name || !user.username || !user.password) {
+			return next({responseCode: 400, msg: 'signin not properly called'});
+		}
+
+		if (!isEmail(user.username)) {
+			return next({responseCode: 400, msg: 'username is not an email'});
+		}
+
+		if (!Auth.isPassword(user.password)) {
+			return next({responseCode: 400, msg: 'wrong password set'});
+		}
+
+		Auth.signin(user)
+			.then(result => {
+				delete user.password;
+				delete user.login;
+
+				return res.json({responseCode: 200, msg: 'user created', user});
+			})
+			.catch(err => {
+				if (err.message.startsWith('existing user')) {
+					return next({responseCode: 400, msg: 'existing user'});
+				} else {
+					return next(err);
+				}
+			});
+	},
+	confirm(req, res, next) {
+		const {hash, password} = req.query;
+
+		if (!hash || !password) {
+			return next({responseCode: 400, msg: 'no hash or password specified'});
+		}
+
+		Auth.confirm(hash, password)
+			.then(result => res.json(result))
+			.catch(err => {
+				if (err === false) {
+					return next({responseCode: 400, msg: 'nothing to confirm'});
+				} else {
+					return next(err);
+				}
+			});
+	}
 };
 
 export default user;

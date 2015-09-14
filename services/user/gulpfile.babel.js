@@ -62,7 +62,7 @@ gulp.task('test-api', ['pm2'], cb => {
 
 gulp.task('clean-db', ['test-api'], cb => {
 	r.db(PATHS.jasmine.db)
-		.table('users').delete().do(d => r.db('larch_users_test').table('users').delete())
+		.table('users').delete().do(d => r.db('larch_users_test').table('tokens').delete())
 		.then(res => {
 			cb();
 		})

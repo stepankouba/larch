@@ -11,9 +11,10 @@
   "dependencies": {
     "body-parser": "^1.12.4",
     "express": "^4.12.4",
+    "isemail": "^1.1.2",
     "morgan": "^1.5.3",
-    "rethinkdbdash": "^2.0.10",
-    "pm2": "^0.14.7"
+    "pm2": "^0.14.7",
+    "rethinkdbdash": "^2.0.10"
   },
   "devDependencies": {
     "babel-core": "^5.8.23",

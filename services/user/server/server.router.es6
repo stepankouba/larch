@@ -6,19 +6,40 @@
 import api from './server.api.es6';
 
 export default [
-	// {
-	// 	path: '/user/:id',
-	// 	httpMethod: 'GET',
-	// 	middleware: [auth.restrict(), auth.isAuth, api.byId]
-	// },
-	// {
-	// 	path: '/user/:id/logout',
-	// 	httpMethod: 'GET',
-	// 	middleware: [auth.restrict(), auth.isAuth, api.logout]
-	// },
+	{
+		path: '/user/current',
+		httpMethod: 'GET',
+		requiresAuth: true,
+		middleware: [api.getCurrent]
+	},
 	{
 		path: '/user/login',
 		httpMethod: 'GET',
+		requiresAuth: false,
 		middleware: [api.login]
+	},
+	{
+		path: '/user/current/logout',
+		httpMethod: 'GET',
+		requiresAuth: true,
+		middleware: [api.logout]
+	},
+	{
+		path: '/user/confirm',
+		httpMethod: 'GET',
+		requiresAuth: false,
+		middleware: [api.confirm]
+	},
+	{
+		path: '/user/:username',
+		httpMethod: 'PUT',
+		requiresAuth: true,
+		middleware: [api.update]
+	},
+	{
+		path: '/user',
+		httpMethod: 'POST',
+		requiresAuth: false,
+		middleware: [api.signin]
 	}
 ];
