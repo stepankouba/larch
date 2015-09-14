@@ -71,6 +71,8 @@ const Service = {
 			 */
 			this.conf = Conf.setConfiguration(conf);
 
+			Service.Auth.init(this.conf.env);
+
 			// logging of incomming requests
 			this.server.use(morgan('combined', {stream: logger.stream}));
 
@@ -151,7 +153,7 @@ const Service = {
 		_errorHandler() {
 			return (err, req, res, next) => {
 				// if development env, add the whole stack
-				if (this.env === 'development') {
+				if (this.conf.env === 'development') {
 					err.fullError = err;
 				}
 
