@@ -60,7 +60,7 @@ const Request = {
 				if (res.statusCode === 200) {
 					this.data = conf.json ? JSON.parse(data) : data;
 				} else {
-					this.error = {code: res.statusCode, data};
+					this.error = {code: res.statusCode, data: JSON.parse(data)};
 				}
 
 				done();
