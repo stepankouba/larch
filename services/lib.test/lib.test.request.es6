@@ -38,10 +38,21 @@ const Request = {
 		 * perform a request
 		 * @param  {Function} done standard jasmine done function
 		 * @param  {Object}   conf optional conf
+		 * @param  {string}   conf.token security token to be sent
+		 * @param  {boolean}  conf.json true for representing the response as json
+		 * @param  {Object}   conf.data data structure to be sent as body for POST
 		 */
-		request(done, conf = {json: true}) {
+		request(done, conf = { json: true }) {
+			conf.token = conf.token || '';
+			conf.json = conf.json || true;
+			conf.data = JSON.stringify(conf.data) || undefined;
+			conf.headers = conf.data ? {'content-type': 'application/json'} : { 'Accept': '*/*', 'User-Agent': 'Restler for node.js' };
+
 			const request = restler.request(this.getFullUrl(), {
-				method: this.conf.method
+				method: this.conf.method,
+				accessToken: conf.token,
+				data: conf.data,
+				headers: conf.headers
 			});
 
 			request.on('complete', (data, res) => {
@@ -60,6 +71,12 @@ const Request = {
 				done();
 			});
 		},
+		/**
+		 * perform a multipart request to send a file
+		 * @param  {Function} done done handler by jasmine tests
+		 * @param  {Object}   body data to be sent
+		 * @param  {string}   file file path
+		 */
 		requestMultipart(done, body, file) {
 			/* eslint no-sync:false */
 			const fstat = fs.statSync(file);
