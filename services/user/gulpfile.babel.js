@@ -27,21 +27,12 @@ const PATHS = {
 };
 
 gulp.task('setup-db', cb => {
-	exec(`rethinkdb import -f ${PATHS.jasmine.data} --table ${PATHS.jasmine.db}.${PATHS.jasmine.table}`, (err, stdout, stderr) => {
-		console.error(stderr);
-
-		// create additional tables
-		if (!err) {
-			r.db(PATHS.jasmine.db)
-				.tableCreate('tokens', {primaryKey: 'username'})
-				.then(res => {
-					cb();
-				})
-				.catch(err => cb(err));
-		} else {
-			return cb(err);
-		}
-	});
+	r.db(PATHS.jasmine.db)
+		.table('users')
+		.insert(require('./spec/data/users.json'))
+		.run()
+		.then(res => cb())
+		.catch(err => cb(err));
 });
 
 gulp.task('test-unit', ['setup-db'], cb => {
@@ -70,7 +61,8 @@ gulp.task('test-api', ['pm2'], cb => {
 });
 
 gulp.task('clean-db', ['test-api'], cb => {
-	r.dbDrop(PATHS.jasmine.db)
+	r.db(PATHS.jasmine.db)
+		.table('users').delete().do(d => r.db('larch_users_test').table('users').delete())
 		.then(res => {
 			cb();
 		})

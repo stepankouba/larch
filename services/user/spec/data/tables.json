@@ -1,0 +1,4 @@
+[
+	{"primary_key": "username", "db": {"type": "DB", "id": "3e2ebdc3-94f2-4998-bd26-98dbdd3c9a44", "name": "larch_users"}, "doc_count_estimates": [0], "indexes": [], "type": "TABLE", "id": "e5c14c2c-c343-44ee-b658-2569b6982810", "name": "tokens"},
+	{"primary_key": "id", "db": {"type": "DB", "id": "3e2ebdc3-94f2-4998-bd26-98dbdd3c9a44", "name": "larch_users"}, "doc_count_estimates": [6], "indexes": [], "type": "TABLE", "id": "f3debb2b-6dc1-44e7-b6d3-ae6b17d77d54", "name": "users"}
+]

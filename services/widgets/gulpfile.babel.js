@@ -27,11 +27,12 @@ const PATHS = {
 };
 
 gulp.task('setup-db', cb => {
-	exec(`rethinkdb import -f ${PATHS.jasmine.data} --table ${PATHS.jasmine.db}.${PATHS.jasmine.table}`, (err, stdout, stderr) => {
-		// console.log(stdout);
-		console.error(stderr);
-		return cb(err);
-	});
+	r.db(PATHS.jasmine.db)
+		.table(PATHS.jasmine.table)
+		.insert(require('./spec/data/widgets.json'))
+		.run()
+		.then(res => cb())
+		.catch(err => cb(err));
 });
 
 gulp.task('test-unit', ['setup-db'], cb => {
@@ -60,7 +61,8 @@ gulp.task('test-api', ['pm2'], cb => {
 });
 
 gulp.task('clean-db', ['test-api'], cb => {
-	r.dbDrop(PATHS.jasmine.db)
+	r.db(PATHS.jasmine.db)
+		.table(PATHS.jasmine.table).delete()
 		.then(res => {
 			cb();
 		})
