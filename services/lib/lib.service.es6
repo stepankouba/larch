@@ -72,7 +72,7 @@ const Service = {
 			this.conf = Conf.setConfiguration(conf);
 
 			// logging of incomming requests
-			// this.server.use(morgan('combined', {stream: logger.stream}));
+			this.server.use(morgan('combined', {stream: logger.stream}));
 
 			// receive JSON objects from body of requests
 			this.server.use(bodyParser.json());
