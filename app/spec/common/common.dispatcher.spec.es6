@@ -8,23 +8,22 @@ const acts = {
 
 let steps = [];
 
-let cb1 = function(data) { steps.push('cb1'); };
-let cb2 = function(data) { steps.push('cb2'); };
-let cb3 = function(data) { steps.push('cb3'); };
+const cb1 = data => steps.push('cb1');
+const cb2 = data => steps.push('cb2');
+const cb3 = data => steps.push('cb3');
 let cb4;
-let cb5 = function(data) { steps.push('cb5'); };
-let cb6 = function(data) { steps.push('cb6'); };
+const cb5 = data => steps.push('cb5');
+const cb6 = data => steps.push('cb6');
 
-
-describe('Dispatcher', function(){
+describe('Dispatcher', () => {
 	let app;
 	const ID_1 = 'dispatcher-id-1';
 	const ID_2 = 'dispatcher-id-2';
 
-	beforeEach(function(){
+	beforeEach(() => {
 		app = Dispatcher.create();
 
-		app.register('User', acts.EDIT_USER, cb1 );
+		app.register('User', acts.EDIT_USER, cb1);
 		app.register('User', acts.REMOVE_USER, cb2);
 		app.register('Model', acts.ADD_USER, cb3);
 		app.register('Admin', acts.REMOVE_USER, cb6);
@@ -32,9 +31,9 @@ describe('Dispatcher', function(){
 		steps = [];
 	});
 
-	describe('Dispatcher - register', function(){
-		it('should register actions', function(){
-			let actions = Object.keys(app.chamber);
+	describe('Dispatcher - register', () => {
+		it('should register actions', () => {
+			const actions = Object.keys(app.chamber);
 
 			expect(app._lastNumId).toEqual(4);
 
@@ -46,7 +45,7 @@ describe('Dispatcher', function(){
 			expect(actions[2]).toEqual(acts.ADD_USER);
 		});
 
-		it('should register models', function(){
+		it('should register models', () => {
 			let action1 = app.chamber[acts.ADD_USER];
 			let action2 = app.chamber[acts.REMOVE_USER];
 
@@ -54,12 +53,12 @@ describe('Dispatcher', function(){
 			expect(Object.keys(action2).length).toEqual(2);
 		});
 
-		it('should create unique ids', function(){
+		it('should create unique ids', () => {
 			expect(app.chamber[acts.EDIT_USER].User).toEqual(ID_1);
 			expect(app.chamber[acts.REMOVE_USER].User).toEqual(ID_2);
 		});
 
-		it('should register callbacks', function(){
+		it('should register callbacks', () => {
 			expect(Object.keys(app._callbacks).length).toEqual(4);
 
 			expect(app._callbacks[ID_1]).toEqual(cb1);
@@ -67,28 +66,28 @@ describe('Dispatcher', function(){
 		});
 	});
 
-	describe('Dispatcher - dispatch without waitFor', function(){
-		let data = {test: 'test'};
+	describe('Dispatcher - dispatch without waitFor', () => {
+		const data = {test: 'test'};
 
-		it('should dispatch an action', function(){
-			// dispatch and check 
+		it('should dispatch an action', () => {
+			// dispatch and check
 			app.dispatch(acts.EDIT_USER, data);
 
 			expect(steps).toEqual(['cb1']);
 		});
 
-		it('should dispatch mode actions', function(){
-			// dispatch and check 
+		it('should dispatch mode actions', () => {
+			// dispatch and check
 			app.dispatch(acts.REMOVE_USER, data);
 
 			expect(steps).toEqual(['cb2', 'cb6']);
 		});
 	});
 
-	describe('Dispatcher - dispatch with waitFor', function(){
-		let data = {test: 'test'};
+	describe('Dispatcher - dispatch with waitFor', () => {
+		const data = {test: 'test'};
 
-		it('Admin Model should wait for SuperUser model', function(){
+		it('Admin Model should wait for SuperUser model', () => {
 			cb4 = function(data) {
 				app.waitFor(['SuperUser']);
 				steps.push('cb4');
