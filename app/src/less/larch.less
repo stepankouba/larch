@@ -1,78 +1,33 @@
-.tooltip-inner {
-	white-space:pre-wrap;
+@import 'variables.less';
+
+*, html, body {
+	font-family: Calibri, Candara, Segoe, 'Segoe UI', Optima, Arial, sans-serif;
+	box-sizing: border-box;
 }
 
-.larch-header-row {
-	& > .pull-left {
-
-	}
-
-	& > .pull-right {
-		text-align: right;
-	}
-}
-
-#larch-dashboard-content {
+html, body {
 	height: 100%;
-	width: 100%;
-	position: absolute;
+	margin: 0; padding: 0;
 }
 
-#larch-dashboard-grid {
-	z-index: 10;
-	margin: 0px;
-	top: 0px;
-	left: 0px;
-	width: 100%;
+body {
+	overflow-y: hidden;
+	position: relative;
+}
+
+#content-wrapper {
+	padding-top: 60px;
+	height: calc(~"100vh - 40px") ;
+	overflow-y: hidden;
+	top: 0;
+	min-width: @viewport-width !important;
+}
+
+.content { 
 	height: 100%;
-
-	background-color: grey;
+	overflow: scroll;
 }
 
-.visible-grid {
-	background-color: #434343;
-	
-	background-image: linear-gradient(90deg, rgba(255,255,255,0.298039) 1px, rgba(0,0,0,0) 1px),
-					linear-gradient(0deg, rgba(255,255,255,0.298039) 1px, rgba(0,0,0,0) 1px);
-	background-position: -1px 0px;
-	background-origin: padding-box;
-	background-clip: border-box;
-	background-size: 20px 20px;
+.centered {
+	border: 1px solid black;
 }
-
-.larch-modal {
-	.md-show.md-effect-16 ~ .md-overlay {
-		background: rgba(180,46,32,0.5);
-	}
-
-	.md-effect-16 .md-content {
-		-webkit-transform: translateY(-5%);
-		-moz-transform: translateY(-5%);
-		-ms-transform: translateY(-5%);
-		transform: translateY(-5%);
-		opacity: 0;
-	}
-
-	.md-show.md-effect-16 ~ .container,
-	.md-effect-16 .md-content {
-		-webkit-transition: all 0.3s;
-		-moz-transition: all 0.3s;
-		transition: all 0.3s;
-	}
-
-	.md-show.md-effect-16 .md-content {
-		-webkit-transform: translateY(0);
-		-moz-transform: translateY(0);
-		-ms-transform: translateY(0);
-		transform: translateY(0);
-		opacity: 1;
-	}
-
-}
-
-.larch-modal-open {
-		-webkit-filter: blur(3px);
-		-moz-filter: blur(3px);
-		filter: blur(3px);
-		visibility: visible;
-	}

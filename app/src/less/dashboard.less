@@ -1,0 +1,37 @@
+.row-tall {
+	min-height: 250px;
+	height: 36%;
+	padding: 0 10px; 
+
+	.chart-container {
+		height: 100%;
+		border-width: 0 0 2px 0;
+		border-image: url('../images/border.png') 0 0 2 0 repeat;
+		border-image-outset: 0;
+
+		&.last {
+			border-width: 2px 0 0 0;
+			border-image: url('../images/border.png') 2 0 0 0 repeat;
+			border-image-outset: 0;			
+		}
+	}
+}
+
+.row-short {
+	min-height: 170px;
+	height: 20%;
+
+	padding: 10px 0; 
+
+	.chart-container {
+		height: 100%;
+		border-width: 0 2px 0 0;
+		border-image: url('../images/border.png') 0 2 0 0 repeat;
+		border-image-outset: 0;
+
+		&.last {
+			border: none;
+		}
+	}
+	
+}

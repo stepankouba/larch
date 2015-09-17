@@ -1,109 +1,27 @@
-@import "variables.less";
+@import 'variables.less';
 
-/**
- * Sidebar
- */
-#sidebar-wrapper {
-	background: @sidebarBaseColor;
-}
+.sidebar-wrapper {
+	min-width: @sidebar-width;
+	margin-bottom: 100px;
+	height: 100%;
+	overflow: scroll;
+	color: black;
 
-ul.sidebar .sidebar-main a,
-.sidebar-footer,
-ul.sidebar .sidebar-list a:hover,
-#page-wrapper:not(.open) ul.sidebar .sidebar-title.separator {
-	/* Sidebar header and footer color */
-	background: @sidebarHeaderColor;
-}
-
-ul.sidebar {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	padding: 0;
-	margin: 0;
-	list-style: none;
-	text-indent: 10px;
-	overflow-x: hidden;
-	overflow-y: auto;
-	li {
-		a {
-			display: block;
-			float: left;
-			text-decoration: none;
-			width: @sidebarWidth;
-			color: #fff;
-		}
+	h5 {
+		color: @sidebar-title-color;
+		font-weight: bold; 
 	}
-	.sidebar-main {
-		padding: 10px 5px;
 
-		.form-control {}
+	ul {
+		list-style: none;
+		padding-left: 10px;
+		margin-bottom: 20px;
 
-	}
-	.sidebar-title {
-		color: @sidebarTitleColor;
-		font-size: 14px;
-		height: 35px;
-		line-height: 40px;
-		text-transform: uppercase;
-		transition: all .6s ease 0s;
-	}
-	.sidebar-list {
-		height: 40px;
-		a {
-			text-indent: 15px;
-			font-size: 14px;
-			color: #b2bfdc;
-			line-height: 40px;
-
-			&:hover, &.selected {
-				color: #fff;
-				border-left: 3px solid @sidebarMenuItemHover;
-				text-indent: 12px;
-			}
-
-
-		}
-	}
-	.menu-icon {
-		display: inline-block;
-		float: right;
-		
-		line-height: 40px;
-		width: 65px;
-		text-indent: 15px;
-
-		i {
-			display: inline-block;
-			padding-right: 5px;
-			text-indent: 0px;
-			color: rgb(143,143,143);
-
-			&:hover {
-				color: rgb(255, 255, 255);
+		li {
+			a {
+				color: @sidebar-li-color;
 			}
 		}
 	}
-}
 
-.sidebar-footer {
-	position: absolute;
-	height: 40px;
-	bottom: 0;
-	width: 100%;
-	padding: 0;
-	margin: 0;
-	transition: all .6s ease 0s;
-	text-align: center;
-	div {
-		a {
-			color: #b2bfdc;
-			font-size: 12px;
-			line-height: 43px;
-		}
-		a:hover {
-			color: #ffffff;
-			text-decoration: none;
-		}
-	}
 }
