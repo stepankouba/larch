@@ -19,7 +19,6 @@ const paths = {
 	build: {
 		default: `${BUILD_PATH}/**/*.*`,
 		js: `${BUILD_PATH}/js`,
-
 		css: `${BUILD_PATH}/css`,
 		index: `${BUILD_PATH}/`,
 		templates: `${BUILD_PATH}/templates`,
@@ -136,7 +135,6 @@ gulp.task('test', done => {
  */
 gulp.task('watch', () => {
 	gulp.watch([`${paths.src.js}/**/*.es6`], ['app']);
-	// gulp.watch([paths.src.tests], ['test']);
 	gulp.watch([paths.src.less], ['less']);
 	gulp.watch([paths.src.fonts], ['assets']);
 	gulp.watch([paths.src.templates], ['templates']);
@@ -159,7 +157,7 @@ gulp.task('webserver', () => {
 					// only in case url is following format: /build/dashboard/1
 					// and not in these cases: /build/index.html#/dashboard/1
 					if (req.url.indexOf('build') > -1 && req.url.indexOf('#') === -1 &&
-						!req.url.match(/\..{2,4}$/g)) {
+						!req.url.match(/\..{2,4}$/g) && req.url.indexOf('css') === -1) {
 						req.url = '/build/index.html';
 					}
 
