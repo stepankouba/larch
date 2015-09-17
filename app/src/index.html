@@ -1,40 +1,32 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <base href="http://localhost:3333/build/">
-    <title>larch</title>
-    <!-- STYLES -->
-    <!-- build:css lib/css/main.min.css -->
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="./css/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="./css/larch.css">
-    <link rel="stylesheet" type="text/css" href="../node_modules/c3/c3.css" >
-    <!-- endbuild -->
-    <!-- SCRIPTS -->
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<base href="http://localhost:3333/build/">
+	<title>larch</title>
+	<!-- STYLES -->
+	<!-- build:css lib/css/main.min.css -->
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="./css/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="./css/larch.css">
+	<!-- <link rel="stylesheet" type="text/css" href="../node_modules/c3/c3.css" > -->
+	<!-- endbuild -->
+	<!-- SCRIPTS -->
 </head>
 <body>
-<!--<div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak> -->
-<div id="page-wrapper" class="open">
-    <!--Sidebar -->
-    <div id="sidebar-wrapper" data-view="ui.sidebar">
-    </div> 
-    <!-- End Sidebar -->
+	<nav class="navbar navbar-default navbar-fixed-top" data-view="ui.header"> </nav>
 
-    <div id="content-wrapper">
-        
-            <!-- Header Bar -->
-            <div class="row header" data-view="ui.header"></div>
-            <!-- End Header Bar -->
-            <!-- Main Content -->
-            <div class="row" data-router=""></div>
-        <!-- End Page Content -->
-    </div>
-</div>
-<div id="modal-div">
-</div>
+	<div id="content-wrapper" class="container-fluid">
+		<div class="col-xs-2 sidebar-wrapper" data-view="ui.sidebar"></div> 
+		
+		<div class="col-xs-10 content" data-router=""></div>
+	</div>
+
+	<footer class="footer" data-view="ui.footer"></footer>
 <!-- End Page Wrapper -->
 </body>
+<div id="modal-div">
+</div>
 <script type="text/javascript" src="./js/larch.app.js"></script>
 </html>
