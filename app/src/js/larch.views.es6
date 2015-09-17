@@ -9,7 +9,13 @@ export default [
 		id: 'ui.header',
 		templateUrl: './ui/header.html',
 		scope: {},
-		controller: function() {}
+		controller() {}
+	},
+	{
+		id: 'ui.footer',
+		templateUrl: './ui/footer.html',
+		scope: {},
+		controller() {}
 	},
 	DashboardView
 ];

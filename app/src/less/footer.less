@@ -1,0 +1,44 @@
+@import 'variables.less';
+
+.footer {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: @footer-height;
+
+	.container-fluid {
+		text-align: center;
+
+		.logo {
+			display: inline-block;
+			margin-top: 10px;
+		}
+	}
+}
+
+.footer-search {
+	height: 40px;
+	
+	& > input {
+		width: 250px;
+		border-radius: 5px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: @footer-search-border-color;
+		border: none;
+		background-color: #e1e1e1;
+		padding: 4px;
+
+		&::-webkit-input-placeholder {
+			color: @input-placeholder-color;
+		}
+
+		&::-moz-placeholder {  /* Firefox 19+ */
+			color: @input-placeholder-color;  
+		}
+
+		&:-ms-input-placeholder {  
+			color: @input-placeholder-color;  
+		}
+	}
+}
