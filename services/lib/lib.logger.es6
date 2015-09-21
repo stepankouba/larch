@@ -45,9 +45,7 @@ const Logger = {
 		};
 
 		// prepend service name identification to the messge
-		logger.addFilter((msg) => {
-			return (msg.indexOf(serviceName) === -1) ? `${serviceName}: ${msg}` : msg;
-		});
+		logger.addFilter(msg => (msg.indexOf(serviceName) === -1) ? `${serviceName}: ${msg}` : msg);
 
 		return logger;
 	}
