@@ -1,6 +1,7 @@
 import { Request } from '../../lib.test/';
 
 const conf = require('../local.json').environments.test;
+const json = true;
 
 describe('(api) User service tests', () => {
 	let r;
@@ -11,7 +12,7 @@ describe('(api) User service tests', () => {
 		beforeEach(done => {
 			r = Request.create('GET', '/user/login?username=test@test.com&password=test', conf);
 
-			r.request(done);
+			r.request(done, {json});
 		});
 
 		it('should login user', () => {
@@ -25,7 +26,7 @@ describe('(api) User service tests', () => {
 		beforeEach(done => {
 			r = Request.create('GET', '/user/current', conf);
 
-			r.request(done, {token});
+			r.request(done, {token, json});
 		});
 
 		it('should get user detail', () => {
@@ -40,7 +41,7 @@ describe('(api) User service tests', () => {
 		beforeEach(done => {
 			r = Request.create('PUT', '/user/test@test.com', conf);
 
-			r.request(done, {token, data});
+			r.request(done, {token, data, json});
 		});
 
 		it('should NOT update test\'s name', () => {
@@ -63,7 +64,7 @@ describe('(api) User service tests', () => {
 		beforeEach(done => {
 			r = Request.create('GET', '/user/current/logout', conf);
 
-			r.request(done, {token: tokenAfterUpdate});
+			r.request(done, {token: tokenAfterUpdate, json});
 		});
 
 		it('should logout user', () => {
@@ -93,7 +94,7 @@ describe('(api) User service tests', () => {
 		beforeEach(done => {
 			r = Request.create('POST', '/user/', conf);
 
-			r.request(done, {data});
+			r.request(done, {data, json});
 		});
 
 		it('should throw an error', () => {

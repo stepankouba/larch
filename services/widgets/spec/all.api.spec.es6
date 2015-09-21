@@ -3,7 +3,7 @@ import path from 'path';
 
 const conf = require('../local.json').environments.test;
 
-describe('(api) Widgets service tests', () => {
+xdescribe('(api) Widgets service tests', () => {
 	let r;
 
 	describe('get widget by single id', () => {
@@ -38,7 +38,7 @@ describe('(api) Widgets service tests', () => {
 		beforeEach(done => {
 			r = Request.create('GET', '/widasdasdfas', conf);
 
-			r.request(done);
+			r.request(done, {json: false});
 		});
 
 		it('should get error from /widasdasdfas', () => {
