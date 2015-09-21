@@ -1,11 +1,9 @@
 import gulp from 'gulp';
-import cp from 'child_process';
 import RethinkDB from 'rethinkdbdash';
 import jasmine from 'gulp-jasmine';
 import SpecReporter from 'jasmine-spec-reporter';
 import pm2 from 'pm2';
 
-const exec = cp.exec;
 const r = RethinkDB();
 
 const PATHS = {
@@ -29,9 +27,11 @@ const PATHS = {
 gulp.task('setup-db', cb => {
 	r.db(PATHS.jasmine.db)
 		.table(PATHS.jasmine.table)
-		.insert(require('./spec/data/widgets.json'))
+		.insert(require(PATHS.jasmine.data), {conflict: 'replace'})
 		.run()
-		.then(res => cb())
+		.then(res => {
+			cb();
+		})
 		.catch(err => cb(err));
 });
 
@@ -62,7 +62,8 @@ gulp.task('test-api', ['pm2'], cb => {
 
 gulp.task('clean-db', ['test-api'], cb => {
 	r.db(PATHS.jasmine.db)
-		.table(PATHS.jasmine.table).delete()
+		.table(PATHS.jasmine.table)
+		.delete()
 		.then(res => {
 			cb();
 		})
@@ -108,8 +109,9 @@ gulp.task('pm2', ['test-unit'], cb => {
 
 gulp.task('watch', () => {
 	gulp.watch([PATHS.src, PATHS.tests.unit, PATHS.tests.api],
-		['setup-db', 'test-unit', 'pm2', 'test-api','clean-db']);
+		['basic']);
 });
 
-gulp.task('default', ['setup-db', 'test-unit', 'pm2', 'test-api','clean-db', 'watch']);
+gulp.task('basic', ['setup-db', 'test-unit', 'pm2', 'test-api','clean-db']);
+gulp.task('default', ['basic', 'watch']);
 gulp.task('unit', ['setup-db', 'test-unit', 'clean-db', 'watch']);
