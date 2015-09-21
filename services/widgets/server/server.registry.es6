@@ -125,24 +125,28 @@ const Registry = {
 			const conf = Service.instance.conf;
 
 			return new Promise((resolve, reject) => {
-				let widget;
+				let widget = {};
+				let versions;
 
 				if (this.newHasToBeInserted) {
 					// this replaces versions key from send json with array
 					// which is then used
-					widget = this.json;
-					widget.versions = [this.json.versions];
+					widget = Object.assign({}, this.json);
+					versions = [this.json.versions];
 				} else {
 					// update onyl selected attributes
-					widget = this.currentWidget;
+					widget = Object.assign({}, this.currentWidget);
 					widget.title = this.json.title;
 					widget.shared = this.json.shared;
 					widget.authors = this.json.authors;
 					widget.tags = this.json.tags;
-
+					console.log(this.currentWidget);
 					// add the newest version at the begenning of the versions array
-					widget.versions.unshift(this.json.versions);
+					versions = this.currentWidget.versions;
+					versions.unshift(this.json.versions);
 				}
+
+				widget.versions = versions;
 
 				r.db(conf.db.database)
 					.table('widgets')
@@ -170,7 +174,11 @@ const Registry = {
 			.then(this._createDir())
 			.then(this._saveToDir())
 			.then(this._saveToRegistry())
-			.then(result => res.json(result))
+			.then(result => {
+				delete this.json;
+				delete this.file;
+				return res.json(result);
+			})
 			.catch(err => next(err));
 	},
 	postWidget() {

@@ -13,9 +13,9 @@ describe('(unit) Registry tests', () => {
 
 	it('should request DB by _requestDB with 1 result', done => {
 		Registry._requestDB('redmine-issues-log')
-			.then(result => {
-				expect(result.length).toBe(1);
-				expect(result[0].title).toBe('Redmine issue log');
+			.then(r => {
+				expect(r.length).toBe(1);
+				expect(r[0].title).toBe('Redmine issue log');
 				done();
 			});
 	});
@@ -110,7 +110,7 @@ describe('(unit) Registry tests', () => {
 	});
 
 	it('should save a JSON to registry', done => {
-		Registry.json = require('./data/widget-save.json');
+		Registry.json = JSON.parse(fs.readFileSync('./spec/data/widget-save.json', 'utf8'));
 		Registry.newHasToBeInserted = true;
 
 		const fn = Registry._saveToRegistry();
@@ -132,8 +132,9 @@ describe('(unit) Registry tests', () => {
 	});
 
 	it('should update the JSON in registry', done => {
-		Registry.currentWidget = require('./data/widgets.json')[0];
-		Registry.json = require('./data/widget-save.json');
+		/* eslint no-sync: false */
+		Registry.currentWidget = JSON.parse(fs.readFileSync('./spec/data/widgets.json', 'utf8'))[0];
+		Registry.json = JSON.parse(fs.readFileSync('./spec/data/widget-save.json', 'utf8'));
 		Registry.newHasToBeInserted = false;
 
 		const fn = Registry._saveToRegistry();
@@ -143,9 +144,10 @@ describe('(unit) Registry tests', () => {
 				r.db(conf.db.database)
 					.table('widgets')
 					.get(Registry.currentWidget.id)
-					.then(res => {
-						expect(res.versions.length).toBe(2);
-						expect(res.versions[0].version).toBe(Registry.json.versions.version);
+					.then(r => {
+						expect(r.versions.length).toBe(2);
+						expect(r.versions[0].version).toBe(Registry.json.versions.version);
+						delete Registry.currentWidget;
 						done();
 					})
 					.catch(err => {
