@@ -42,10 +42,8 @@ const Request = {
 		 * @param  {boolean}  conf.json true for representing the response as json
 		 * @param  {Object}   conf.data data structure to be sent as body for POST
 		 */
-		request(done, conf = { json: true }) {
-			conf.token = conf.token || '';
-			conf.json = conf.json || true;
-			conf.data = JSON.stringify(conf.data) || undefined;
+		request(done, conf = { json: true, token: '', data: undefined }) {
+			conf.data = conf.data ? JSON.stringify(conf.data) : conf.data;
 			conf.headers = conf.data ? {'content-type': 'application/json'} : { 'Accept': '*/*', 'User-Agent': 'Restler for node.js' };
 
 			const request = restler.request(this.getFullUrl(), {
@@ -60,14 +58,14 @@ const Request = {
 				if (res.statusCode === 200) {
 					this.data = conf.json ? JSON.parse(data) : data;
 				} else {
-					this.error = {code: res.statusCode, data: JSON.parse(data)};
+					this.error = {code: res.statusCode, data: conf.json ? JSON.parse(data) : data};
 				}
 
 				done();
 			});
 
-			request.on('error', (err,resp) => {
-				this.error = err;
+			request.on('error', (err,res) => {
+				this.error = {code: res.statusCode, data: err};
 				done();
 			});
 		},
