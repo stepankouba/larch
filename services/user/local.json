@@ -2,7 +2,7 @@
 	"version": "0.1",
 	"environments": {
 		"production": {
-			"protocol": "https:",
+			"protocol": "http:",
 			"url": "localhost",
 			"port": 9004,
 			"db": {
@@ -10,7 +10,7 @@
 			}
 		},
 		"development": {
-			"protocol": "https:",
+			"protocol": "http:",
 			"url": "localhost",
 			"port": 9104,
 			"db": {
@@ -18,7 +18,7 @@
 			}
 		},
 		"test": {
-			"protocol": "https:",
+			"protocol": "http:",
 			"url": "localhost",
 			"port": 9204,
 			"db": {
