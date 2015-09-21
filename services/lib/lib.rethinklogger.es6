@@ -47,7 +47,7 @@ RethinkLogger.prototype.log = function(level, msg, meta, callback) {
 			metadata: meta
 		}).run()
 		.then(() => callback(null, true))
-		.error(err => console.log(err));
+		.error(err => console.log(`Rethinkdb Error: ${err.stack}`));
 };
 // winston.transports.RethinkLogger = RethinkLogger;
 

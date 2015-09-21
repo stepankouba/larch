@@ -1,6 +1,6 @@
 export default {
 	/**
-	 * 
+	 * environment specification
 	 */
 	env: undefined,
 
@@ -17,6 +17,12 @@ export default {
 	db: {},
 
 	/**
+	 * definition of SSL usage for a service
+	 * @type {Boolean}
+	 */
+	ssl: undefined,
+
+	/**
 	 * set service configuration based on passed argument, NODE_ENV or implicitly set to development
 	 * @param {JSON} conf configuration object
 	 */
@@ -28,6 +34,8 @@ export default {
 		}
 
 		Object.assign(this, conf.environments[this.env]);
+
+		this.ssl = this.protocol.startsWith('https');
 
 		return this;
 	}

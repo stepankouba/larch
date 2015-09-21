@@ -14,9 +14,6 @@ import fs from 'fs';
 
 let logger;
 
-let httpsKey;
-let httpsCert;
-
 /**
  * Service object
  * @type {Object}
@@ -47,9 +44,6 @@ const Service = {
 		 */
 		service.fullname = `${service.name}.service`;
 
-		// create logger
-		logger = Logger.create(service.fullname);
-
 		// initiate instance
 		Service.instance = service;
 
@@ -60,9 +54,15 @@ const Service = {
 	prototype: {
 		/**
 		 * init server with all the middlewares, error handling and logging
+		 * @param  {[type]} conf     [description]
+		 * @param  {Object} rcConfig [description]
+		 * @return {[type]}          [description]
 		 */
-		init(conf) {
+		init(conf, rcConfig = { bodyParser: true }) {
 			this.server = express();
+
+			// create logger
+			this.server.logger = logger = Logger.create(this.fullname);
 
 			/**
 			 * configuration object taken from master.services.json
@@ -74,10 +74,12 @@ const Service = {
 			Service.Auth.init(this.conf.env);
 
 			// logging of incomming requests
-			this.server.use(morgan('combined', {stream: logger.stream}));
+			this.server.use(morgan('combined', {stream: this.server.logger.stream}));
 
 			// receive JSON objects from body of requests
-			this.server.use(bodyParser.json());
+			if (rcConfig.bodyParser) {
+				this.server.use(bodyParser.json());
+			}
 
 			this.server.use((req, res, next) => {
 				// TODO: this Allow Origin has to be set correctly
@@ -86,14 +88,6 @@ const Service = {
 				res.setHeader('Access-Control-Allow-Credentials', 'true');
 				next();
 			});
-
-			// allow using logger within services
-			this.server.logger = logger;
-
-			// import key and certificates
-			/* eslint no-sync:false */
-			httpsKey = fs.readFileSync('../larchservices-key.pem', 'utf8');
-			httpsCert = fs.readFileSync('../larchservices-cert.pem', 'utf8');
 		},
 		/**
 		 * start a service
@@ -102,12 +96,21 @@ const Service = {
 		run() {
 			logger.info('port is: ', this.conf.port);
 
-			const options = {
-				key: httpsKey,
-				cert: httpsCert
-			};
+			// last error handler
+			this.server.use(this._errorHandler());
 
-			https.createServer(options, this.server).listen(this.conf.port);
+			if (this.conf.ssl) {
+				/* eslint no-sync:false */
+				// import key and certificates
+				const options = {
+					key: fs.readFileSync('../larchservices-key.pem', 'utf8'),
+					cert: fs.readFileSync('../larchservices-cert.pem', 'utf8')
+				};
+
+				https.createServer(options, this.server).listen(this.conf.port);
+			} else {
+				http.createServer(this.server).listen(this.conf.port);
+			}
 			
 			logger.info('service started', Date.now());
 		},
@@ -142,26 +145,19 @@ const Service = {
 					logger.error('createRoutes has no method defined in app', route);
 				}
 			});
-
-			// last error handler
-			app.use(this._errorHandler());
 		},
 		/**
 		 * internal service error handler for the APIs
 		 * @return {Function} middleware
 		 */
-		_errorHandler() {
+		_errorHandler(optMsg = undefined) {
 			return (err, req, res, next) => {
-				// if development env, add the whole stack
-				if (this.conf.env === 'development') {
-					err.fullError = err;
-				}
-
 				logger.error('error occured', err.stack ? err.stack : err);
 
 				const responseCode = err.responseCode || 500;
-
-				res.status(responseCode).json(err);
+				const msg = err.msg || optMsg || err;
+				
+				res.status(responseCode).json({responseCode, msg});
 			};
 		}
 	}

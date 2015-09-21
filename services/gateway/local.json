@@ -1,0 +1,20 @@
+{
+	"version": "0.1",
+	"environments": {
+		"production": {
+			"protocol": "https:",
+			"url": "localhost",
+			"port": 9001
+		},
+		"development": {
+			"protocol": "https:",
+			"url": "localhost",
+			"port": 9101
+		},
+		"test": {
+			"protocol": "https:",
+			"url": "localhost",
+			"port": 9201
+		}
+	}
+}
