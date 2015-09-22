@@ -34,10 +34,11 @@ const Auth = {
 	},
 	/**
 	 * generate salt based on length
+	 * @param {Number} l length of the salt, default is LENGTH
 	 * @return {string} salt
 	 */
-	getSalt() {
-		return crypto.randomBytes(LENGTH).toString('hex');
+	getSalt(l = LENGTH) {
+		return crypto.randomBytes(l).toString('hex');
 	},
 	/**
 	 * generate random number of iterations betwee 8000 - 12000

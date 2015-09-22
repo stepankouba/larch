@@ -2,8 +2,9 @@ import RethinkDb from 'rethinkdbdash';
 import { Service } from '../../lib/';
 import Auth from './server.auth.es6';
 import isEmail from 'isEmail';
+import OAuth from 'oauth';
 
-const r = RethinkDb();
+let oauth;
 
 const user = {
 	/**
@@ -65,6 +66,7 @@ const user = {
 		const availableFields = ['name', 'auths', 'settings'];
 		const update = {};
 		const conf = Service.instance.conf;
+		const r = RethinkDb();
 
 		Object.keys(obj).forEach(key => {
 			if (availableFields.indexOf(key) > -1) {
@@ -145,6 +147,64 @@ const user = {
 					return next(err);
 				}
 			});
+	},
+	authSource(req, res, next) {
+		// get source object
+		const Source = {
+			clientId: 'd5954016069aaddfd1d6',
+			clientSecret: '8ffeae9c39e4ecfd87503c0c5d9680e12e65e891',
+			baseUrl: 'https://github.com',
+			authorizePath: '/login/oauth/authorize',
+			customHeaders: 'Accept: application/vnd.github.v3+json',
+			accessTokenPath: '/login/oauth/access_token'
+		};
+
+		oauth = new OAuth.OAuth2(
+			Source.clientId,
+			Source.clientSecret,
+			Source.baseUrl,
+			Source.authorizePath,
+			Source.accessTokenPath,
+			Source.customHeaders
+		);
+
+		const authURL = oauth.getAuthorizeUrl({
+			redirect_uri: 'https://localhost:9101/api/user/auth/callback',
+			scope: ['repo', 'user'],
+			state: Auth.getSalt(25)
+		});
+
+		return res.json({url: authURL});
+	},
+	authSourceCallback(req, res, next) {
+		const code = req.query.code;
+
+		if (!code) {
+			return next({responseCode: 404,msg: 'no code specified for the callback'});
+		}
+
+		function getToken() {
+			return new Promise((resolve, reject) => {
+				oauth.getOAuthAccessToken(
+					code,
+					{},
+					(e, accessToken, refreshToken, results) => {
+						if (e) {
+							return reject(e);
+						} else if (results.error) {
+							return reject(results);
+						}
+						resolve(accessToken);
+
+					}
+				);
+			});
+		}
+
+		getToken()
+			.then(token => res.json({token}))
+			// store the token in user object
+			.catch(err => next(err));
 	}
 };
 

@@ -2,7 +2,7 @@ export default [
 	{
 		name: 'user',
 		re: /^\/api\/user\//,
-		target: 'http://localhost:9003',
+		target: 'http://localhost:9104',
 		routes: [
 			{
 				path: '/api/user/current',
@@ -39,6 +39,18 @@ export default [
 				httpMethod: 'POST',
 				requiresAuth: false,
 				middleware: []
+			},
+			{
+				path: '/api/user/auth/source/:sourceId',
+				httpMethod: 'GET',
+				requiresAuth: false,
+				middleware: []
+			},
+			{
+				path: '/api/user/auth/callback',
+				httpMethod: 'GET',
+				requiresAuth: false,
+				middleware: []
 			}
 		]
 	},
@@ -50,7 +62,7 @@ export default [
 			{
 				path: '/api/widget/:id',
 				httpMethod: 'GET',
-				requiresAuth: falsexw,
+				requiresAuth: false,
 				middleware: []
 			},
 			{
@@ -67,6 +79,19 @@ export default [
 			},
 			{
 				path: '/api/widgets',
+				httpMethod: 'GET',
+				requiresAuth: false,
+				middleware: []
+			}
+		]
+	},
+	{
+		name: 'data',
+		re: /^\/api\/data\/?/,
+		target: 'http://localhost:9106',
+		routes: [
+			{
+				path: '/api/data/:widgetId',
 				httpMethod: 'GET',
 				requiresAuth: false,
 				middleware: []

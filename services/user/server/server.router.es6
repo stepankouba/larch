@@ -37,9 +37,15 @@ export default [
 		middleware: [api.update]
 	},
 	{
-		path: '/user',
-		httpMethod: 'POST',
+		path: '/user/auth/source/:sourceId',
+		httpMethod: 'GET',
 		requiresAuth: false,
-		middleware: [api.signin]
+		middleware: [api.authSource]
+	},
+	{
+		path: '/user/auth/callback',
+		httpMethod: 'GET',
+		requiresAuth: false,
+		middleware: [api.authSourceCallback]
 	}
 ];
