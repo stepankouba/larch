@@ -40,10 +40,6 @@ export default {
 		text: 'What is the URL o the source system?',
 		default: 'https://'
 	},
-	'versions.source.auth': {
-		text: 'Which authentication method should be used (one of supported by the source system)',
-		default: false
-	},
 	'versions.assets.template': {
 		text: 'Where the widget\'s template is located?',
 		default: 'index.html'
