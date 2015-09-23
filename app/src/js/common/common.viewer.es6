@@ -20,8 +20,8 @@ let ViewerFn = function(HTTPer, Logger) {
 
 			this.getTemplate(viewId)
 				.then(this._storeViewObject(item, viewId))
-				.then(this._runController(viewId))
 				.then(this._appendTemplate(item, viewId))
+				.then(this._runController(viewId))
 				.catch(err => logger.error(err));
 		},
 
@@ -76,7 +76,7 @@ let ViewerFn = function(HTTPer, Logger) {
 				// setting view as this for controller
 				inj.invoke(view.controller, view);
 				
-				return Promise.resolve(view);
+				//return Promise.resolve(view);
 			}
 		},
 
@@ -91,9 +91,12 @@ let ViewerFn = function(HTTPer, Logger) {
 		_appendTemplate() {
 			// need arrow function here to keep this pointing at Viewer
 			return (view) => {
+				logger.log(`appending ${view.id}`);
 				view.element.innerHTML = this._compileTemplate(view);
 
 				this._addEventListeners(view);
+
+				return Promise.resolve(view);
 			}
 		},
 
