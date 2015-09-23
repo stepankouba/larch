@@ -98,18 +98,24 @@ let ViewerFn = function(HTTPer, Logger) {
 		},
 
 		_addEventListeners(view) {
-			let onclicks = view.element.querySelectorAll('[data-on-click]');
+			const onclicks = view.element.querySelectorAll('[data-on-click]');
 
 			[].forEach.call(onclicks, item => {
 				// attribute value
-				let attr = item.getAttribute('data-on-click');
+				const attr = item.getAttribute('data-on-click');
 				// firstly get all attributes, split them by , and then eval them to get proper types
-				let attributes = attr.match(/\( *([^)]+?) *\)/i)[1].split(/\s*,\s*/g).map(i => eval(i));
+				let attributes = attr.match(/\( *([^)]+?) *\)/i);
+				if (attributes === null) {
+					attributes = ['', ''];
+				}
+
+				attributes = attributes[1].split(/\s*,\s*/g).map(i => eval(i));
+
 				// new ('test', 15,'value') - get first after spliting with (, then teplace any spaces
-				let methodName = attr.split('(')[0].trim();
-				
-				item.addEventListener('click', function(e){
-					// call requested method 
+				const methodName = attr.split('(')[0].trim();
+
+				item.addEventListener('click', e => {
+					// call requested method
 					view.methods[methodName].apply(view, [e, ...attributes]);
 				});
 			});
