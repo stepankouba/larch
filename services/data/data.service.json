@@ -1,0 +1,13 @@
+{
+    "apps" : [
+        {
+            "name"              : "larch.services.data",
+            "script"            : "service.js",
+            "args"              : ["development"],
+            "watch"             : false,
+            "merge_logs"        : false,
+            "cwd"               : "./",
+            "exec_mode"         : "cluster_mode"
+        }
+    ]
+}
