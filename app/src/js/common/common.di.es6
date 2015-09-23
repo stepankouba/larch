@@ -2,7 +2,7 @@ const CTRLR = 'controller';
 const CLASS = 'class';
 const SINGL = 'singleton';
 
-let Injector = {
+const Injector = {
 	instances: {
 		[CTRLR]: new Map(),
 		[CLASS]: new Map(),
@@ -12,7 +12,7 @@ let Injector = {
 	 * creates new injector object
 	 */
 	create() {
-		let injector = Object.create(Injector.prototype);
+		const injector = Object.create(Injector.prototype);
 
 		// share DI instances accross different instances of Injector
 		// TODO: need to think if this is wise and desired
@@ -28,14 +28,14 @@ let Injector = {
 			}
 
 			if (this._has(name, type)) {
-				throw new Error('provider already existing');	
+				throw new Error('provider already existing');
 			}
 
 			if (!this[type]) {
-				throw new Error(`cannot create provider of type ${type}`)
+				throw new Error(`cannot create provider of type ${type}`);
 			}
 
-			let instance = this._resolve(fn);
+			const instance = this._resolve(fn);
 
 			this.instances[type].set(name, instance);
 		},
@@ -43,8 +43,8 @@ let Injector = {
 		_get(name) {
 			let inst;
 
-			for (let type in this.instances) {
-				let m = this.instances[type];
+			for (const type in this.instances) {
+				const m = this.instances[type];
 				if (m.has(name)) {
 					inst = m.get(name);
 					break;
@@ -58,7 +58,7 @@ let Injector = {
 			if (!name || !this._has(name)) {
 				throw new Error('can not get required dependency: ${name}');
 			}
-			
+
 			return this._get(name);
 		},
 
@@ -68,7 +68,7 @@ let Injector = {
 			if (type) {
 				result = this.instances[type].has(name);
 			} else {
-				for (let type in this.instances) {
+				for (const type in this.instances) {
 					if (this.instances[type].has(name)) {
 						result = true;
 						break;
@@ -90,14 +90,14 @@ let Injector = {
 		},
 
 		_resolve(fn, thisArg = null) {
-			let deps = fn.$injector;
+			const deps = fn.$injector;
 			let args = [];
-			let errors = [];
+			const errors = [];
 
 			// any dependency
 			if (deps) {
 				args = deps.map(dep => {
-					let d = this._get(dep);
+					const d = this._get(dep);
 
 					if (!d) {
 						errors.push(dep);
@@ -119,6 +119,5 @@ let Injector = {
 		}
 	}
 };
-
 
 export default Injector;
