@@ -1,16 +1,14 @@
-'use strict';
+const HTTPerFn = function(Logger) {
+	const logger = Logger.create('larch.HTTPer');
 
-let HTTPerFn = function(Logger) {
-	let logger = Logger.create('larch.HTTPer');
-
-	let HTTPer = {
+	const HTTPer = {
 		get(url, conf = {}) {
-			let promise = new Promise((resolve, reject) => {
-				let xhr = new XMLHttpRequest();
+			return new Promise((resolve, reject) => {
+				const xhr = new XMLHttpRequest();
 
-				xhr.open("GET", url, true);
-				
-				xhr.onload = function (e) {
+				xhr.open('GET', url, true);
+
+				xhr.onload = function(e) {
 					if (xhr.readyState === 4) {
 						if (xhr.status === 200) {
 							// if json set true, parse output as JSON, otherwise return plain textside
@@ -21,16 +19,14 @@ let HTTPerFn = function(Logger) {
 						}
 					}
 				};
-				
-				xhr.onerror = function (e) {
+
+				xhr.onerror = function(e) {
 					logger.error(xhr.statusText);
 					reject(xhr.statusText);
 				};
-				
+
 				xhr.send(null);
 			});
-
-			return promise;
 		}
 	};
 
