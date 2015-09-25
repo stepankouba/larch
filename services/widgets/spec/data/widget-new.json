@@ -1,0 +1,50 @@
+{
+    "authors": [
+        "Stepan Kouba <stepan.kouba@gmail.com>"
+    ],
+    "id": "707d09f0-5adb-454e-a1b5-bb27457f9ae3",
+    "name": "github-commits-week-avg",
+    "shared": "public",
+    "tags": [
+        "github"
+    ],
+    "title": "Github repo weekly commits average",
+    "versions": [{
+        "assets": {
+            "js": "",
+            "readme": "",
+            "screenshots": [
+                ""
+            ],
+            "template": ""
+        },
+        "client": {
+            "display": {
+                "height": 200,
+                "width": 700
+            },
+            "modal": {
+                "size": "medium"
+            }
+        },
+        "description": "no description",
+        "general": {
+            "params": {
+                "owner": "text",
+                "repo": "text"
+            }
+        },
+        "server": {
+            "requests": {
+                "method": "get",
+                "path": "/repos/{settings.owner}/{settings.repo}/stats/commit_activity"
+            }
+        },
+        "source": {
+            "name": "lo-github",
+            "url": "https://api.github.com"
+        },
+        "type": "chart-line",
+        "version": "0.1.0"
+    }]
+}
