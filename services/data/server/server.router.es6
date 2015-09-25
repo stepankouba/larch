@@ -7,7 +7,7 @@ import api from './server.api.es6';
 export default [
 	{
 		path: '/data/:widgetId',
-		httpMethod: 'GET',
+		httpMethod: 'POST',
 		requiresAuth: false,
 		middleware: [api.getData]
 	}

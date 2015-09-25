@@ -15,24 +15,24 @@ const PATHS = {
 	jasmine: {
 		apiConfig: './spec/support/jasmine.api.json',
 		unitConfig: './spec/support/jasmine.unit.json',
-		data: './spec/data/widgets.json',
-		db: 'larch_widgets_test',
-		table: 'widgets'
+		// data: './spec/data/widgets.json',
+		// db: 'larch_widgets_test',
+		// table: 'widgets'
 	},
 	pm2: {
-		JSON: './widgets.service.json'
+		JSON: './data.service.json'
 	},
 };
 
 gulp.task('setup-db', cb => {
-	r.db(PATHS.jasmine.db)
-		.table(PATHS.jasmine.table)
-		.insert(require(PATHS.jasmine.data), {conflict: 'replace'})
-		.run()
-		.then(res => {
-			cb();
-		})
-		.catch(err => cb(err));
+	// r.db(PATHS.jasmine.db)
+	// 	.table(PATHS.jasmine.table)
+	// 	.insert(require(PATHS.jasmine.data), {conflict: 'replace'})
+	// 	.run()
+	// 	.then(res => {
+	// 		cb();
+	// 	})
+	// 	.catch(err => cb(err));
 });
 
 gulp.task('test-unit', ['setup-db'], cb => {
@@ -61,13 +61,13 @@ gulp.task('test-api', ['pm2'], cb => {
 });
 
 gulp.task('clean-db', ['test-api'], cb => {
-	r.db(PATHS.jasmine.db)
-		.table(PATHS.jasmine.table)
-		.delete()
-		.then(res => {
-			cb();
-		})
-		.catch(err => cb(err));
+	// r.db(PATHS.jasmine.db)
+	// 	.table(PATHS.jasmine.table)
+	// 	.delete()
+	// 	.then(res => {
+	// 		cb();
+	// 	})
+	// 	.catch(err => cb(err));
 });
 
 gulp.task('pm2', ['test-unit'], cb => {
