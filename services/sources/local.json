@@ -1,0 +1,29 @@
+{
+	"version": "0.1",
+	"environments": {
+		"production": {
+			"protocol": "http:",
+			"url": "localhost",
+			"port": 9008,
+			"db": {
+			    "database": "larch_sources"
+			}
+		},
+		"development": {
+			"protocol": "http:",
+			"url": "localhost",
+			"port": 9108,
+			"db": {
+			    "database": "larch_sources"
+			}
+		},
+		"test": {
+			"protocol": "http:",
+			"url": "localhost",
+			"port": 9208,
+			"db": {
+			    "database": "larch_sources_test"
+			}
+		}
+	}
+}
