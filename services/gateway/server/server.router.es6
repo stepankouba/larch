@@ -41,7 +41,7 @@ export default [
 				middleware: []
 			},
 			{
-				path: '/api/user/auth/source/:sourceId',
+				path: '/api/user/auth/source/:name',
 				httpMethod: 'GET',
 				requiresAuth: false,
 				middleware: []
@@ -92,10 +92,42 @@ export default [
 		routes: [
 			{
 				path: '/api/data/:widgetId',
+				httpMethod: 'POST',
+				requiresAuth: false,
+				middleware: []
+			}
+		]
+	},
+	{
+		name: 'dashboards',
+		re: /^\/api\/(dashboard|dashboards)\/?/,
+		target: 'http://localhost:9107',
+		routes: [
+			{
+				path: '/api/dashboard/:id',
+				httpMethod: 'GET',
+				requiresAuth: false,
+				middleware: []
+			},
+			{
+				path: '/api/dashboards/:user',
 				httpMethod: 'GET',
 				requiresAuth: false,
 				middleware: []
 			}
 		]
-	}
+	},
+	{
+		name: 'sources',
+		re: /^\/api\/(source|sources)\/?/,
+		target: 'http://localhost:9108',
+		routes: [
+			{
+				path: '/api/source/:name',
+				httpMethod: 'GET',
+				requiresAuth: false,
+				middleware: []
+			}
+		]
+	},
 ];
