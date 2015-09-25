@@ -1,0 +1,29 @@
+{
+	"version": "0.1",
+	"environments": {
+		"production": {
+			"protocol": "http:",
+			"url": "localhost",
+			"port": 9007,
+			"db": {
+			    "database": "larch_dashboards"
+			}
+		},
+		"development": {
+			"protocol": "http:",
+			"url": "localhost",
+			"port": 9107,
+			"db": {
+			    "database": "larch_dashboards"
+			}
+		},
+		"test": {
+			"protocol": "http:",
+			"url": "localhost",
+			"port": 9207,
+			"db": {
+			    "database": "larch_dashboards_test"
+			}
+		}
+	}
+}
