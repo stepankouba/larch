@@ -154,8 +154,8 @@ const Service = {
 			return (err, req, res, next) => {
 				logger.error('error occured', err.stack ? err.stack : err);
 
-				const responseCode = err.responseCode || 500;
-				const msg = err.msg || optMsg || err;
+				const responseCode = err.responseCode || err.statusCode || 500;
+				const msg = err.msg || err.data.message || optMsg || err;
 				
 				res.status(responseCode).json({responseCode, msg});
 			};
