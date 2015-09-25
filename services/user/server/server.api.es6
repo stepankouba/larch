@@ -3,6 +3,7 @@ import { Service } from '../../lib/';
 import Auth from './server.auth.es6';
 import isEmail from 'isEmail';
 import OAuth from 'oauth';
+import https from 'https';
 
 let oauth;
 
@@ -148,39 +149,73 @@ const user = {
 				}
 			});
 	},
+	/**
+	 * create authorization for particular source for a user
+	 * @param  {[type]}   req  [description]
+	 * @param  {[type]}   res  [description]
+	 * @param  {Function} next [description]
+	 * @return {[type]}        [description]
+	 */
 	authSource(req, res, next) {
+		const name = req.params.name;
+
 		// get source object
-		const Source = {
-			clientId: 'd5954016069aaddfd1d6',
-			clientSecret: '8ffeae9c39e4ecfd87503c0c5d9680e12e65e891',
-			baseUrl: 'https://github.com',
-			authorizePath: '/login/oauth/authorize',
-			customHeaders: 'Accept: application/vnd.github.v3+json',
-			accessTokenPath: '/login/oauth/access_token'
+		const options = {
+			hostname: 'localhost',
+			port: 9101,
+			path: `/api/source/${name}`,
+			rejectUnauthorized: false,
+			method: 'GET'
 		};
 
-		oauth = new OAuth.OAuth2(
-			Source.clientId,
-			Source.clientSecret,
-			Source.baseUrl,
-			Source.authorizePath,
-			Source.accessTokenPath,
-			Source.customHeaders
-		);
+		const request = https.request(options, response => {
+			if (response.statusCode !== 200) {
+				return next(response);
+			}
 
-		const authURL = oauth.getAuthorizeUrl({
-			redirect_uri: 'https://localhost:9101/api/user/auth/callback',
-			scope: ['repo', 'user'],
-			state: Auth.getSalt(25)
+			response.on('data', data => {
+				const source = JSON.parse(data)[0];
+
+				// create oauth after receiving the source
+				oauth = new OAuth.OAuth2(
+					source.clientId,
+					source.clientSecret,
+					source.baseUrl,
+					source.authorizePath,
+					source.accessTokenPath,
+					source.customHeaders
+				);
+
+				const authURL = oauth.getAuthorizeUrl(source.authorizeUrl);
+
+				return res.json({url: authURL});
+			});
 		});
 
-		return res.json({url: authURL});
+		request.end();
+		request.on('error', err => next(err));
 	},
+	/**
+	 * [authSourceCallback description]
+	 * called with /url?code=xxxx&source={source name}
+	 * source name has to be set in Source.authorizeUrl definitino
+	 *
+	 * @param  {[type]}   req  [description]
+	 * @param  {[type]}   res  [description]
+	 * @param  {Function} next [description]
+	 * @return {[type]}        [description]
+	 */
 	authSourceCallback(req, res, next) {
 		const code = req.query.code;
+		const source = req.query.source;
+		// TODO: remove this testing user
+		const user = req.user || {id: 'd77158fd-4b64-498a-be3d-e88777958223'};
 
-		if (!code) {
-			return next({responseCode: 404,msg: 'no code specified for the callback'});
+		const conf = Service.instance.conf;
+		const r = RethinkDb();
+
+		if (!code || !source) {
+			return next({responseCode: 404,msg: 'no code or source specified for the callback'});
 		}
 
 		function getToken() {
@@ -202,7 +237,18 @@ const user = {
 		}
 
 		getToken()
-			.then(token => res.json({token}))
+			.then(token => {
+				const update = {settings: {sources: {}}};
+				update.settings.sources[source] = token;
+
+				r.db(conf.db.database)
+					.table('users')
+					.get(user.id)
+					.update(update)
+					.run()
+					.then(result => res.json({token}))
+					.catch(err => next(err));
+			})
 			// store the token in user object
 			.catch(err => next(err));
 	}

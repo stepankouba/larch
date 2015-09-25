@@ -37,7 +37,7 @@ export default [
 		middleware: [api.update]
 	},
 	{
-		path: '/user/auth/source/:sourceId',
+		path: '/user/auth/source/:name',
 		httpMethod: 'GET',
 		requiresAuth: false,
 		middleware: [api.authSource]
