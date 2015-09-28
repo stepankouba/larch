@@ -5,10 +5,6 @@
     "like": false,
     "desc": "github statistics for my project",
     "widgets": [
-        [
-            {"widgetId": "707d09f0-5adb-454e-a1b5-bb27457f9ae3","settings": {"repo": "larch", "owner": "stepankouba"}}
-        ],
-        [],
-        []
+        {"widgetId": "707d09f0-5adb-454e-a1b5-bb27457f9ae3","display": {"row": 0, "position": 0},"settings": {"repo": "larch", "owner": "stepankouba"}}
     ]
 }
