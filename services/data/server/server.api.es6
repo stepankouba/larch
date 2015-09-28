@@ -45,6 +45,7 @@ const api = {
 		const widgetId = req.params.widgetId;
 		const widget = req.body.widget;
 		const userSource = req.body.user.settings.source;
+		const raw = req.body;
 
 		console.log(userSource);
 
@@ -56,7 +57,7 @@ const api = {
 			.then(api._createOAuth)
 			.then(oauth => {
 				const baseUrl = widget.version.source.url;
-				const apiPath = strformat(widget.version.server.requests.path, widget);
+				const apiPath = strformat(widget.version.server.requests.path, raw);
 				const method = widget.version.server.requests.method;
 
 				oauth[method](`${baseUrl}${apiPath}`, userSource.token, (err, result, response) => {
