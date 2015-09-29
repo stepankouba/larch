@@ -1,10 +1,13 @@
-import Handlebars from '../common/common.handlebars.es6';
+// import Handlebars from '../common/common.handlebars.es6';
 
-let ModalFn = function(HTTPer, Logger){
-	let logger = Logger.create('component.Modal');
-	let Modal = {
-		create() {
-			let m = Object.create(Modal.prototype);
+const ModalFn = function(Viewer, HTTPer, Logger) {
+	const logger = Logger.create('component.Modal');
+	const Modal = {
+		create(modalName) {
+			const m = Object.create(Modal.prototype);
+
+			m.name = modalName;
+			m.viewId = `ui.modal.${m.name}`;
 
 			return m;
 		},
@@ -12,35 +15,51 @@ let ModalFn = function(HTTPer, Logger){
 			instance: undefined,
 			element: undefined,
 			container: undefined,
+			/**
+			 * load required template
+			 * @return {[type]} [description]
+			 */
 			open() {
-				// TODO: make a cache od modals
-				return HTTPer.get(window.location.origin + '/build/templates/ui/modal/modal.html')
-					.then(data => {
-						let template = data;
-						this.container = document.querySelector('#modal-div');
-						this.container.innerHTML = data;
-						this.element = 	this.container.firstElementChild;
-						
-						this.element.classList.add('show');
+				logger.info(`open ${this.name} modal`);
+
+				this.container = document.querySelector('#modal-div');
+				return Viewer.processView(this.container, this.viewId)
+					.then(view => {
+						// store link to modal for the view
+						view.scope.modal = this;
+
+						this.element = this.container.firstElementChild;
+
+						// this.element.classList.add('show');
 						this.element.style.display = 'block';
-						
-						// TODO: this disables scrolling based on bootstrap, but not working yet
-						document.getElementById('page-wrapper').classList.toggle('larch-modal-open');
-						//document.getElementById('content-wrapper').classList.toggle('modal-open');
+
+						this._toggleClassOnId('content-wrapper', 'larch-modal-open');
 
 						return Promise.resolve(true);
 					})
 					.then(() => {
 						return new Promise((resolve, reject) => {
-							this._run(resolve, reject);
+							this.resolve = resolve;
+							this.reject = reject;
 						});
 					});
 			},
+			_toggleClassOnId(id, className) {
+				document.getElementById(id).classList.toggle(className);
+			},
+			/**
+			 * remove modal from DOM
+			 */
 			hide() {
 				this.element.style.display = 'none';
 				this.container.innerHTML = '';
-				document.getElementById('page-wrapper').classList.toggle('larch-modal-open');
+				this._toggleClassOnId('content-wrapper', 'larch-modal-open');
 			},
+			/**
+			 * prepare modal before usage
+			 * @param  {Function} resolve Promise resolve
+			 * @param  {Function} reject  Promise rejection
+			 */
 			_run(resolve, reject) {
 				this._addEventListeners('[data-dismiss]','click', e => {
 					e.preventDefault();
@@ -52,13 +71,19 @@ let ModalFn = function(HTTPer, Logger){
 					e.preventDefault();
 					this.hide();
 					resolve('yeah');
-				})
+				});
 			},
+			/**
+			 * add event listeners required by modal component to the modal elements
+			 * @param {string} selector css3 selector of element
+			 * @param {string} type     event name
+			 * @param {Function} handler 
+			 */
 			_addEventListeners(selector, type, handler) {
-				let els = this.element.querySelectorAll(selector);
+				const els = this.element.querySelectorAll(selector);
 				[].forEach.call(els, el => {
 					el.addEventListener(type, handler);
-				});	
+				});
 			},
 
 		}
@@ -66,7 +91,7 @@ let ModalFn = function(HTTPer, Logger){
 
 	return Modal;
 };
-ModalFn.$injector = ['larch.HTTPer', 'larch.Logger'];
+ModalFn.$injector = ['larch.Viewer', 'larch.HTTPer', 'larch.Logger'];
 
 export default {
 	name: 'component.Modal',
