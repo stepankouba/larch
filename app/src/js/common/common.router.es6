@@ -1,12 +1,12 @@
 import { Global } from '../lib/lib.global.es6';
 import { assign, map2Array } from '../lib/lib.assign.es6';
-import AppDispatcher from '../larch.dispatcher.es6';
+// import AppDispatcher from '../larch.dispatcher.es6';
 import { EventEmitter } from 'events';
 
-let RouterFn = function(Logger) {
-	let logger = Logger.create('larch.Router');
+const RouterFn = function(Logger) {
+	const logger = Logger.create('larch.Router');
 
-	let Router = assign(EventEmitter.prototype, {
+	const Router = assign(EventEmitter.prototype, {
 		current: {},
 		conf(conf) {
 			this.conf = conf;
@@ -14,13 +14,13 @@ let RouterFn = function(Logger) {
 		},
 		routes: new Map(),
 		_parseUrl(routeObj) {
-			let regExtractPropNames = /{+|}+/g;
-			let regHasProps = /{{(.*?)[\|\|.*?]?}}/g;
-			let regReplaceProps = regHasProps;
-			let url = routeObj.url;
+			const regExtractPropNames = /{+|}+/g;
+			const regHasProps = /{{(.*?)[\|\|.*?]?}}/g;
+			const regReplaceProps = regHasProps;
+			const url = routeObj.url;
 
 			// get propnames
-			let dirtyProps = url.match(regHasProps);
+			const dirtyProps = url.match(regHasProps);
 			if (dirtyProps) {
 				routeObj.props = dirtyProps.map(item => item.replace(regExtractPropNames, ''));
 			}
@@ -35,7 +35,7 @@ let RouterFn = function(Logger) {
 				return logger.error('Router not defined properly');
 			}
 
-			let route = this._parseUrl(conf);
+			const route = this._parseUrl(conf);
 
 			this.routes.set(route.id, route);
 		},
@@ -46,7 +46,7 @@ let RouterFn = function(Logger) {
 
 			// this is replacing for ... of loop to save some 300kb and not to load polyfill
 			this.routes.forEach(item => {
-				let urlMatch = url.match(item.regexpUrl);
+				const urlMatch = url.match(item.regexpUrl);
 				if (!values && urlMatch) {
 					values = urlMatch;
 					route = item;
@@ -56,17 +56,17 @@ let RouterFn = function(Logger) {
 			});
 
 			if (route) {
-				let elem = document.querySelector('[data-router]');
+				const elem = document.querySelector('[data-router]');
 
 				this.current.props = {};
 				this.current.url = url;
 				this.current.view = route.view;
 
 				values.forEach((val, index) => {
-					let key = route.props[index];
+					const key = route.props[index];
 					this.current.props[key] = val;
 				});
-				
+
 				// add required view to the element and keep Viewer to process it
 				elem.setAttribute('data-view', route.view);
 
@@ -79,8 +79,8 @@ let RouterFn = function(Logger) {
 			}
 		},
 		navigateToMain(emitEvent = true) {
-			let main = map2Array(this.routes).filter(item => item.main)[0];
-			
+			const main = map2Array(this.routes).filter(item => item.main)[0];
+
 			if (main) {
 				this.navigate(main.mainUrl, emitEvent);
 			}
