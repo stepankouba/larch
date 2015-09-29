@@ -1,32 +1,42 @@
-const API_VER = '0.1';
+const DataSrvc = function(HTTPer, Logger) {
+	const logger = Logger.create('service.Data');
 
-let conf = require('../../master.app.json');
+	const srvc = {
+		getData(widget, settings) {
+			logger.log(`request to /api/widget/${widget.id} sent`);
 
-let DataSrvc = function(HTTPer, Logger) {
-	let logger = Logger.create('service.Data');
+			const user = {
+				settings: {
+					source: {
+						token: '38687522b17c1f25c50f79e6f7eacfc5fa0c3bc7'
+					}
+				}
+			};
 
-	let srvc = {
-		receive(systemParams, userParams) {
-			let method = systemParams.method || 'get';
+			const postData = {
+				widget,
+				user,
+				settings
+			};
 
-			return this[method](systemParams, userParams);
-		},
-		get(systemParams, userParams) {
-			let url = systemParams.port ? [systemParams.url, systemParams.port].join(':') : systemParams.url;
-
-			// replace {param} strings in URL
-			let api = systemParams.api.replace(/{(\w+)}/g, ($0, $1) => userParams[$1]);
-
-			return HTTPer.get(url + api, {json: true});	
+			return HTTPer.post(`https://localhost:9101/api/data/${widget.id}`, postData, {json: true})
+				.catch(data => {
+					logger.error('hey, HTTPer raised an error', data);
+					if (data.statusCode === 202) {
+						setTimeout(this.getData.bind(this, widget), 1000);
+					} else {
+						Promise.reject(data);
+					}
+				});
 		}
 	};
 
 	return srvc;
-}
+};
 DataSrvc.$injector = ['larch.HTTPer', 'larch.Logger'];
 
 export default {
-		name: 'service.Data',
-		type: 'singleton',
-		functor: DataSrvc
-	};
+	name: 'service.Data',
+	type: 'singleton',
+	functor: DataSrvc
+};

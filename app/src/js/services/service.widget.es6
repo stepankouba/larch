@@ -1,27 +1,19 @@
-const API_VER = '0.1';
+const WidgetSrvc = function(HTTPer, Logger) {
+	const logger = Logger.create('service.Widget');
 
-let conf = require('../../master.app.json');
-
-let url = 'http://' + conf.url + ':' + conf.services.widgets.port + '/widgets/';
-
-let WidgetSrvc = function(HTTPer, Logger) {
-	let logger = Logger.create('service.Widget');
-
-	let srvc = {
-		getAll(userId) {
-			return HTTPer.get(url + 'all/' + userId, {json: true});
-		},
-		getById(widgetId) {
-			return HTTPer.get(url + widgetId, {json: true});
+	const srvc = {
+		getById(id) {
+			logger.log(`requesting widget data for id ${id}`);
+			return HTTPer.get(`https://localhost:9101/api/widget/${id}`, {json: true});
 		}
 	};
 
 	return srvc;
-}
+};
 WidgetSrvc.$injector = ['larch.HTTPer', 'larch.Logger'];
 
 export default {
-		name: 'service.Widget',
-		type: 'singleton',
-		functor: WidgetSrvc
-	};
+	name: 'service.Widget',
+	type: 'singleton',
+	functor: WidgetSrvc
+};

@@ -1,31 +1,23 @@
-/**
- * Dash API version used
- * @type {String}
- */
-const API_VER = '0.1';
+const DashSrvc = function(HTTPer, Logger) {
+	const logger = Logger.create('service.Dashboard');
 
-let conf = require('../../master.app.json');
-
-let url = 'http://' + conf.url + ':' + conf.services.dash.port + '/dash/';
-
-let DashSrvc = function(HTTPer, Logger) {
-	let logger = Logger.create('service.Dashboard');
-
-	let srvc = {
-		getAll(userId) {
-			return HTTPer.get(url + 'all/' + userId, {json: true});
+	const srvc = {
+		getAll(user) {
+			logger.log(`request to /api/dashboards/${user} sent`);
+			return HTTPer.get(`https://localhost:9101/api/dashboards/${user}`, {json: true});
 		},
-		getById(dashId) {
-			return HTTPer.get(url + dashId, {json: true});
+		getById(id) {
+			logger.log(`request to /api/dashboard/{$id} sent`);
+			return HTTPer.get(`https://localhost:9101/api/dashboard/${id}`, {json: true});
 		}
 	};
 
 	return srvc;
-}
+};
 DashSrvc.$injector = ['larch.HTTPer', 'larch.Logger'];
 
 export default {
-		name: 'service.Dashboard',
-		type: 'singleton',
-		functor: DashSrvc
-	};
+	name: 'service.Dashboard',
+	type: 'singleton',
+	functor: DashSrvc
+};
