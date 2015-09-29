@@ -1,15 +1,19 @@
-import {EventEmitter} from 'events';
-import {assign} from '../lib/lib.assign.es6';
+import { EventEmitter } from 'events';
+import { assign } from '../lib/lib.assign.es6';
 import AppDispatcher from '../larch.dispatcher.es6';
 
-let DashboardsMdlFn = function(DashboardSrvc, Logger) {
-	let logger = Logger.create('model.Dashboards');
-	 
+const DashboardsMdlFn = function(DashboardSrvc, Logger) {
+	const logger = Logger.create('model.Dashboards');
+
 	// define dispatcher registers
-	let dispatchers = {
-		getAll(data) {
-			DashboardsMdl.getAll(data)
-				.then(() => DashboardsMdl.emit('dashboards.getAll'))
+	const dispatchers = {
+		/**
+		 * get all dashboards for particular user
+		 * @param  {string} user username
+		 */
+		getAll(user) {
+			DashboardsMdl.getAll(user)
+				.then(() => DashboardsMdl.emit('dashboards.loaded'))
 				.catch(err => logger.error(err));
 		}
 	};
@@ -18,20 +22,32 @@ let DashboardsMdlFn = function(DashboardSrvc, Logger) {
 	AppDispatcher.register('Dashboards', 'dashboards.getAll', dispatchers.getAll);
 
 	// define model
-	let DashboardsMdl = assign(EventEmitter.prototype, {
-		list: undefined,
-		getAll(userId) {
-			let self = this;
-			let p = new Promise(function(resolve, reject){
-				DashboardSrvc.getAll(userId)
+	const DashboardsMdl = assign(EventEmitter.prototype, {
+		cache: [],
+		getAll(user) {
+			const self = this;
+
+			return new Promise((resolve, reject) => {
+				DashboardSrvc.getAll(user)
 					.then(data => {
-						self.list = data;
+						self.cache = data;
 						resolve(true);
 					})
 					.catch(err => reject(err));
 			});
+		},
+		getWidgets(id) {
+			const currentDashboard = this.cache.filter(item => item.id === id);
+			// need to flatten array
+			const flatten = [].concat(...currentDashboard[0].widgets);
 
-			return p;
+			return flatten;
+		},
+		getWidgetSettings(dashboardId, widgetId) {
+			const widgets = this.getWidgets(dashboardId);
+			const widget = widgets.filter(item => item.widgetId === widgetId);
+
+			return widget.settings;
 		}
 	});
 
@@ -40,6 +56,6 @@ let DashboardsMdlFn = function(DashboardSrvc, Logger) {
 DashboardsMdlFn.$injector = ['service.Dashboard', 'larch.Logger'];
 
 export default {
-		name: 'model.Dashboards',
-		model: DashboardsMdlFn
-	};
+	name: 'model.Dashboards',
+	model: DashboardsMdlFn
+};
