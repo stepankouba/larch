@@ -1,21 +1,19 @@
 'use strict';
 
-import DashboardView from './ui/dashboard/view.dashboard.es6';
-import SidebarView from './ui/sidebar/view.sidebar.es6';
+import DashboardView from './ui/view.dashboard.es6';
+import SidebarView from './ui/view.sidebar.es6';
+import HeaderView from './ui/view.header.es6';
+import ModalEditView from './ui/view.modal.edit.es6';
 
 export default [
 	SidebarView,
-	{
-		id: 'ui.header',
-		templateUrl: './ui/header.html',
-		scope: {},
-		controller() {}
-	},
+	HeaderView,
 	{
 		id: 'ui.footer',
 		templateUrl: './ui/footer.html',
 		scope: {},
 		controller() {}
 	},
-	DashboardView
+	DashboardView,
+	ModalEditView
 ];
