@@ -1,0 +1,59 @@
+<div class="modal larch-modal">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-on-click="close()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<ul class="nav nav-tabs">
+					<li role="presentation"><a href="" data-on-click="toggleTab('tab-dashboard')">dashboard</a></li>
+					<li role="presentation" class="active"><a href="" data-on-click="toggleTab('tab-widgets')">widget</a></li>
+				</ul>
+			</div>
+			<div class="modal-body">
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane" id="tab-dashboard">Dashboard</div>
+					<div role="tabpanel" class="tab-pane active" id="tab-widgets">
+						<div class="">
+							<h5>TOP WIDGET</h5>
+							<ul id="drag-drop-top">
+								{{#each-if widgetInstances "display.row" 0}}
+									{{#withHash @root.widgets widgetId}}
+										<li>{{name}}</li>
+									{{/withHash}}
+								{{else}}
+									<li>add new top widget</li>
+								{{/each-if}}
+							</ul>
+							<h5>MIDDLE WIDGETS</h5>
+							<ul id="drag-drop-middle">
+								{{!-- for all widgets --}}
+								{{#each-if widgetInstances "display.row" 1}}
+									{{#withHash @root.widgets widgetId}}
+										<li>{{name}}</li>
+									{{/withHash}}
+								{{/each-if}}
+								{{!-- display add links --}}
+								{{#middle-widgets-add-links widgetInstances}}
+									<li>add new middle widget {{index}}</li>
+								{{/middle-widgets-add-links}}
+							</ul>
+							<h5>BOTTOM WIDGET</h5>
+							<ul id="drag-drop-bottom">
+								{{#each-if widgetInstances "display.row" 2}}			
+									{{#withHash @root.widgets widgetId}}
+										<li>{{name}}</li>
+									{{/withHash}}
+								{{else}}
+									<li>add new bottom widget</li>
+								{{/each-if}}
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-on-click="close()">Close</button>
+					<button type="button" class="btn btn-primary" data-on-click="save()">Save changes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
