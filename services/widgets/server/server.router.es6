@@ -15,7 +15,7 @@ export default [
 		path: '/widget',
 		httpMethod: 'POST',
 		requiresAuth: false,
-		middleware: [api.postWidgetUpload().single('widget'),api.postWidget()]
+		middleware: [api.postWidget]
 	},
 	{
 		path: '/widget/:name/:version/asset/:asset',

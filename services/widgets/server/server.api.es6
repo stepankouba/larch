@@ -95,21 +95,18 @@ const api = {
 	/**
 	 * post widget function inserted from api.post.es6
 	 */
-	postWidget: Registry.postWidget,
-	/**
-	 * create multer middleware for file uploads
-	 * @return {Function} multer middleware
-	 */
-	postWidgetUpload() {
-		const storage = multer.diskStorage({
-			destination: 'uploads/',
-			filename(req, file, cb) {
-				cb(null, `${file.fieldname}.${Date.now()}.tar.gz`);
-			}
-		});
+	postWidget(req, res, next) {
+		const widget = req.body;
 
-		return multer({storage});
+		if (!widget) {
+			return next({responseCode: 404, msg: 'widget definition missing in the request'});
+		}
+
+		Registry.postWidget(widget)
+			.then(result => res.json(result))
+			.catch(err => next(err));
 	}
+
 };
 
 export default api;

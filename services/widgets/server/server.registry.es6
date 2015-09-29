@@ -15,17 +15,18 @@ const Registry = {
 	file: undefined,
 	/**
 	 * request DB whether a widget is already in Registry
-	 * @param  {String} name name of the widget
+	 * @param  {Object} widget widget object
 	 * @return {Promise.<Object[]|Error>} array of objects
 	 */
-	_requestDB(name) {
+	_requestDB(widget) {
 		const conf = Service.instance.conf;
+		const name = widget.name;
 
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)
 				.table('widgets')
 				.filter({name})
-				.then(result => resolve(result))
+				.then(result => resolve([widget, result]))
 				.error(err => reject(err));
 		});
 
@@ -36,27 +37,19 @@ const Registry = {
 	 * @param  {Object[]} result array of objects
 	 * @return {Promise.<boolean|Error>} indication whether, widget in it's version is already in Registry
 	 */
-	_isWidgetInRegistry() {
-		function isWidgetInRegistry(result) {
-			return new Promise((resolve, reject) => {
-				if (result.length === 0) {
-					this.newHasToBeInserted = true;
-					return resolve(false);
-				}
+	_isWidgetInRegistry([widget, result]) {
+		return new Promise((resolve, reject) => {
+			if (result.length === 0) {
+				return resolve([widget, {}]);
+			}
 
-				this.newHasToBeInserted = false;
-				this.currentWidget = result[0];
-
-				// if widget exists in db, compare versions, if greater in JSON proceed, if not exit
-				if (semver.gt(this.json.versions.version, result[0].versions[0].version)) {
-					return resolve(true);
-				} else {
-					return reject(new Error('RegistryWidget: send version which is not greater than existing one'));
-				}
-			});
-		};
-
-		return isWidgetInRegistry.bind(Registry);
+			// if widget exists in db, compare versions, if greater in JSON proceed, if not exit
+			if (semver.gt(widget.versions.version, result[0].versions[0].version)) {
+				return resolve([widget, result[0]]);
+			} else {
+				return reject(new Error('RegistryWidget: send version which is not greater than existing one'));
+			}
+		});
 	},
 	/**
 	 * create dir only if not existing alreadys
@@ -120,69 +113,46 @@ const Registry = {
 
 		return saveToDir.bind(Registry);
 	},
-	_saveToRegistry() {
-		function saveToRegistry() {
-			const conf = Service.instance.conf;
+	_saveToRegistry([widget, currentWidget]) {
+		const conf = Service.instance.conf;
 
-			return new Promise((resolve, reject) => {
-				let widget = {};
-				let versions;
-
-				if (this.newHasToBeInserted) {
-					// this replaces versions key from send json with array
-					// which is then used
-					widget = Object.assign({}, this.json);
-					versions = [this.json.versions];
-				} else {
-					// update onyl selected attributes
-					widget = Object.assign({}, this.currentWidget);
-					widget.title = this.json.title;
-					widget.shared = this.json.shared;
-					widget.authors = this.json.authors;
-					widget.tags = this.json.tags;
-					console.log(this.currentWidget);
-					// add the newest version at the begenning of the versions array
-					versions = this.currentWidget.versions;
-					versions.unshift(this.json.versions);
-				}
-
-				widget.versions = versions;
-
-				r.db(conf.db.database)
-					.table('widgets')
-					.insert(widget, {conflict: 'replace'})
-					.then(result => resolve(result))
-					.error(err => reject(err));
-			});
+		function copyProps(source, target) {
+			target.title = source.title;
+			target.shared = source.shared;
+			target.tags = source.tags;
+			target.authors = source.authors;
 		}
 
-		return saveToRegistry.bind(Registry);
+		return new Promise((resolve, reject) => {
+			const newHasToBeInserted = Object.keys(currentWidget).length === 0;
+
+			if (newHasToBeInserted) {
+				// this replaces versions key from send json with array
+				// which is then used
+				currentWidget = Object.create({});
+				currentWidget.name = widget.name;
+				currentWidget.versions = [];
+			}
+
+			copyProps(widget, currentWidget);
+			currentWidget.versions.unshift(widget.version);
+
+			r.db(conf.db.database)
+				.table('widgets')
+				.insert(widget, {conflict: 'replace'})
+				.then(result => resolve(result))
+				.error(err => reject(err));
+		});
 	},
-	_postWidget(req, res, next) {
-		if (!req.body.data) {
-			return next(new Error('postWidget: no data specified'));
-		}
-
+	postWidget(widget) {
 		// get JSON from body and file
-		this.json = JSON.parse(req.body.data);
-		this.file = req.file;
-
-		this._requestDB(this.json.name)
-			.then(this._isWidgetInRegistry())
+		return Registry._requestDB(widget)
+			.then(Registry._isWidgetInRegistry)
 			// TODO: check wether only owner is updating the widget
 			// .then(this._checkOwner())
-			.then(this._createDir())
-			.then(this._saveToDir())
-			.then(this._saveToRegistry())
-			.then(result => {
-				delete this.json;
-				delete this.file;
-				return res.json(result);
-			})
-			.catch(err => next(err));
-	},
-	postWidget() {
-		return Registry._postWidget.bind(Registry);
+			// .then(this._createDir())
+			// .then(this._saveToDir())
+			.then(Registry._saveToRegistry);
 	}
 };
 
