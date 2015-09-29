@@ -2,71 +2,77 @@ import {EventEmitter} from 'events';
 import {assign} from '../lib/lib.assign.es6';
 import AppDispatcher from '../larch.dispatcher.es6';
 
-let WidgetsMdlFn = function (WidgetSrvc, FileSrvc, WidgetClass, Logger) {
-	let logger = Logger.create('model.Widgets');
+const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
+	const logger = Logger.create('model.Widgets');
 
 	// register action
-	AppDispatcher.register('Widgets', 'widgets.getAll', function(data){
-		data.forEach(w => {
-			let widget;
-			let widgetId = w.widgetId;
+	AppDispatcher.register('Widgets', 'widgets.getAll', dashboard => {
+		logger.log(`receiving data for ${dashboard.widgets}`);
 
-			WidgetMdl.get(widgetId)
-				.then(widgetObj => {
-					widget = widgetObj;
-
+		dashboard.widgets.forEach(w => {
+			WidgetMdl.get(w)
+				.then(widget => {
 					// send the loaded widget into view
 					WidgetMdl.emit('widgets.loaded', widget);
 				})
 				.catch(err => {
 					logger.error(err);
 				});
-		});	
+		});
 	});
-	 
+
 	// create model object
-	let WidgetMdl = assign(EventEmitter.prototype, {
-		get(id) {
-			let userParams;
+	const WidgetMdl = assign(EventEmitter.prototype, {
+		cache: {},
+		cacheIsEmpty() {
+			return !!this.cache.length;
+		},
+		/**
+		 * get widgets
+		 * @param  {[type]} w [description]
+		 * @return {[type]}   [description]
+		 */
+		get(w) {
 			let widget;
 
-			// firstly get widget definition from DB
-			return WidgetSrvc.getById(id)
+			// TODO: implement cache
+
+			return WidgetSrvc.getById(w.widgetId)
 				.then(data => {
-					// get widget settings
-					userParams = data.params;
+					widget = data[0];
+					// get only latest version
+					widget.version = data[0].versions[0];
+					delete widget.versions;
 
-					return FileSrvc.getFile('./../larch_modules/' + data.type + '/index.js');
-				})
-				.then(file => {
-					// get the definition
-					let w = eval(file);
-
-					return WidgetClass.create(w, userParams);
-				})
-				.then(widgetObj => {
-					widget = widgetObj;
-
-					// get data from the source
-					return widget.getData();
+					return DataSrvc.getData(widget, w.settings);
 				})
 				.then(data => {
 					widget.data = data;
-					// store the widget in list of widgets
-					this.list.set(widget.id, widget);
+
+					this.cache[widget.id] = widget;
 
 					return Promise.resolve(widget);
 				});
 		},
+		/**
+		 * [getAllByIds description]
+		 * @param  {Objects[]} widgetsSettings array which is returned by Dashboards.getWidgets
+		 * @return {[type]}                 [description]
+		 */
+		getAllByIds(widgetsSettings) {
+			const result = {};
 
-		list: new Map(),
+			widgetsSettings.forEach(item => result[item.widgetId] = this.cache[item.widgetId]);
+
+			return result;
+		}
 	});
 
 	return WidgetMdl;
 };
-WidgetsMdlFn.$injector = ['service.Widget', 'service.File', 'class.Widget','larch.Logger'];
+WidgetsMdlFn.$injector = ['service.Widget', 'service.Data', 'larch.Logger'];
 
 export default {
-		name: 'model.Widgets',
-		model: WidgetsMdlFn
-	};
+	name: 'model.Widgets',
+	model: WidgetsMdlFn
+};
