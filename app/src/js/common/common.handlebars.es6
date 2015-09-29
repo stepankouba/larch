@@ -1,5 +1,7 @@
 import Handlebars from 'handlebars';
 
+const MAX_MIDDLE_WIDGETS = 3;
+
 // TODO: precompilation step into gulp should be added and only runtime should be include here
 // TODO: precompile all templates: http://handlebarsjs.com/precompilation.html
 
@@ -11,12 +13,12 @@ Handlebars.registerHelper('toggle-class', (a, b, className, options) => {
 	return new Handlebars.SafeString(val);
 });
 
-Handlebars.registerHelper('each-if', (list, key, condition, options) => {
+Handlebars.registerHelper('each-if', function(list, key, condition, options) {
 	let result = '';
 	key = key.split('.');
 
 	if (!list) {
-		return false;
+		return options.inverse(this);
 	}
 
 	list.forEach(item => {
@@ -33,11 +35,29 @@ Handlebars.registerHelper('each-if', (list, key, condition, options) => {
 		}
 	});
 
-	return result;
+	return result === '' ? options.inverse(this) : result;
 });
 
-Handlebars.registerHelper('hash-table', (list, key, options) => {
+Handlebars.registerHelper('withHash', (list, key, options) => {
 	return options.fn(list[key]);
+});
+
+Handlebars.registerHelper('middle-widgets-add-links', (list, options) => {
+	let result = '';
+
+	if (!list) {
+		return false;
+	}
+
+	list = list.filter(item => item.display.row === 1);
+	const addLinksCount = MAX_MIDDLE_WIDGETS - list.length;
+
+	for (let i = 0; i < addLinksCount; i++) {
+		const item = {index: i};
+		result = result + options.fn(item);
+	}
+
+	return result;
 });
 
 export default Handlebars;
