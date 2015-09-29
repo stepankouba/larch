@@ -12,10 +12,12 @@ const HTTPerFn = function(Logger) {
 					if (xhr.readyState === 4) {
 						if (xhr.status === 200) {
 							// if json set true, parse output as JSON, otherwise return plain textside
-							resolve(conf.json ? JSON.parse(xhr.responseText) : xhr.responseText);
+							const r = conf.json ? JSON.parse(xhr.responseText) : xhr.responseText;
+
+							resolve(r);
 						} else {
 							logger.error(xhr.statusText);
-							reject(xhr.statusText);
+							reject({statusCode: xhr.status, message: xhr.statusText});
 						}
 					}
 				};
@@ -26,6 +28,38 @@ const HTTPerFn = function(Logger) {
 				};
 
 				xhr.send(null);
+			});
+		},
+		post(url, data, conf = {}) {
+			return new Promise((resolve, reject) => {
+				const xhr = new XMLHttpRequest();
+				const stringifiedData = JSON.stringify(data);
+
+				xhr.open('POST', url, true);
+
+				// Send the proper header information along with the request
+				xhr.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
+
+				xhr.onload = function(e) {
+					if (xhr.readyState === 4) {
+						if (xhr.status === 200) {
+							// if json set true, parse output as JSON, otherwise return plain textside
+							const r = conf.json ? JSON.parse(xhr.responseText) : xhr.responseText;
+
+							resolve(r);
+						} else {
+							logger.error(xhr.statusText);
+							reject({statusCode: xhr.status, message: xhr.statusText});
+						}
+					}
+				};
+
+				xhr.onerror = function(e) {
+					logger.error(xhr.statusText);
+					reject(xhr.statusText);
+				};
+
+				xhr.send(stringifiedData);
 			});
 		}
 	};
