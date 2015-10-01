@@ -13,6 +13,11 @@ Handlebars.registerHelper('toggle-class', (a, b, className, options) => {
 	return new Handlebars.SafeString(val);
 });
 
+Handlebars.registerHelper('lookup-property', (obj, settingName, options) => {
+	console.log(obj, settingName);
+	return new Handlebars.SafeString(obj[settingName]);
+});
+
 Handlebars.registerHelper('each-if', function(list, key, condition, options) {
 	let result = '';
 	key = key.split('.');
@@ -20,8 +25,9 @@ Handlebars.registerHelper('each-if', function(list, key, condition, options) {
 	if (!list) {
 		return options.inverse(this);
 	}
-
-	list.forEach(item => {
+	console.log(list);
+	Object.keys(list).forEach(hashKey => {
+		const item = list[hashKey];
 		let value;
 		if (key.length > 1) {
 			value = item;
@@ -31,6 +37,8 @@ Handlebars.registerHelper('each-if', function(list, key, condition, options) {
 		}
 
 		if (value === condition) {
+			// add id to the item, since it doesnot have it
+			item.id = hashKey;
 			result = result + options.fn(item);
 		}
 	});
@@ -49,7 +57,11 @@ Handlebars.registerHelper('middle-widgets-add-links', (list, options) => {
 		return false;
 	}
 
-	list = list.filter(item => item.display.row === 1);
+	list = Object.keys(list).filter(key => {
+		const item = list[key];
+
+		return item.display.row === 1;
+	});
 	const addLinksCount = MAX_MIDDLE_WIDGETS - list.length;
 
 	for (let i = 0; i < addLinksCount; i++) {
