@@ -1,4 +1,4 @@
-import {EventEmitter} from 'events';
+import { EventEmitter } from 'events';
 import {assign} from '../lib/lib.assign.es6';
 import AppDispatcher from '../larch.dispatcher.es6';
 
@@ -9,8 +9,10 @@ const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
 	AppDispatcher.register('Widgets', 'widgets.getAll', dashboard => {
 		logger.log(`receiving data for ${dashboard.widgets}`);
 
-		dashboard.widgets.forEach(w => {
-			WidgetMdl.get(w)
+		Object.keys(dashboard.widgets).forEach(key => {
+			const w = dashboard.widgets[key];
+
+			WidgetMdl.get(key, w)
 				.then(widget => {
 					// send the loaded widget into view
 					WidgetMdl.emit('widgets.loaded', widget);
@@ -29,21 +31,22 @@ const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
 		},
 		/**
 		 * get widgets
-		 * @param  {[type]} w [description]
-		 * @return {[type]}   [description]
+		 * @param  {string} id widget id
+		 * @param  {Object} w widget instance settings
+		 * @return {Promise}
 		 */
-		get(w) {
+		get(id, w) {
 			let widget;
 
 			// TODO: implement cache
 
-			return WidgetSrvc.getById(w.widgetId)
+			return WidgetSrvc.getById(id)
 				.then(data => {
 					widget = data[0];
 					// get only latest version
 					widget.version = data[0].versions[0];
 					delete widget.versions;
-
+					// get data
 					return DataSrvc.getData(widget, w.settings);
 				})
 				.then(data => {
@@ -56,13 +59,13 @@ const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
 		},
 		/**
 		 * [getAllByIds description]
-		 * @param  {Objects[]} widgetsSettings array which is returned by Dashboards.getWidgets
+		 * @param  {Object} widgetsInstances hashmap which is returned by Dashboards.getWidgets
 		 * @return {[type]}                 [description]
 		 */
-		getAllByIds(widgetsSettings) {
+		getAllByIds(widgetsInstances) {
 			const result = {};
 
-			widgetsSettings.forEach(item => result[item.widgetId] = this.cache[item.widgetId]);
+			Object.keys(widgetsInstances).forEach(key => result[key] = this.cache[key]);
 
 			return result;
 		}

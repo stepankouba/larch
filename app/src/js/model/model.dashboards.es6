@@ -38,16 +38,13 @@ const DashboardsMdlFn = function(DashboardSrvc, Logger) {
 		},
 		getWidgets(id) {
 			const currentDashboard = this.cache.filter(item => item.id === id);
-			// need to flatten array
-			const flatten = [].concat(...currentDashboard[0].widgets);
 
-			return flatten;
+			return currentDashboard[0].widgets;
 		},
 		getWidgetSettings(dashboardId, widgetId) {
 			const widgets = this.getWidgets(dashboardId);
-			const widget = widgets.filter(item => item.widgetId === widgetId);
 
-			return widget.settings;
+			return widgets[widgetId].settings;
 		}
 	});
 
