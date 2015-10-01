@@ -37,11 +37,24 @@ export function isArray(value) {
 	return returnResult(Array.isArray(value), 'value is empty', value);
 }
 
+export function isNumber(value) {
+	return Number.isInteger(value);
+}
+
+export function isShared(value) {
+	return ['private', 'publich', ''].indexOf(value) > -1;
+}
+
 export function isValidVersion(value) {
 	return returnResult(semver.valid(value), 'value is not valid version', value);
 }
 
+export function isHTTPMethod(value) {
+	return ['get', 'post', 'put'].indexOf(value) > -1;
+}
+
 export function isExistingFile(value) {
+	/*eslint no-sync:0*/
 	const test = fs.statSync(`${value}`);
 
 	return returnResult(test.isFile(), 'provided is not existing file', value);
