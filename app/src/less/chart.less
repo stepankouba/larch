@@ -1,4 +1,5 @@
 @import 'variables.less';
+@import 'nvd3.less';
 
 .chart {
 	color: @chart-placholder-color;
@@ -30,6 +31,45 @@
  * Line chart
  */
 .chart-line {
+	&-value {
+		fill: none;
+		stroke: black;
+	}
+
+	&-x-axis {
+		font-size: 8px;
+
+		path {
+			margin-left: 5px;
+			fill: none;
+	        stroke: #777;
+	        shape-rendering: crispEdges;
+
+	        .tick {
+	        	stroke: #777;
+	        }
+		}
+	}
+
+	&-y-axis {
+		path {
+			margin-top: 5px;
+			fill: none;
+	        stroke: #777;
+	        shape-rendering: crispEdges;
+		}
+
+		text {
+			text-anchor: end;
+		}
+
+		.tick {
+        	stroke: #777;
+        }
+	}
+}
+
+.punch-card {
 	&-value {
 		fill: none;
 		stroke: black;
