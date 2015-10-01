@@ -98,10 +98,11 @@ const ViewerFn = function(HTTPer, Logger) {
 		 */
 		_compileTemplate(view) {
 			// TODO: remove compiling of a template, so that recompile() is invoked on already compiled template (i.e. save time)
-			const t = Handlebars.compile(view.template);
-			const html = t(view.scope);
+			if (!view.compiled) {
+				view.compiled = Handlebars.compile(view.template);
+			}
 
-			return html;
+			return view.compiled(view.scope);
 		},
 		/**
 		 * append a template to the DOM
