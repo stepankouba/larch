@@ -52,11 +52,13 @@ const ViewerFn = function(HTTPer, Logger) {
 				if (typeof data !== 'object') {
 					view.template = data;
 					view.loaded = true;
-					view.element = item;
 					view.recompile = this.recompile();
-					// save template into views Map
-					this.views.set(viewId, view);
 				}
+
+				// even if template is already loaded, we need to keep the element udpated
+				// because it's disapearing from DOM via Modal.hide()
+				view.element = item;
+				this.views.set(viewId, view);
 
 				return Promise.resolve(view);
 			};
@@ -113,7 +115,6 @@ const ViewerFn = function(HTTPer, Logger) {
 			return view => {
 				logger.log(`appending ${view.id}`);
 				view.element.innerHTML = this._compileTemplate(view);
-
 				this._addEventListeners(view);
 
 				return Promise.resolve(view);
@@ -125,10 +126,11 @@ const ViewerFn = function(HTTPer, Logger) {
 		 */
 		_addEventListeners(view) {
 			const onclicks = view.element.querySelectorAll('[data-on-click]');
+			const keypressed = view.element.querySelectorAll('[data-on-keypress]');
 
-			[].forEach.call(onclicks, item => {
+			function processListeners(item, eventName) {
 				// attribute value
-				const attr = item.getAttribute('data-on-click');
+				const attr = item.getAttribute(`data-on-${eventName}`);
 				// firstly get all attributes, split them by , and then eval them to get proper types
 				let attributes = attr.match(/\( *([^)]+?) *\)/i);
 				if (attributes === null) {
@@ -140,11 +142,14 @@ const ViewerFn = function(HTTPer, Logger) {
 				// new ('test', 15,'value') - get first after spliting with (, then teplace any spaces
 				const methodName = attr.split('(')[0].trim();
 
-				item.addEventListener('click', e => {
+				item.addEventListener(eventName, e => {
 					// call requested method
 					view.methods[methodName].apply(view, [e, ...attributes]);
 				});
-			});
+			}
+
+			[].forEach.call(onclicks, item => processListeners(item, 'click'));
+			[].forEach.call(keypressed, item => processListeners(item, 'keypress'));
 		},
 
 		/**
@@ -161,6 +166,7 @@ const ViewerFn = function(HTTPer, Logger) {
 			} else {
 				const view = this.views.get(viewId);
 				// TODO: this is wrong URL!!!!
+				logger.log('getting template', viewId, view);
 				const url = `${window.location.origin}/build/templates/${view.templateUrl}`;
 
 				return HTTPer.get(url)
@@ -175,6 +181,7 @@ const ViewerFn = function(HTTPer, Logger) {
 			}
 
 			this.views.set(obj.id, obj);
+			logger.log('added view', obj);
 		}
 	};
 
