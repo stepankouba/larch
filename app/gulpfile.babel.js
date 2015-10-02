@@ -8,6 +8,7 @@ import concat from 'gulp-concat';
 import connect from 'gulp-connect';
 import util from 'gulp-util';
 import uglify from 'gulp-uglify';
+import gzip from 'gulp-gzip';
 import karma from 'karma';
 
 
@@ -29,6 +30,7 @@ const paths = {
 	},
 	src: {
 		js: `${SRC_PATH}/js`,
+		charts: `./../charts/**/*.es6`,
 		less: `${SRC_PATH}/less/**/*.less`,
 		index: `${SRC_PATH}/index.html`,
 		templates: `${SRC_PATH}/templates/**/*.*`,
@@ -54,10 +56,24 @@ gulp.task('app', () => {
 		;
 });
 
+gulp.task('test-chart', () => {
+	browserify({
+		entries: `${paths.src.js}/larch.test.chart.es6`,
+		debug: true
+	})
+		.transform(babelify)
+		.bundle()
+		.on('error', util.log)
+		.pipe(source('larch.test.chart.js'))
+		.pipe(gulp.dest(paths.build.js))
+		;
+});
+
 gulp.task('compress', () => {
 	return gulp.src(`${paths.build.js}/larch.app.js`)
 		.pipe(uglify())
-		.pipe(gulp.dest(`${paths.build.js}/min`));
+		.pipe(gzip({ append: true }))
+		.pipe(gulp.dest(paths.build.js));
 });
 
 gulp.task('less', () => {
@@ -135,6 +151,7 @@ gulp.task('test', done => {
  */
 gulp.task('watch', () => {
 	gulp.watch([`${paths.src.js}/**/*.es6`], ['app']);
+	gulp.watch([paths.src.charts], ['test-chart', 'app']);
 	gulp.watch([paths.src.less], ['less']);
 	gulp.watch([paths.src.fonts], ['assets']);
 	gulp.watch([paths.src.templates], ['templates']);
@@ -175,5 +192,5 @@ gulp.task('livereload', () => {
 });
 
 // gulp.task('production', ['app', 'compress','less', 'index', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
-gulp.task('build', ['app', 'test', 'less', 'index', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
+gulp.task('build', ['app', 'test-chart', 'test', 'less', 'index', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
 gulp.task('default', ['build', 'webserver', 'livereload', 'watch']);
