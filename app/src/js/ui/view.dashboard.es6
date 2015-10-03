@@ -1,14 +1,36 @@
 import AppDispatcher from '../larch.dispatcher.es6';
 
-const ctrl = function(Widgets, Dashboards, Chart, Logger) {
+const ctrl = function(Router, Widgets, Dashboards, Chart, Logger) {
 	const logger = Logger.create('ui.dashboard');
+
+	const scope = this.scope;
 
 	// on loading all dashboards, show the selected one
 	Dashboards.on('dashboards.loaded', () => {
 		logger.info('dashboards.loaded event received');
-		this.scope.widgets = Dashboards.cache[0].widgets;
+
+		// display widgets for current dashboard
+		scope.widgetInstances = Dashboards.getWidgetInstances(Router.current.props.id);
+		this.recompile();
 
 		AppDispatcher.dispatch('widgets.getAll', Dashboards.cache[0]);
+	});
+
+	Dashboards.on('dashboards.updated', id => {
+		logger.info('dashboards.updated event received');
+
+		const wi = Dashboards.getWidgetInstances(id);
+		const w = Widgets.getAllByIds(wi);
+
+		// display widgets for current dashboard
+		scope.widgetInstances = Dashboards.getWidgetInstances(Router.current.props.id);
+		this.recompile();
+		// after recompile add widgets
+		Object.keys(w).forEach(k => {
+			Widgets.getData(w[k], wi[k])
+				.then(() => Widgets.emit('widgets.loaded', w[k]))
+				.catch(err => logger.error(err));
+		});
 	});
 
 	// handle loaded widget event
@@ -22,7 +44,7 @@ const ctrl = function(Widgets, Dashboards, Chart, Logger) {
 		chart.append(`[id="widget${widget.id}"]`);
 	});
 };
-ctrl.$injector = ['model.Widgets', 'model.Dashboards', 'component.Chart','larch.Logger'];
+ctrl.$injector = ['larch.Router', 'model.Widgets', 'model.Dashboards', 'component.Chart','larch.Logger'];
 
 export default {
 	id: 'ui.dashboard',
