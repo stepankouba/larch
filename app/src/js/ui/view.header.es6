@@ -32,7 +32,6 @@ const ctrl = function(HTTPer, Modal, Logger) {
 					logger.log(result);
 				})
 				.catch(err => logger.error(err));
-
 		}
 	};
 
