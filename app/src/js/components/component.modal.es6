@@ -1,6 +1,6 @@
 // import Handlebars from '../common/common.handlebars.es6';
 
-const ModalFn = function(Viewer, HTTPer, Logger) {
+const ModalFn = function(Viewer, Logger) {
 	const logger = Logger.create('component.Modal');
 	const Modal = {
 		create(modalName) {
@@ -91,7 +91,7 @@ const ModalFn = function(Viewer, HTTPer, Logger) {
 
 	return Modal;
 };
-ModalFn.$injector = ['larch.Viewer', 'larch.HTTPer', 'larch.Logger'];
+ModalFn.$injector = ['larch.Viewer', 'larch.Logger'];
 
 export default {
 	name: 'component.Modal',
