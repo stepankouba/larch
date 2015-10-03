@@ -10,15 +10,26 @@ export function append(parentElement) {
 	const data = [{key: 'Commits avg per week', area: true, values: []}];
 
 	rawData.forEach(d => {
-		data[0].values.push({x: d.week, y: d.total / d.days.length});
+		data[0].values.push({x: d.week, y: Math.round(d.total / d.days.length * 100) / 100});
 	});
 
 	nv.addGraph(() => {
 		const chart = nv.models.lineChart()
-			.duration(300)
-			.showLegend(true)
+			.options({
+				transitionDuration: 300,
+				useInteractiveGuideline: true,
+				showLegend: true
+			})
+			// .duration(300)
+			// .showLegend(true)
 			.interpolate('cardinal')
+			// .useInteractiveGuideline(true)
+			// .tooltips(true)
 			.color(d3.scale.category10().range());
+
+		chart.tooltip
+			.chartContainer(parentElement)
+			.enabled(true);
 
 		chart
 			.height(height)
@@ -33,10 +44,12 @@ export function append(parentElement) {
 		d3.select(parentElement)
 			.append('svg')
 			.attr('class', TYPE)
+			.attr('viewBox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+			.attr('preserveAspectRatio', 'xMidYMid')
+			.append('g')
+			.attr('transform', `translate(${margin.left},${margin.top})`)
 			.datum(data)
 			.call(chart);
-
-		nv.utils.windowResize(chart.update);
 
 		return chart;
 	});

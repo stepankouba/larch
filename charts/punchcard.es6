@@ -47,6 +47,10 @@ export function append(parentElement) {
 		d3.select(parentElement)
 			.append('svg')
 			.attr('class', TYPE)
+			.attr('viewBox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+			.attr('preserveAspectRatio', 'xMidYMid')
+			.append('g')
+			.attr('transform', `translate(${margin.left},${margin.top})`)
 			.datum(data)
 			.call(chart);
 

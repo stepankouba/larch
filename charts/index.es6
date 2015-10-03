@@ -24,8 +24,12 @@ const Chart = {
 	prototype: {
 		margin: {top: 20, right: 20, bottom: 30, left: 50},
 		removeLoader(parentElementSelector) {
-			document.querySelector(parentElementSelector)
-				.removeChild(document.querySelector(`${parentElementSelector} > .loader`));
+			const loader = document.querySelector(`${parentElementSelector} > .loader`);
+
+			if (loader) {
+				document.querySelector(parentElementSelector)
+				.removeChild(loader);
+			}
 		},
 		getDimensions() {
 			return this.widget.version.client.display;
@@ -35,6 +39,7 @@ const Chart = {
 		},
 		append(parentElementSelector) {
 			const app = TYPES[this.widget.version.type].append.bind(this);
+			document.querySelector(parentElementSelector).innerHTML = '';
 			app(document.querySelector(parentElementSelector));
 		},
 		update(parentElementSelector) {
