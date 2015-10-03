@@ -19,10 +19,11 @@ const ViewerFn = function(HTTPer, Logger) {
 		 * process a required view
 		 * @param  {Node} item   HTML DOM node, where view should be appended
 		 * @param  {String|Number} viewId view id
+		 * @param  {Object} scopeInit initial values passed to the view scope (should not be used often)
 		 */
-		processView(item, viewId) {
+		processView(item, viewId, scopeInit = undefined) {
 			return this.getTemplate(viewId)
-				.then(this._storeViewObject(item, viewId))
+				.then(this._storeViewObject(item, viewId, scopeInit))
 				.then(this._appendTemplate(item, viewId))
 				.then(this._runController(viewId))
 				.catch(err => logger.error(err));
@@ -42,9 +43,10 @@ const ViewerFn = function(HTTPer, Logger) {
 		 * store all the required properties on View object, so that it can be used in controller in this object
 		 * @param  {[type]} item   [description]
 		 * @param  {[type]} viewId [description]
+		 * @param  {[type]} scopeInit [description]
 		 * @return {[type]}        [description]
 		 */
-		_storeViewObject(item, viewId) {
+		_storeViewObject(item, viewId, scopeInit = undefined) {
 			return data => {
 				// this if checks, whether the input from getTemplate is object (view is already cached) or string (template was loaded)
 				const view = this.views.get(viewId);
@@ -53,6 +55,10 @@ const ViewerFn = function(HTTPer, Logger) {
 					view.template = data;
 					view.loaded = true;
 					view.recompile = this.recompile();
+				}
+
+				if (scopeInit) {
+					Object.assign(view.scope, scopeInit);
 				}
 
 				// even if template is already loaded, we need to keep the element udpated
