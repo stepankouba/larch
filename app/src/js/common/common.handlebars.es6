@@ -14,8 +14,39 @@ Handlebars.registerHelper('toggle-class', (a, b, className, options) => {
 });
 
 Handlebars.registerHelper('lookup-property', (obj, settingName, options) => {
-	console.log(obj, settingName);
 	return new Handlebars.SafeString(obj[settingName]);
+});
+
+Handlebars.registerHelper('get-position', (num, options) => {
+	const POSITIONS = ['TOP', 'MIDDLE', 'BOTTOM'];
+
+	return new Handlebars.SafeString(POSITIONS[num]);
+});
+
+Handlebars.registerHelper('row-class', (wi, rowType, row, options) => {
+	if (!wi) {
+		return new Handlebars.SafeString(`row-0`);
+	}
+
+	// rowType == 'tall' || 'short'
+	const countShort = Object.keys(wi).filter(key => wi[key].display.row === 1).length;
+	const countTall = Object.keys(wi).filter(key => wi[key].display.row !== 1).length;
+	// wee need to know, if in the current line is any widget
+	const rowWithWidget = !!Object.keys(wi).filter(key => wi[key].display.row === row).length;
+
+	let className;
+
+	if (countShort > 0) {
+		if (countTall > 0) {
+			className = (rowType === 'tall' && rowWithWidget) ? 80 / countTall : '20';
+		} else {
+			className = '20';
+		}
+	} else {
+		className = (rowType === 'tall' && rowWithWidget) ? 100 / countTall : '0';
+	}
+
+	return new Handlebars.SafeString(`row-${className}`);
 });
 
 Handlebars.registerHelper('each-if', function(list, key, condition, options) {
@@ -25,7 +56,7 @@ Handlebars.registerHelper('each-if', function(list, key, condition, options) {
 	if (!list) {
 		return options.inverse(this);
 	}
-	console.log(list);
+
 	Object.keys(list).forEach(hashKey => {
 		const item = list[hashKey];
 		let value;
