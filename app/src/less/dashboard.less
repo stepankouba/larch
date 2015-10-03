@@ -1,4 +1,27 @@
-.row-tall {
+.row-0 {
+	display: none;
+}
+
+.row-100 {
+	min-height: 250px;
+	height: 80%;
+	padding: 0 10px; 
+
+	.chart-container {
+		height: 100%;
+		border-width: 0 0 2px 0;
+		border-image: url('../images/border.png') 0 0 2 0 repeat;
+		border-image-outset: 0;
+
+		&.last {
+			border-width: 2px 0 0 0;
+			border-image: url('../images/border.png') 2 0 0 0 repeat;
+			border-image-outset: 0;			
+		}
+	}
+}
+
+.row-40 {
 	min-height: 250px;
 	height: 36%;
 	padding: 0 10px; 
@@ -17,7 +40,7 @@
 	}
 }
 
-.row-short {
+.row-20 {
 	min-height: 170px;
 	height: 20%;
 
