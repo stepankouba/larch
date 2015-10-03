@@ -5,6 +5,9 @@ const WidgetSrvc = function(HTTPer, Logger) {
 		getById(id) {
 			logger.log(`requesting widget data for id ${id}`);
 			return HTTPer.get(`https://localhost:9101/api/widget/${id}`, {json: true});
+		},
+		getByText(text) {
+			return HTTPer.get(`https://localhost:9101/api/widgets?phrase=${text}`, {json: true});
 		}
 	};
 
