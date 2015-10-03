@@ -1,35 +1,27 @@
-{{!-- <ul class="sidebar">
-	<li class="sidebar-main">
-		<input type="text" class="form-control input-sm" placeholder="search" ng-model="SidebarCtrl.searchCriteria">
-	</li>
-	<li class="sidebar-title"><span>Dashboards<a href="" data-on-click="new('test', 15);" class="menu-icon fa fa-plus-square"></a></span></li>
-	{{#each dashboards}}
-	<li class="sidebar-list" >
-		<a href="" class="{{toggle-class id ../route 'selected'}}">
-			{{title}} <span class="menu-icon"><i class="fa fa-cogs"></i> <i class="fa fa-share-alt-square"></i></span>
-		</a>
-		<!-- ng-class="{'selected': d.id === SidebarCtrl.LarchBoard.dashboard.id}" -->
-	</li>
-	{{/each}}
-</ul>
- --}}
-
 <h5>I LIKE</h5>
 <ul class="sidebar-list">
-	<li><a href="">my-life</a></li>
-	<li><a href="">twitter-my-likes</a></li>
-	<li><a href="">redmine-accurity-issues</a></li>
+	{{#each-if dashboards "like" true}}
+		<li><a href="" class="{{toggle-class id ../route 'selected'}}">{{name}}</a></li>
+	{{else}}
+		<li>any dashboard you like?</li>
+	{{/each-if}}
 </ul>
 
 <h5>SHARED</h5>
 <ul class="sidebar-list">
-	<li><a href="">crm-newest-pipeline</a></li>
-	<li><a href="">github-larch-commits</a></li>
-	<li><a href="">github-palm-commits</a></li>
+	{{#each-if dashboards "shared" true}}
+		<li><a href="" class="{{toggle-class id ../route 'selected'}}">{{name}}</a></li>
+	{{else}}
+		<li>any shared dashboard?</li>
+	{{/each-if}}
 </ul>
 
 
 <h5>THE OTHERS</h5>
 <ul class="sidebar-list">
-	
+	{{#each dashboards}}
+		<li><a href="dashboard/{{id}}" class="{{toggle-class id ../route 'selected'}}">{{name}}</a></li>
+	{{else}}
+		<li>loader</li>
+	{{/each}}
 </ul>
