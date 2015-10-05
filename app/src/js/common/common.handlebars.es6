@@ -23,27 +23,21 @@ Handlebars.registerHelper('get-position', (num, options) => {
 	return new Handlebars.SafeString(POSITIONS[num]);
 });
 
-Handlebars.registerHelper('row-class', (wi, rowType, row, options) => {
-	if (!wi) {
+Handlebars.registerHelper('row-class', (layout, rowType, row, options) => {
+	if (!layout) {
 		return new Handlebars.SafeString(`row-0`);
 	}
-
 	// rowType == 'tall' || 'short'
-	const countShort = Object.keys(wi).filter(key => wi[key].display.row === 1).length;
-	const countTall = Object.keys(wi).filter(key => wi[key].display.row !== 1).length;
-	// wee need to know, if in the current line is any widget
-	const rowWithWidget = !!Object.keys(wi).filter(key => wi[key].display.row === row).length;
-
 	let className;
+	const countTall = layout.filter(i => i === 'tall').length;
+	const countShort = layout.filter(i => i === 'short').length;
 
-	if (countShort > 0) {
-		if (countTall > 0) {
-			className = (rowType === 'tall' && rowWithWidget) ? 80 / countTall : '20';
-		} else {
-			className = '20';
-		}
+	if (layout[row] === 'short') {
+		className = '20';
+	} else if (layout[row] === 'tall') {
+		className = countShort > 0 ? (80 / countTall) : (100 / countTall);
 	} else {
-		className = (rowType === 'tall' && rowWithWidget) ? 100 / countTall : '0';
+		className = '0';
 	}
 
 	return new Handlebars.SafeString(`row-${className}`);
