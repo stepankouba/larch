@@ -10,6 +10,7 @@ const ctrl = function(Router, Widgets, Dashboards, Chart, Logger) {
 		logger.info('dashboards.loaded event received');
 
 		// display widgets for current dashboard
+		scope.dashboard = Dashboards.get(Router.current.props.id);
 		scope.widgetInstances = Dashboards.getWidgetInstances(Router.current.props.id);
 		this.recompile();
 
@@ -23,8 +24,10 @@ const ctrl = function(Router, Widgets, Dashboards, Chart, Logger) {
 		const w = Widgets.getAllByIds(wi);
 
 		// display widgets for current dashboard
-		scope.widgetInstances = Dashboards.getWidgetInstances(Router.current.props.id);
+		scope.dashboard = Dashboards.get(Router.current.props.id);
+		scope.widgetInstances = wi; // Dashboards.getWidgetInstances(Router.current.props.id);
 		this.recompile();
+
 		// after recompile add widgets
 		Object.keys(w).forEach(k => {
 			Widgets.getData(w[k], wi[k])
