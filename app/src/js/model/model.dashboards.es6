@@ -56,10 +56,13 @@ const DashboardsMdlFn = function(DashboardSrvc, Logger) {
 					.catch(err => reject(err));
 			});
 		},
+		get(id) {
+			return this.cache.filter(item => item.id === id)[0];
+		},
 		addWidget(id, widget, row) {
 			let position;
 
-			const currentDashboard = this.cache.filter(item => item.id === id)[0];
+			const currentDashboard = this.get(id);
 			// check rows and
 			if (row === 0 || row === 2) {
 				position = 0;
@@ -75,14 +78,14 @@ const DashboardsMdlFn = function(DashboardSrvc, Logger) {
 			};
 		},
 		update(id) {
-			const currentDashboard = this.cache.filter(item => item.id === id)[0];
+			const currentDashboard = this.get(id);
 
 			// TODO: save to DB
 			return Promise.resolve(true);
 		},
 		getFreeSlots(id, height = 0) {
 			logger.log(id, height);
-			const currentDashboard = this.cache.filter(item => item.id === id)[0];
+			const currentDashboard = this.get(id);
 			const widgets = currentDashboard.widgets;
 			const slots = [0,1,1,1,2];
 
@@ -104,7 +107,7 @@ const DashboardsMdlFn = function(DashboardSrvc, Logger) {
 		 * @return {Object}    hash map of objects
 		 */
 		getWidgetInstances(id) {
-			const currentDashboard = this.cache.filter(item => item.id === id)[0];
+			const currentDashboard = this.get(id);
 			
 			return currentDashboard.widgets;
 		},
@@ -121,7 +124,7 @@ const DashboardsMdlFn = function(DashboardSrvc, Logger) {
 		setSetting(id, widgetId, name, value) {
 			logger.log('changing settings for', id, widgetId, name, value);
 
-			const currentDashboard = this.cache.filter(item => item.id === id)[0];
+			const currentDashboard = this.get(id);
 			const settings = currentDashboard.widgets[widgetId].settings || {};
 			settings[name] = value;
 
