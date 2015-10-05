@@ -1,5 +1,3 @@
-'use strict';
-
 import Injector from './common/common.di.es6';
 import Logger from './common/common.logger.es6';
 import HTTPer from './common/common.httper.es6';
@@ -9,16 +7,15 @@ import Router from './common/common.router.es6';
 let logger;
 
 // TODO: create custom errors objects: https://github.com/angular/angular.js/blob/291d7c467fba51a9cb89cbeee62202d51fe64b09/src/minErr.js
-let Larch = {
+const Larch = {
 	createApp(name = 'larch') {
-		let app = Object.create(Larch.prototype);
+		const app = Object.create(Larch.prototype);
 
 		app.name = name;
 
 		// some tasks before we init the app
 		app._initApp();
 
-		//app.Controlor = Controlor.create();
 		return app;
 	},
 	prototype: {
@@ -46,19 +43,19 @@ let Larch = {
 		},
 
 		views(views) {
-			let Viewer = this.Injector.get('larch.Viewer');
+			const Viewer = this.Injector.get('larch.Viewer');
 
 			views.forEach(view => Viewer.addView(view));
 		},
 
 		routes(routeDef = []) {
-			let Router = this.Injector.get('larch.Router');
+			const Router = this.Injector.get('larch.Router');
 
 			Router.conf();
 
 			routeDef.forEach(route => Router.add(route));
 		},
-		services(services){
+		services(services) {
 			services.forEach(srvc => {
 				if (!srvc.type || !srvc.name || !srvc.functor) {
 					logger.error(`can not initiate servce ${srvc}`);
@@ -72,7 +69,7 @@ let Larch = {
 			this.Injector.invoke(fn);
 			// im
 			this.run();
-		}, 
+		},
 		run(fn) {
 			// initial router and viewer run
 			this._runRouter();
@@ -83,13 +80,13 @@ let Larch = {
 			}
 		},
 		_runRouter() {
-			let Router = this.Injector.get('larch.Router');
+			const Router = this.Injector.get('larch.Router');
 
 			Router.navigateToMain(false);
 		},
 
 		_runViews() {
-			let Viewer = this.Injector.get('larch.Viewer');
+			const Viewer = this.Injector.get('larch.Viewer');
 
 			Viewer.parse();
 		}
