@@ -149,6 +149,10 @@ const ViewerFn = function(HTTPer, Logger) {
 				const methodName = attr.split('(')[0].trim();
 
 				item.addEventListener(eventName, e => {
+					if (!view.methods[methodName]) {
+						return logger.error(`wrong event listener assignement in view ${view.id} - ${methodName}`);
+					}
+					
 					// call requested method
 					view.methods[methodName].apply(view, [e, ...attributes]);
 				});
