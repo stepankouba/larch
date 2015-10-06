@@ -12,33 +12,34 @@ describe('(unit) Registry tests', () => {
 	});
 
 	it('should request DB by _requestDB with 1 result', done => {
-		Registry._requestDB('redmine-issues-log')
+		Registry._requestDB({name: 'redmine-issues-log'})
 			.then(r => {
-				expect(r.length).toBe(1);
-				expect(r[0].title).toBe('Redmine issue log');
+				expect(r[1].length).toBe(1);
+				expect(r[1][0].title).toBe('Redmine issue log');
 				done();
 			});
 	});
 
 	it('should request DB by _requestDB with no result', done => {
-		Registry._requestDB('Gitlab request skljdhflaskjhd')
+		Registry._requestDB({name: 'Gitlab request skljdhflaskjhd'})
 			.then(result => {
-				expect(result.length).toBe(0);
+				expect(result[1].length).toBe(0);
 				done();
 			});
 	});
 
 	it('should check if _isWidgetInRegistry to return true', done => {
-		Registry.json = {
+		const widget = {
 			name: 'gitlab-commits',
-			versions: {version: '1.5.0'}
+			version: {version: '1.5.0'}
 		};
-
-		const fn = Registry._isWidgetInRegistry();
-		fn([{
+		const result = [{
 			name: 'gitlab-commits',
 			versions: [{version: '1.0.0'}, {version: '0.6.0'}]
-		}]).then(isInDB => {
+		}];
+
+		Registry._isWidgetInRegistry([widget, result])
+		.then(isInDB => {
 			expect(Registry.newHasToBeInserted).toBeFalsy();
 			expect(isInDB).toBeTruthy();
 			done();
@@ -50,78 +51,35 @@ describe('(unit) Registry tests', () => {
 	});
 
 	it('should check if _isWidgetInRegistry to throw error', done => {
-		Registry.json = {
+		const widget = {
 			name: 'gitlab-commits',
-			versions: {version: '1.0.0'}
+			version: {version: '1.0.0'}
 		};
-
-		const fn = Registry._isWidgetInRegistry();
-		fn([{
+		const result = [{
 			name: 'gitlab-commits',
 			versions: [{version: '1.0.0'}, {version: '0.6.0'}]
-		}]).then(isInDB => {})
+		}];
+
+		Registry._isWidgetInRegistry([widget, result])
+		.then(isInDB => {})
 		.catch(err => {
 			expect(err instanceof Error).toBeTruthy();
 			done();
 		});
 	});
 
-	it('should create dir only when required', done => {
-		Registry.json = {
-			name: 'Gitlab merge requests - test',
-			version: '1.0.0'
-		};
-
-		const fn = Registry._createDir();
-		fn(false)
-			.then(result => {
-				fs.stat(`${Registry.REGISTRY_PATH}/${Registry.json.name}`, (err, s) => {
-					expect(err).toBeFalsy();
-					expect(s.isDirectory()).toBeTruthy();
-					done();
-				});
-			});
-	});
-
-	it('should extract file into directory', done => {
-		Registry.file = {
-			path: `${__dirname}/data/testfile.tar.gz`
-		};
-		Registry.json = {
-			name: 'Gitlab merge requests',
-			versions: {version: '1.5.0'}
-		};
-
-		const fn = Registry._saveToDir();
-
-		fn()
-			.then(res => {
-				expect(res).toBeTruthy();
-				fs.stat(`${Registry.REGISTRY_PATH}/${Registry.json.name}/${Registry.json.versions.version}/test.html`, (err, s) => {
-					expect(err).toBeFalsy();
-					expect(s.isFile()).toBeTruthy();
-					done();
-				});
-			})
-			.catch(err => {
-				expect(err).toBeFalsy();
-				done();
-			});
-	});
-
 	it('should save a JSON to registry', done => {
-		Registry.json = JSON.parse(fs.readFileSync('./spec/data/widget-save.json', 'utf8'));
-		Registry.newHasToBeInserted = true;
+		/*eslint no-sync:0 */
+		const widget = JSON.parse(fs.readFileSync('./spec/data/widget-save.json', 'utf8'));
+		const currentWidget = {};
 
-		const fn = Registry._saveToRegistry();
-
-		fn()
+		Registry._saveToRegistry([widget, currentWidget])
 			.then(result => {
 				r.db(conf.db.database)
 					.table('widgets')
-					.filter({name: Registry.json.name})
+					.filter({name: widget.name})
 					.then(res => {
-						expect(res[0].name).toBe(Registry.json.name);
+						expect(res[0].name).toBe(widget.name);
 						done();
 					})
 					.catch(err => {
@@ -132,22 +90,18 @@ describe('(unit) Registry tests', () => {
 	});
 
 	it('should update the JSON in registry', done => {
-		/* eslint no-sync: false */
-		Registry.currentWidget = JSON.parse(fs.readFileSync('./spec/data/widgets.json', 'utf8'))[0];
-		Registry.json = JSON.parse(fs.readFileSync('./spec/data/widget-save.json', 'utf8'));
-		Registry.newHasToBeInserted = false;
+		/*eslint no-sync:0 */
+		const currentWidget = JSON.parse(fs.readFileSync('./spec/data/widgets.json', 'utf8'))[0];
+		const widget = JSON.parse(fs.readFileSync('./spec/data/widget-save.json', 'utf8'));
 
-		const fn = Registry._saveToRegistry();
-
-		fn()
+		Registry._saveToRegistry([widget, currentWidget])
 			.then(result => {
 				r.db(conf.db.database)
 					.table('widgets')
-					.get(Registry.currentWidget.id)
-					.then(r => {
-						expect(r.versions.length).toBe(2);
-						expect(r.versions[0].version).toBe(Registry.json.versions.version);
-						delete Registry.currentWidget;
+					.get(currentWidget.id)
+					.then(res => {
+						expect(res.versions.length).toBe(2);
+						expect(res.versions[0].version).toBe(widget.version.version);
 						done();
 					})
 					.catch(err => {

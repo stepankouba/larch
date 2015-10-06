@@ -2,7 +2,7 @@
 	"name": "twitter-overview",
 	"title": "Twitter overview of the tweets",
 	"shared": "public",
-	"versions": {
+	"version": {
 		"version": "1.5.0",
 		"desc": "This is description is just testing and may including also some <strong>formating</strong>",
 		"assets": {
