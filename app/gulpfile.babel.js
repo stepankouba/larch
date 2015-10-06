@@ -21,7 +21,7 @@ const paths = {
 		default: `${BUILD_PATH}/**/*.*`,
 		js: `${BUILD_PATH}/js`,
 		css: `${BUILD_PATH}/css`,
-		index: `${BUILD_PATH}/`,
+		html: `${BUILD_PATH}/`,
 		templates: `${BUILD_PATH}/templates`,
 		images: `${BUILD_PATH}/images`,
 		bootstrap: `${BUILD_PATH}/css/bootstrap`,
@@ -32,7 +32,7 @@ const paths = {
 		js: `${SRC_PATH}/js`,
 		charts: `./../charts/**/*.es6`,
 		less: `${SRC_PATH}/less/**/*.less`,
-		index: `${SRC_PATH}/index.html`,
+		html: `${SRC_PATH}/*.html`,
 		templates: `${SRC_PATH}/templates/**/*.*`,
 		fonts: `${SRC_PATH}/fonts/*.*`,
 		images: `${SRC_PATH}/images/*.*`,
@@ -52,6 +52,19 @@ gulp.task('app', () => {
 		.bundle()
 		.on('error', util.log)
 		.pipe(source('larch.app.js'))
+		.pipe(gulp.dest(paths.build.js))
+		;
+});
+
+gulp.task('login', () => {
+	browserify({
+		entries: `${paths.src.js}/larch.login.es6`,
+		debug: true
+	})
+		.transform(babelify)
+		.bundle()
+		.on('error', util.log)
+		.pipe(source('larch.login.js'))
 		.pipe(gulp.dest(paths.build.js))
 		;
 });
@@ -98,9 +111,9 @@ gulp.task('fontawesome_fonts', () => {
 		.pipe(gulp.dest(paths.build.fontawesome_fonts));
 });
 
-gulp.task('index', () => {
-	return gulp.src(paths.src.index)
-		.pipe(gulp.dest(paths.build.index));
+gulp.task('html', () => {
+	return gulp.src(paths.src.html)
+		.pipe(gulp.dest(paths.build.html));
 });
 
 gulp.task('templates', () => {
@@ -150,12 +163,12 @@ gulp.task('test', done => {
  * Watch custom files
  */
 gulp.task('watch', () => {
-	gulp.watch([`${paths.src.js}/**/*.es6`], ['app']);
+	gulp.watch([`${paths.src.js}/**/*.es6`], ['login', 'app']);
 	gulp.watch([paths.src.charts], ['test-chart', 'app']);
 	gulp.watch([paths.src.less], ['less']);
 	gulp.watch([paths.src.fonts], ['assets']);
 	gulp.watch([paths.src.templates], ['templates']);
-	gulp.watch([paths.src.index], ['index']);
+	gulp.watch([paths.src.html], ['html']);
 	gulp.watch([paths.src.images], ['images']);
 });
 
@@ -191,6 +204,6 @@ gulp.task('livereload', () => {
 		.pipe(connect.reload());
 });
 
-// gulp.task('production', ['app', 'compress','less', 'index', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
-gulp.task('build', ['app', 'test-chart', 'test', 'less', 'index', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
+// gulp.task('production', ['app', 'login', 'compress','less', 'html', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
+gulp.task('build', ['app', 'login', 'test-chart', 'test', 'less', 'html', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
 gulp.task('default', ['build', 'webserver', 'livereload', 'watch']);
