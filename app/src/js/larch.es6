@@ -6,7 +6,7 @@ import services from './larch.services.es6';
 import models from './larch.models.es6';
 import components from './larch.components.es6';
 
-const App = Larch.createApp();
+const App = Larch.create();
 
 App.services(services);
 
