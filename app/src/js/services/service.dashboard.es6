@@ -9,6 +9,10 @@ const DashSrvc = function(HTTPer, Logger) {
 		getById(id) {
 			logger.log(`request to /api/dashboard/{$id} sent`);
 			return HTTPer.get(`https://localhost:9101/api/dashboard/${id}`, {json: true});
+		},
+		save(obj) {
+			logger.log(`request POST to /api/dashboard/ sent`);
+			return HTTPer.post(`https://localhost:9101/api/dashboard/`, obj, {json: true});
 		}
 	};
 
