@@ -7,7 +7,7 @@ const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
 
 	// register action
 	AppDispatcher.register('Widgets', 'widgets.getAll', dashboard => {
-		logger.log(`receiving data for ${dashboard.widgets}`);
+		logger.log(`receiving data for`, dashboard.widgets);
 
 		Object.keys(dashboard.widgets).forEach(key => {
 			const w = dashboard.widgets[key];
