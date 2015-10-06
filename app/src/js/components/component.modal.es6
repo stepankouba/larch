@@ -28,10 +28,7 @@ const ModalFn = function(Viewer, Logger) {
 						// store link to modal for the view
 						view.scope.modal = this;
 
-						this.element = this.container.firstElementChild;
-
-						// this.element.classList.add('show');
-						this.element.style.display = 'block';
+						this.display();
 
 						this._toggleClassOnId('content-wrapper', 'larch-modal-open');
 
@@ -46,6 +43,11 @@ const ModalFn = function(Viewer, Logger) {
 			},
 			_toggleClassOnId(id, className) {
 				document.getElementById(id).classList.toggle(className);
+			},
+			display() {
+				// this.element.classList.add('show');
+				this.element = this.container.firstElementChild;
+				this.element.style.display = 'block';
 			},
 			/**
 			 * remove modal from DOM
