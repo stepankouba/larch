@@ -8,7 +8,7 @@ let logger;
 
 // TODO: create custom errors objects: https://github.com/angular/angular.js/blob/291d7c467fba51a9cb89cbeee62202d51fe64b09/src/minErr.js
 const Larch = {
-	createApp(name = 'larch') {
+	create(name = 'larch') {
 		const app = Object.create(Larch.prototype);
 
 		app.name = name;
@@ -29,7 +29,7 @@ const Larch = {
 			this.Injector.singleton('larch.Viewer', Viewer);
 			this.Injector.singleton('larch.Router', Router);
 
-			logger = this.Injector.get('larch.Logger').create('larch.app');
+			logger = this.Injector.get('larch.Logger').create(`larch.${this.name}`);
 		},
 
 		models(models) {
@@ -64,18 +64,27 @@ const Larch = {
 				}
 			});
 		},
-		init(fn) {
+		init(fn = undefined) {
+			let resInit;
 			// init
-			this.Injector.invoke(fn);
-			// im
-			this.run();
+			if (fn) {
+				resInit = this.Injector.invoke(fn);
+			}
+
+			if (resInit instanceof Promise) {
+				resInit
+					.then(() => this.run())
+					.catch(err => logger.error(err));
+			} else {
+				this.run();
+			}
 		},
-		run(fn) {
+		run(fn = undefined) {
 			// initial router and viewer run
 			this._runRouter();
 			this._runViews();
 
-			if (typeof fn === 'function') {
+			if (fn) {
 				this.Injector.invoke(fn);
 			}
 		},
