@@ -20,7 +20,7 @@
 <h5>THE OTHERS</h5>
 <ul class="sidebar-list">
 	{{#each dashboards}}
-		<li><a href="dashboard/{{id}}" class="{{toggle-class id ../route 'selected'}}">{{name}}</a></li>
+		<li><a href="" data-on-click="navigate('/dashboard/{{id}}')" class="{{toggle-class id ../route 'selected'}}">{{name}}</a></li>
 	{{else}}
 		<li>loader</li>
 	{{/each}}

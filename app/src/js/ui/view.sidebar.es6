@@ -13,7 +13,7 @@ const ctrl = function(Dashboards, Router, Modal, Logger) {
 	// handle router in sidebar
 	Router.on('router.navigate', route => {
 		logger.info('router.navigate event received');
-		this.scope.route = route.props.id;
+		// this.scope.route = route.props.id;
 		this.recompile();
 	});
 
@@ -23,7 +23,13 @@ const ctrl = function(Dashboards, Router, Modal, Logger) {
 	this.scope.route = Router.current.props.id;
 
 	// definition of methods available as event handlers
-	this.methods = {};
+	this.methods = {
+		navigate(e, url) {
+			e.preventDefault();
+			Router.navigate(url);
+			return false;
+		}
+	};
 
 };
 ctrl.$injector = ['model.Dashboards', 'larch.Router', 'component.Modal','larch.Logger'];
