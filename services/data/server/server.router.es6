@@ -8,7 +8,7 @@ export default [
 	{
 		path: '/data/:widgetId',
 		httpMethod: 'POST',
-		requiresAuth: false,
+		requiresAuth: true,
 		middleware: [api.getData]
 	}
 ];

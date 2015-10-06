@@ -1,10 +1,21 @@
 {
+    "desc": "github statistics for my project",
+    "id": "b44edbd3-ec8c-4672-a0b8-8decd3c7a4be",
+    "like": false,
     "name": "larch-statistics",
     "owner": "test@test.com",
     "shared": false,
-    "like": false,
-    "desc": "github statistics for my project",
-    "widgets": [
-        {"widgetId": "707d09f0-5adb-454e-a1b5-bb27457f9ae3","display": {"row": 0, "position": 0},"settings": {"repo": "larch", "owner": "stepankouba"}}
-    ]
+    "layout": ["tall", "short", "tall"],
+    "widgets": {
+        "707d09f0-5adb-454e-a1b5-bb27457f9ae3": {
+            "display": {
+                "position": 0,
+                "row": 0
+            },
+            "settings": {
+                "owner": "stepankouba",
+                "repo": "larch"
+            }
+        }
+    }
 }

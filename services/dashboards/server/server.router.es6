@@ -14,7 +14,13 @@ export default [
 	{
 		path: '/dashboards/:user',
 		httpMethod: 'GET',
-		requiresAuth: false,
+		requiresAuth: true,
 		middleware: [api.getMyDashboards]
+	},
+	{
+		path: '/dashboard/',
+		httpMethod: 'POST',
+		requiresAuth: false,
+		middleware: [api.saveDashboard]
 	}
 ];

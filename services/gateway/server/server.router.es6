@@ -93,7 +93,7 @@ export default [
 			{
 				path: '/api/data/:widgetId',
 				httpMethod: 'POST',
-				requiresAuth: false,
+				requiresAuth: true,
 				middleware: []
 			}
 		]
@@ -112,6 +112,12 @@ export default [
 			{
 				path: '/api/dashboards/:user',
 				httpMethod: 'GET',
+				requiresAuth: true,
+				middleware: []
+			},
+			{
+				path: '/api/dashboard/',
+				httpMethod: 'POST',
 				requiresAuth: false,
 				middleware: []
 			}

@@ -1,12 +1,11 @@
 import { Service } from '../../lib/';
 import RethinkDB from 'rethinkdbdash';
 
-const r = RethinkDB();
-
 const api = {
 	getSource(req, res, next) {
 		const name = req.params.name;
 		const conf = Service.instance.conf;
+		const r = RethinkDB();
 
 		if (!name) {
 			return next({responseCode: 404, msg: 'name is missing in the call'});

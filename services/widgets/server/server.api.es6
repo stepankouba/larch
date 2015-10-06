@@ -3,8 +3,6 @@ import multer from 'multer';
 import Registry from './server.registry.es6';
 import { Service } from '../../lib/';
 
-const r = RethinkDb();
-
 const api = {
 	/**
 	 * return widget json by id (or by ids - String separated by comma)
@@ -14,6 +12,7 @@ const api = {
 	 */
 	getById(req, res, next) {
 		const conf = Service.instance.conf;
+		const r = RethinkDb();
 
 		if (!req.params.id) {
 			return next(new Error('getById: id not specified'));
@@ -43,17 +42,18 @@ const api = {
 		if (!req.query.phrase) {
 			return next(new Error('getByText: phrase not specified'));
 		}
+		const r = RethinkDb();
 
 		const conf = Service.instance.conf;
-		
+
 		// syntax: https://code.google.com/p/re2/wiki/Syntax
 		const phrase = `(?i)(\b)?${req.query.phrase}(\b)?`;
 
 		r.db(conf.db.database)
 			.table('widgets')
 			.filter(w => {
-				return w('name').match(phrase) || w('title').match(phrase) || w('source')('name').match(phrase) ||
-					w('desc').match(phrase);
+				return w('name').match(phrase) || w('title').match(phrase) || w('desc').match(phrase) ||
+					w('tags').toString().match(phrase);
 			})
 			.then(result => {
 				res.json(result);

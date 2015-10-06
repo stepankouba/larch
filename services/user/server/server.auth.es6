@@ -2,7 +2,6 @@ import RethinkDb from 'rethinkdbdash';
 import { Service } from '../../lib/';
 import crypto from 'crypto';
 
-const r = RethinkDb();
 const LENGTH = 512;
 // twenty minutes
 const HASH_VALIDITY = 20 * 60 * 60;
@@ -16,6 +15,7 @@ const Auth = {
 	 */
 	_getByName(username, pass) {
 		const conf = Service.instance.conf;
+		const r = RethinkDb();
 
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)
@@ -80,6 +80,7 @@ const Auth = {
 	createUserAndToken(user) {
 		const token = Service.Auth.createToken(user);
 		const conf = Service.instance.conf;
+		const r = RethinkDb();
 
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)
@@ -124,6 +125,7 @@ const Auth = {
 	 */
 	logout(username) {
 		const conf = Service.instance.conf;
+		const r = RethinkDb();
 
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)
@@ -145,6 +147,7 @@ const Auth = {
 	_saveUser(data) {
 		const conf = Service.instance.conf;
 		const [user, password] = data;
+		const r = RethinkDb();
 
 		user.password = password;
 
@@ -223,6 +226,7 @@ const Auth = {
 	},
 	_searchForHash(hash, password) {
 		const conf = Service.instance.conf;
+		const r = RethinkDb();
 
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)
@@ -248,6 +252,7 @@ const Auth = {
 	},
 	_updateAvailable(user) {
 		const conf = Service.instance.conf;
+		const r = RethinkDb();
 
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)

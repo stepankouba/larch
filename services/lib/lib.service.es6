@@ -154,8 +154,17 @@ const Service = {
 			return (err, req, res, next) => {
 				logger.error('error occured', err.stack ? err.stack : err);
 
+				if (err.code && err.code === 'ECONNREFUSED') {
+					err.msg = 'can not connect to database';
+				}
+
 				const responseCode = err.responseCode || err.statusCode || 500;
-				const msg = err.msg || err.data.message || optMsg || err;
+				let msg;
+				if (err.data) {
+					msg = err.data.message;
+				} else {
+					msg = err.msg || optMsg || err;
+				}
 				
 				res.status(responseCode).json({responseCode, msg});
 			};
