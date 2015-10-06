@@ -1,6 +1,6 @@
 // import AppDispatcher from '../../larch.dispatcher.es6';
 
-const ctrl = function(HTTPer, Modal, Logger) {
+const ctrl = function(HTTPer, Modal, Router, Logger) {
 	const logger = Logger.create('ui.header');
 
 	// define operations used in template
@@ -32,11 +32,25 @@ const ctrl = function(HTTPer, Modal, Logger) {
 					logger.log(result);
 				})
 				.catch(err => logger.error(err));
+		},
+		newDashboard(e) {
+			e.preventDefault();
+			logger.info('opening new dashboard modal');
+
+			const m = Modal.create('new');
+
+			m.open()
+				.then(newId => {
+					if (newId) {
+						Router.navigate(`/dashboard/${newId}`);
+					}
+				})
+				.catch(err => logger.error(err));
 		}
 	};
 
 };
-ctrl.$injector = ['larch.HTTPer', 'component.Modal', 'larch.Logger'];
+ctrl.$injector = ['larch.HTTPer', 'component.Modal', 'larch.Router','larch.Logger'];
 
 const View = {
 	id: 'ui.header',

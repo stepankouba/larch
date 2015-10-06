@@ -2,31 +2,38 @@ import AppDispatcher from '../larch.dispatcher.es6';
 
 const ctrl = function(Router, Widgets, Dashboards, Chart, Logger) {
 	const logger = Logger.create('ui.dashboard');
-
 	const scope = this.scope;
+
+	function reloadDashboard(id = Router.current.props.id) {
+		// display widgets for current dashboard
+		scope.dashboard = Dashboards.get(id);
+		scope.widgetInstances = Dashboards.getWidgetInstances(id);
+		this.recompile();
+	}
+
+	// handle router in sidebar
+	Router.on('router.navigate', route => {
+		logger.info('router.navigate event received');
+
+		reloadDashboard.bind(this)();
+		AppDispatcher.dispatch('widgets.getAll', scope.dashboard);
+	});
 
 	// on loading all dashboards, show the selected one
 	Dashboards.on('dashboards.loaded', () => {
 		logger.info('dashboards.loaded event received');
 
-		// display widgets for current dashboard
-		scope.dashboard = Dashboards.get(Router.current.props.id);
-		scope.widgetInstances = Dashboards.getWidgetInstances(Router.current.props.id);
-		this.recompile();
-
-		AppDispatcher.dispatch('widgets.getAll', Dashboards.cache[0]);
+		reloadDashboard.bind(this)();
+		AppDispatcher.dispatch('widgets.getAll', scope.dashboard);
 	});
 
 	Dashboards.on('dashboards.updated', id => {
 		logger.info('dashboards.updated event received');
 
+		reloadDashboard.bind(this)();
+
 		const wi = Dashboards.getWidgetInstances(id);
 		const w = Widgets.getAllByIds(wi);
-
-		// display widgets for current dashboard
-		scope.dashboard = Dashboards.get(Router.current.props.id);
-		scope.widgetInstances = wi; // Dashboards.getWidgetInstances(Router.current.props.id);
-		this.recompile();
 
 		// after recompile add widgets
 		Object.keys(w).forEach(k => {
