@@ -35,7 +35,7 @@ const ViewerFn = function(HTTPer, Logger) {
 		 */
 		recompile() {
 			return function recompile() {
-				Viewer._appendTemplate()(this);
+				return Viewer._appendTemplate()(this);
 			};
 		},
 
@@ -119,8 +119,8 @@ const ViewerFn = function(HTTPer, Logger) {
 		_appendTemplate() {
 			// need arrow function here to keep this pointing at Viewer
 			return view => {
-				logger.log(`appending ${view.id}`);
 				view.element.innerHTML = this._compileTemplate(view);
+
 				this._addEventListeners(view);
 
 				return Promise.resolve(view);
