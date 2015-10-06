@@ -3,81 +3,118 @@ import Cookies from '../lib/lib.cookies.es6';
 const HTTPerFn = function(Logger) {
 	const logger = Logger.create('larch.HTTPer');
 
+	const HTTPClass = {
+		create(method, conf) {
+			const h = Object.create(HTTPClass.prototype);
+			h.method = method;
+
+			h.xhr = new XMLHttpRequest();
+			h.conf = conf;
+
+			return h;
+		},
+		prototype: {
+			/**
+			 * [open description]
+			 * @param  {String} url     [description]
+			 * @param  {Function} resolve [description]
+			 * @param  {Function} reject  [description]
+			 */
+			open(url, resolve, reject) {
+				const token = Cookies.getItem('larch.token');
+
+				this.xhr.open(this.method, url, true);
+
+				if (token) {
+					this.xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+				}
+
+				this.resolve = resolve;
+				this.reject = reject;
+			},
+			onload(cb = undefined) {
+				if (cb) {
+					this.xhr.onload = cb;
+				} else {
+					this.xhr.onload = e => {
+						if (this.xhr.readyState === 4) {
+							if (this.xhr.status === 200) {
+								// if json set true, parse output as JSON, otherwise return plain textside
+								const r = this.conf.json ? JSON.parse(this.xhr.responseText) : this.xhr.responseText;
+
+								this.resolve(r);
+							} else {
+								this.reject({
+									statusCode: this.xhr.status,
+									message: this.xhr.statusText,
+									data: JSON.parse(this.xhr.responseText)
+								});
+							}
+						}
+					};
+				}
+			},
+			onerror(cb = undefined) {
+				if (!cb) {
+					this.xhr.onerror = function onerror(e) {
+						logger.error(this.xhr.statusText);
+						return this.reject(e);
+					};
+				} else {
+					this.xhr.onerror = cb;
+				}
+			},
+			/**
+			 * [send description]
+			 * @param  {String} data  stringified data
+			 */
+			send(data = null) {
+				if (data) {
+					this.xhr.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
+				}
+
+				this.xhr.send(data);
+			}
+		}
+
+	};
+
 	const HTTPer = {
 		get(url, conf = {}) {
 			return new Promise((resolve, reject) => {
-				const xhr = new XMLHttpRequest();
-				const token = Cookies.getItem('larch.token');
+				const r = HTTPClass.create('GET', conf);
+				r.open(url, resolve, reject);
 
-				xhr.open('GET', url, true);
+				// default on error handlers
+				r.onerror();
+				r.onload();
 
-				if (token) {
-					xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-				}
-
-				xhr.onload = function(e) {
-					if (xhr.readyState === 4) {
-						if (xhr.status === 200) {
-							// if json set true, parse output as JSON, otherwise return plain textside
-							const r = conf.json ? JSON.parse(xhr.responseText) : xhr.responseText;
-
-							resolve(r);
-						} else {
-							reject({
-								statusCode: xhr.status,
-								message: xhr.statusText,
-								data: JSON.parse(xhr.responseText)
-							});
-						}
-					}
-				};
-
-				xhr.onerror = function(e) {
-					logger.error(xhr.statusText);
-					reject(e);
-				};
-
-				xhr.send(null);
+				r.send();
 			});
 		},
 		post(url, data, conf = {}) {
 			return new Promise((resolve, reject) => {
-				const xhr = new XMLHttpRequest();
 				const stringifiedData = JSON.stringify(data);
-				const token = Cookies.getItem('larch.token');
+				const r = HTTPClass.create('POST', conf);
+				r.open(url, resolve, reject);
 
-				xhr.open('POST', url, true);
+				// default on error handlers
+				r.onerror();
+				r.onload();
 
-				if (token) {
-					xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-				}
+				r.send(stringifiedData);
+			});
+		},
+		remove(url, conf = {}) {
+			return new Promise((resolve, reject) => {
+				const r = HTTPClass.create('REMOVE', conf);
+				r.open(url, resolve, reject);
 
-				// Send the proper header information along with the request
-				xhr.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
+				// default on error handlers
+				r.onerror();
+				r.onload();
 
-				xhr.onload = function(e) {
-					if (xhr.readyState === 4) {
-						if (xhr.status === 200) {
-							// if json set true, parse output as JSON, otherwise return plain textside
-							const r = conf.json ? JSON.parse(xhr.responseText) : xhr.responseText;
-
-							resolve(r);
-						} else {
-							reject({
-								statusCode: xhr.status,
-								message: xhr.statusText,
-								data: JSON.parse(xhr.responseText)
-							});
-						}
-					}
-				};
-
-				xhr.onerror = function(e) {
-					logger.error(xhr.statusText);
-					reject(e);
-				};
-
-				xhr.send(stringifiedData);
+				r.send();
 			});
 		}
 	};
