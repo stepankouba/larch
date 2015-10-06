@@ -97,4 +97,14 @@ Handlebars.registerHelper('middle-widgets-add-links', (list, options) => {
 	return result;
 });
 
+Handlebars.registerPartial('resultMsg', `
+	{{#if error}}
+		{{error}}
+	{{else if success}}
+		{{success}}
+	{{else}}
+		
+	{{/if}}
+	`);
+
 export default Handlebars;
