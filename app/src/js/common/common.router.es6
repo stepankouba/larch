@@ -44,6 +44,8 @@ const RouterFn = function(Logger) {
 			let values;
 			this.current = {};
 
+			logger.log(`navigating to ${url}`);
+
 			// this is replacing for ... of loop to save some 300kb and not to load polyfill
 			this.routes.forEach(item => {
 				const urlMatch = url.match(item.regexpUrl);
