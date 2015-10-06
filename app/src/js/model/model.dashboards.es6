@@ -2,67 +2,78 @@ import { EventEmitter } from 'events';
 import { assign } from '../lib/lib.assign.es6';
 import AppDispatcher from '../larch.dispatcher.es6';
 
-const DashboardsMdlFn = function(DashboardSrvc, Logger) {
+const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 	const logger = Logger.create('model.Dashboards');
 
-	// define dispatcher registers
-	const dispatchers = {
+	// define model
+	const DashboardsMdl = assign(EventEmitter.prototype, {
+		cache: [],
 		/**
 		 * get all dashboards for particular user
 		 * @param  {string} user username
 		 */
 		getAll(user) {
-			DashboardsMdl.getAll(user)
-				.then(() => DashboardsMdl.emit('dashboards.loaded'))
+			DashboardSrvc.getAll(user)
+				.then(data => {
+					DashboardsMdl.cache = data;
+					DashboardsMdl.emit('dashboards.loaded');
+				})
 				.catch(err => logger.error(err));
 		},
 		/**
-		 * [addWidget description]
-		 * @param {[type]} [id       [description]
-		 * @param {[type]} widget    [description]
-		 * @param {[type]} position] [description]
+		 * get dashboard
+		 * @param  {String} id Dashboard id
+		 * @return {Object}    Dashboard object
 		 */
-		addWidget([id, widget, position]) {
-			logger.log('adding new widget to the dashboard');
-			// add widget instance
-			DashboardsMdl.addWidget(id, widget, position);
-		},
-		update(id) {
-			logger.log('updating dashboard', id);
-
-			DashboardsMdl.update(id)
-				.then(() => DashboardsMdl.emit('dashboards.updated', id))
-				.catch(err => logger.error(err));
-		}
-	};
-
-	// register actions
-	AppDispatcher.register('Dashboards', 'dashboards.getAll', dispatchers.getAll);
-	AppDispatcher.register('Dashboards', 'dashboards.addWidget', dispatchers.addWidget);
-	AppDispatcher.register('Dashboards', 'dashboards.udpate', dispatchers.update);
-
-	// define model
-	const DashboardsMdl = assign(EventEmitter.prototype, {
-		cache: [],
-		getAll(user) {
-			const self = this;
-
-			return new Promise((resolve, reject) => {
-				DashboardSrvc.getAll(user)
-					.then(data => {
-						self.cache = data;
-						resolve(true);
-					})
-					.catch(err => reject(err));
-			});
-		},
 		get(id) {
-			return this.cache.filter(item => item.id === id)[0];
+			return DashboardsMdl.cache.filter(item => item.id === id)[0];
 		},
-		addWidget(id, widget, row) {
+		/**
+		 * create new dashboard
+		 * @param  {Object} ds Dashboard object
+		 */
+		create(ds) {
+			const defaultValues = {
+				widgets: {},
+				like: false,
+				shared: false,
+				owner: User.current.username
+			};
+			const newDS = Object.assign(ds, defaultValues);
+
+			logger.log('creating new dashbord with settins', newDS);
+
+			DashboardSrvc.save(newDS)
+				.then(result => {
+					const newId = result.data.generated_keys[0];
+					// append new id to the dashboard
+					newDS.id = newId;
+
+					DashboardsMdl.cache.push(newDS);
+					DashboardsMdl.emit('dashboards.created', newId);
+				})
+				.catch(err => {
+					logger.error(err);
+					if (err.data && err.data.msg === 'SAME_NAME_EXISTS') {
+						DashboardsMdl.emit('dashboards.not-created', 'SAME_NAME_EXISTS');
+					} else {
+						DashboardsMdl.emit('dashboards.not-created', 'OTHER_ERROR');
+					}
+				});
+		},
+		/**
+		 * Add widget to the current dashboard
+		 * @param {Array} params
+		 * @param {String} params[]  id of the dashboard
+		 * @param {Object} params[]  widget object
+		 * @param {Number} params[]  row in dashboard
+		 */
+		addWidget([id, widget, row]) {
 			let position;
 
-			const currentDashboard = this.get(id);
+			logger.log('adding new widget to the dashboard');
+
+			const currentDashboard = DashboardsMdl.get(id);
 			// check rows and
 			if (row === 0 || row === 2) {
 				position = 0;
@@ -78,14 +89,16 @@ const DashboardsMdlFn = function(DashboardSrvc, Logger) {
 			};
 		},
 		update(id) {
-			const currentDashboard = this.get(id);
+			const currentDashboard = DashboardsMdl.get(id);
+
+			logger.log('updating dashboard', id);
 
 			// TODO: save to DB
-			return Promise.resolve(true);
+			DashboardsMdl.emit('dashboards.updated', id);
 		},
 		getFreeSlots(id, height = 0) {
 			logger.log(id, height);
-			const currentDashboard = this.get(id);
+			const currentDashboard = DashboardsMdl.get(id);
 			const widgets = currentDashboard.widgets;
 			const slots = [0,1,1,1,2];
 
@@ -107,8 +120,8 @@ const DashboardsMdlFn = function(DashboardSrvc, Logger) {
 		 * @return {Object}    hash map of objects
 		 */
 		getWidgetInstances(id) {
-			const currentDashboard = this.get(id);
-			
+			const currentDashboard = DashboardsMdl.get(id);
+			logger.log(id, currentDashboard, DashboardsMdl.cache);
 			return currentDashboard.widgets;
 		},
 		/**
@@ -117,14 +130,14 @@ const DashboardsMdlFn = function(DashboardSrvc, Logger) {
 		 * @return {[type]}    [description]
 		 */
 		getFirstWidgetId(id) {
-			const w = this.getWidgetInstances(id);
+			const w = DashboardsMdl.getWidgetInstances(id);
 
 			return Object.keys(w)[0];
 		},
 		setSetting(id, widgetId, name, value) {
 			logger.log('changing settings for', id, widgetId, name, value);
 
-			const currentDashboard = this.get(id);
+			const currentDashboard = DashboardsMdl.get(id);
 			const settings = currentDashboard.widgets[widgetId].settings || {};
 			settings[name] = value;
 
@@ -132,9 +145,15 @@ const DashboardsMdlFn = function(DashboardSrvc, Logger) {
 		}
 	});
 
+	// register actions
+	AppDispatcher.register('Dashboards', 'dashboards.getAll', DashboardsMdl.getAll);
+	AppDispatcher.register('Dashboards', 'dashboards.addWidget', DashboardsMdl.addWidget);
+	AppDispatcher.register('Dashboards', 'dashboards.udpate', DashboardsMdl.update);
+	AppDispatcher.register('Dashboards', 'dashboards.create', DashboardsMdl.create);
+
 	return DashboardsMdl;
 };
-DashboardsMdlFn.$injector = ['service.Dashboard', 'larch.Logger'];
+DashboardsMdlFn.$injector = ['model.User', 'service.Dashboard', 'larch.Logger'];
 
 export default {
 	name: 'model.Dashboards',
