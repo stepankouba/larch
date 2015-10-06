@@ -7,6 +7,8 @@ import semver from 'semver';
 
 import { Service } from '../../lib/';
 
+const r = RethinkDb();
+
 const Registry = {
 	// REGISTRY_PATH: path.resolve(`${__dirname}/../registry`),
 	/**
@@ -17,14 +19,14 @@ const Registry = {
 	_requestDB(widget) {
 		const conf = Service.instance.conf;
 		const name = widget.name;
-		const r = RethinkDb();
 
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)
 				.table('widgets')
 				.filter({name})
 				.then(result => resolve([widget, result]))
-				.error(err => reject(err));
+				.catch(err => reject(err));
+			// .finally(() => r.getPool().drain());
 		});
 
 	},
@@ -50,7 +52,6 @@ const Registry = {
 	},
 	_saveToRegistry([widget, currentWidget]) {
 		const conf = Service.instance.conf;
-		const r = RethinkDb();
 
 		function copyProps(source, target) {
 			target.title = source.title;
@@ -77,7 +78,8 @@ const Registry = {
 				.table('widgets')
 				.insert(currentWidget, {conflict: 'replace'})
 				.then(result => resolve(result))
-				.error(err => reject(err));
+				.catch(err => reject(err));
+			// .finally(() => r.getPool().drain());
 		});
 	},
 	postWidget(widget) {

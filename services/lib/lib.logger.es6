@@ -4,9 +4,8 @@
  * @license MIT
  */
 import winston from 'winston';
-import RethinkLogger from './lib.rethinklogger.es6';
-
-const conf = require('./local.json');
+// import RethinkLogger from './lib.rethinklogger.es6';
+// const conf = require('./local.json');
 
 // by default winston throw errors
 winston.emitErrs = true;
@@ -16,12 +15,12 @@ const Logger = {
 	create(serviceName) {
 		const logger = new winston.Logger({
 			transports: [
-				new RethinkLogger({
-					db: conf.db.database,
-					collection: conf.db.collection,
-					host: conf.db.host,
-					port: conf.db.port
-				}),
+				// new RethinkLogger({
+				// 	db: conf.db.database,
+				// 	collection: conf.db.collection,
+				// 	host: conf.db.host,
+				// 	port: conf.db.port
+				// }),
 				new winston.transports.Console({
 					level: 'debug',
 					handleExceptions: true,

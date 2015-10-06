@@ -1,12 +1,13 @@
 import { Service } from '../../lib/';
-import RethinkDB from 'rethinkdbdash';
+import RethinkDb from 'rethinkdbdash';
+
+const r = RethinkDb();
 
 const api = {
 	getDashboard(req, res, next) {
 		const logger = Service.instance.server.logger;
 		const conf = Service.instance.conf;
 		const id = req.params.id;
-		const r = RethinkDB();
 
 		logger.info(`requesting dashboard.id = ${id}`);
 
@@ -20,12 +21,12 @@ const api = {
 			.run()
 			.then(dashboard => res.json(dashboard))
 			.catch(err => next(err));
+			// .finally(() => r.getPool().drain());
 	},
 	getMyDashboards(req, res, next) {
 		const logger = Service.instance.server.logger;
 		const conf = Service.instance.conf;
 		const user = req.params.user;
-		const r = RethinkDB();
 
 		logger.info(`requesting all dashboards for user ${user}`);
 
@@ -39,12 +40,12 @@ const api = {
 			.run()
 			.then(dashboards => res.json(dashboards))
 			.catch(err => next(err));
+			// .finally(() => r.getPool().drain());
 	},
 	saveDashboard(req, res, next) {
 		const ds = req.body;
 		const logger = Service.instance.server.logger;
 		const conf = Service.instance.conf;
-		const r = RethinkDB();
 
 		/**
 		 * testing, whether sent
@@ -96,6 +97,7 @@ const api = {
 					return next(err);
 				}
 			});
+			// .finally(() => r.getPool().drain());
 	}
 };
 

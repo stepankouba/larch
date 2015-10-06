@@ -30,6 +30,7 @@ const Auth = {
 					}
 				})
 				.catch(err => reject(err));
+			// .finally(() => r.getPool().drain());
 		});
 	},
 	/**
@@ -89,6 +90,7 @@ const Auth = {
 				.run()
 				.then(res => resolve({user, token}))
 				.catch(err => reject(err));
+			// .finally(() => r.getPool().drain());
 		});
 	},
 	_checkPassword(data) {
@@ -135,6 +137,7 @@ const Auth = {
 				.run()
 				.then(res => resolve(true))
 				.catch(err => reject(err));
+			// .finally(() => r.getPool().drain());
 		});
 	},
 	/**
@@ -164,6 +167,7 @@ const Auth = {
 			).run()
 				.then(result => resolve(result.changes[0].new_val))
 				.catch(err => reject(err));
+			// .finally(() => r.getPool().drain());
 		});
 	},
 	/**
@@ -248,6 +252,7 @@ const Auth = {
 					// resolve([result[0], password]);
 				})
 				.catch(err => reject(err));
+			// .finally(() => r.getPool().drain());
 		});
 	},
 	_updateAvailable(user) {
@@ -262,6 +267,7 @@ const Auth = {
 				.run()
 				.then(result => resolve(user))
 				.catch(err => reject(err));
+			// .finally(() => r.getPool().drain());
 		});
 	},
 	confirm(hash, password) {

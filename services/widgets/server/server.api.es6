@@ -1,7 +1,8 @@
 import RethinkDb from 'rethinkdbdash';
-import multer from 'multer';
 import Registry from './server.registry.es6';
 import { Service } from '../../lib/';
+
+const r = RethinkDb();
 
 const api = {
 	/**
@@ -12,7 +13,6 @@ const api = {
 	 */
 	getById(req, res, next) {
 		const conf = Service.instance.conf;
-		const r = RethinkDb();
 
 		if (!req.params.id) {
 			return next(new Error('getById: id not specified'));
@@ -29,7 +29,8 @@ const api = {
 			.then(result => {
 				res.json(result);
 			})
-			.error(err => next(err));
+			.catch(err => next(err));
+			// .finally(() => r.getPool().drain());
 	},
 	/**
 	 * search by phrase, no AND OR support
@@ -42,7 +43,6 @@ const api = {
 		if (!req.query.phrase) {
 			return next(new Error('getByText: phrase not specified'));
 		}
-		const r = RethinkDb();
 
 		const conf = Service.instance.conf;
 
@@ -58,7 +58,8 @@ const api = {
 			.then(result => {
 				res.json(result);
 			})
-			.error(err => next(err));
+			.catch(err => next(err));
+			// .finally(() => r.getPool().drain());
 	},
 	/**
 	 * get assets by name of the asset ('index.js, index.html')

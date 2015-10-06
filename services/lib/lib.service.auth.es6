@@ -30,7 +30,8 @@ const Auth = {
 				.filter({username: payload.username, token})
 				.run()
 				.then(result => done(null, result.length === 0))
-				.catch(err => done(err));
+				.catch(err => done(err))
+				.finally(() => r.getPool().drain());
 		}
 	}),
 	/**

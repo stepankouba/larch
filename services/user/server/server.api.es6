@@ -6,6 +6,7 @@ import OAuth from 'oauth';
 import https from 'https';
 
 let oauth;
+const r = RethinkDb();
 
 const user = {
 	/**
@@ -67,7 +68,6 @@ const user = {
 		const availableFields = ['name', 'auths', 'settings'];
 		const update = {};
 		const conf = Service.instance.conf;
-		const r = RethinkDb();
 
 		Object.keys(obj).forEach(key => {
 			if (availableFields.indexOf(key) > -1) {
@@ -94,6 +94,7 @@ const user = {
 			.then(Auth.createUserAndToken)
 			.then(result => res.json(result))
 			.catch(err => next(err));
+			// .finally(() => r.getPool().drain());
 
 	},
 	/**
@@ -212,7 +213,6 @@ const user = {
 		const user = req.user || {id: 'd77158fd-4b64-498a-be3d-e88777958223'};
 
 		const conf = Service.instance.conf;
-		const r = RethinkDb();
 
 		if (!code || !source) {
 			return next({responseCode: 404,msg: 'no code or source specified for the callback'});
@@ -248,6 +248,7 @@ const user = {
 					.run()
 					.then(result => res.json({token}))
 					.catch(err => next(err));
+					// .finally(() => r.getPool().drain());
 			})
 			// store the token in user object
 			.catch(err => next(err));
