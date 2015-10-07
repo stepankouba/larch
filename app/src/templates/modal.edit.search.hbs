@@ -1,0 +1,25 @@
+<script id="ui.modal.edit.search" type="text/x-handlebars-template">
+	<div class="awesomplete">
+		<input id="search-box" autofocus="" class="awesomplete" autocomplete="false" aria-autocomplete="list" value="{{value}}" data-on-keypress="searchAutocomplete()">
+	</div>
+	<div class="results">
+		{{#each results}}
+			<div class="item">
+				<span class="name">{{name}}</span>
+				<span class="title">{{title}}</span>
+				<div>{{versions.0.description}} | latest version: {{versions.0.version}}</div>
+				<!-- Single button -->
+				<div class="btn-group">
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-on-click="showDropdown()">add widget<span class="caret"></span></button>
+					<ul class="dropdown-menu">
+						{{#withHash @root.emptySlots name}}
+							{{#each this}}
+								<li><a href="" data-on-click="addWidget('{{../../id}}', {{this}})">{{get-position this}}</a></li>
+							{{/each}}
+						{{/withHash}}
+					</ul>
+				</div>
+			</div>
+		{{/each}}
+	</div>
+</script>

@@ -1,0 +1,18 @@
+<script id="ui.modal.remove" type="text/x-handlebars-template">
+	<div class="modal larch-modal">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-on-click="close()" aria-label="Close"><span aria-hidden="true">done</span></button>
+					Remove a dashboard
+				</div>
+				<div class="modal-body">
+					Are you really angry with this dashboard, so that you want to delete it?
+
+					<button type="button" class="btn btn-danger" data-on-click="remove()">Delete {{dashboard.name}}</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</script>

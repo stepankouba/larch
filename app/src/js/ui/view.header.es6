@@ -1,7 +1,21 @@
-// import AppDispatcher from '../../larch.dispatcher.es6';
+import AppDispatcher from '../larch.dispatcher.es6';
 
-const ctrl = function(HTTPer, Modal, Router, Logger) {
+const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 	const logger = Logger.create('ui.header');
+	this.scope.user = User.current;
+
+	this.recompile();
+
+	Dashboards.on('dashboards.loaded', () => {
+		this.scope.hasDashboards = Dashboards.hasAny();
+		this.recompile();
+	});
+
+	Dashboards.on('dashboards.updated', id => {
+		this.scope.hasLike = id ? Dashboards.get(id).like : undefined;
+
+		this.recompile();
+	});
 
 	// define operations used in template
 	this.methods = {
@@ -46,15 +60,36 @@ const ctrl = function(HTTPer, Modal, Router, Logger) {
 					}
 				})
 				.catch(err => logger.error(err));
+		},
+		removeDashboard(e) {
+			e.preventDefault();
+			logger.info('opening new dashboard modal');
+
+			const m = Modal.create('remove');
+
+			m.open()
+				.then(() => {
+					Router.navigate(`/dashboard/home`);
+				})
+				.catch(err => logger.error(err));
+		},
+		likeDashboard(e) {
+			e.preventDefault();
+
+			AppDispatcher.dispatch('dashboards.like', Router.current.props.id);
+		},
+		logout(e) {
+			e.preventDefault();
+
+			AppDispatcher.dispatch('user.logout');
 		}
 	};
-
 };
-ctrl.$injector = ['larch.HTTPer', 'component.Modal', 'larch.Router','larch.Logger'];
+ctrl.$injector = ['model.User', 'model.Dashboards','larch.HTTPer', 'component.Modal', 'larch.Router','larch.Logger'];
 
 const View = {
 	id: 'ui.header',
-	templateUrl: './ui/header.html',
+	templateUrl: './header.hbs',
 	scope: {},
 	methods: {},
 	controller: ctrl

@@ -7,6 +7,9 @@ const UserSrvc = function(HTTPer, Logger) {
 		},
 		getCurrent() {
 			return HTTPer.get(`https://localhost:9101/api/user/current`, {json: true});
+		},
+		logout() {
+			return HTTPer.get(`https://localhost:9101/api/user/current/logout`, {json: true});
 		}
 	};
 

@@ -22,11 +22,12 @@ const ViewerFn = function(HTTPer, Logger) {
 		 * @param  {Object} scopeInit initial values passed to the view scope (should not be used often)
 		 */
 		processView(item, viewId, scopeInit = undefined) {
-			return this.getTemplate(viewId)
-				.then(this._storeViewObject(item, viewId, scopeInit))
-				.then(this._appendTemplate(item, viewId))
-				.then(this._runController(viewId))
-				.catch(err => logger.error(err));
+			const data = this.getTemplate(viewId);
+			const view = this._storeViewObject(item, viewId, data, scopeInit);
+			this._appendTemplate(view);
+			this._runController(view);
+
+			return view;
 		},
 
 		/**
@@ -35,7 +36,7 @@ const ViewerFn = function(HTTPer, Logger) {
 		 */
 		recompile() {
 			return function recompile() {
-				return Viewer._appendTemplate()(this);
+				return Viewer._appendTemplate(this);
 			};
 		},
 
@@ -46,28 +47,26 @@ const ViewerFn = function(HTTPer, Logger) {
 		 * @param  {[type]} scopeInit [description]
 		 * @return {[type]}        [description]
 		 */
-		_storeViewObject(item, viewId, scopeInit = undefined) {
-			return data => {
-				// this if checks, whether the input from getTemplate is object (view is already cached) or string (template was loaded)
-				const view = this.views.get(viewId);
+		_storeViewObject(item, viewId, data, scopeInit = undefined) {
+			// this if checks, whether the input from getTemplate is object (view is already cached) or string (template was loaded)
+			const view = this.views.get(viewId);
 
-				if (typeof data !== 'object') {
-					view.template = data;
-					view.loaded = true;
-					view.recompile = this.recompile();
-				}
+			if (typeof data !== 'object') {
+				view.template = data;
+				view.loaded = true;
+				view.recompile = this.recompile();
+			}
 
-				if (scopeInit) {
-					Object.assign(view.scope, scopeInit);
-				}
+			if (scopeInit) {
+				Object.assign(view.scope, scopeInit);
+			}
 
-				// even if template is already loaded, we need to keep the element udpated
-				// because it's disapearing from DOM via Modal.hide()
-				view.element = item;
-				this.views.set(viewId, view);
+			// even if template is already loaded, we need to keep the element udpated
+			// because it's disapearing from DOM via Modal.hide()
+			view.element = item;
+			this.views.set(viewId, view);
 
-				return Promise.resolve(view);
-			};
+			return view;
 		},
 
 		/**
@@ -87,17 +86,14 @@ const ViewerFn = function(HTTPer, Logger) {
 		/**
 		 * run view's controller after the view is part of the DOM
 		 * @param  {string} viewId view id
-		 * @return {Promise}
 		 */
-		_runController(viewId) {
-			return view => {
-				const inj = Injector.create();
+		_runController(view) {
+			const inj = Injector.create();
 
-				// setting view as this for controller
-				inj.invoke(view.controller, view);
+			// setting view as this for controller
+			inj.invoke(view.controller, view);
 
-				return Promise.resolve(view);
-			};
+			return view;
 		},
 		/**
 		 * Compile template by Handlebars
@@ -116,15 +112,14 @@ const ViewerFn = function(HTTPer, Logger) {
 		 * append a template to the DOM
 		 * @return {Promise}
 		 */
-		_appendTemplate() {
+		_appendTemplate(view) {
 			// need arrow function here to keep this pointing at Viewer
-			return view => {
-				view.element.innerHTML = this._compileTemplate(view);
+			logger.log(view);
+			view.element.innerHTML = this._compileTemplate(view);
 
-				this._addEventListeners(view);
+			this._addEventListeners(view);
 
-				return Promise.resolve(view);
-			};
+			return view;
 		},
 		/**
 		 * add required event listeners, which are defined within the template by data-on-* attribtues
@@ -152,7 +147,7 @@ const ViewerFn = function(HTTPer, Logger) {
 					if (!view.methods[methodName]) {
 						return logger.error(`wrong event listener assignement in view ${view.id} - ${methodName}`);
 					}
-					
+
 					// call requested method
 					view.methods[methodName].apply(view, [e, ...attributes]);
 				});
@@ -172,15 +167,13 @@ const ViewerFn = function(HTTPer, Logger) {
 
 			// check cache
 			if (template) {
-				return Promise.resolve(template);
+				return template;
 			} else {
 				const view = this.views.get(viewId);
 				// TODO: this is wrong URL!!!!
 				logger.log('getting template', viewId, view);
-				const url = `${window.location.origin}/build/templates/${view.templateUrl}`;
 
-				return HTTPer.get(url)
-					.then(data => Promise.resolve(data));
+				return document.getElementById(viewId).innerHTML;
 			}
 		},
 

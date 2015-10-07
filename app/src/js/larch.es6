@@ -1,5 +1,6 @@
 import Larch from './larch.app.es6';
 import init from './larch.init.es6';
+import run from './larch.run.es6';
 import routes from './larch.routes.es6';
 import views from './larch.views.es6';
 import services from './larch.services.es6';
@@ -14,8 +15,12 @@ App.models(models);
 
 App.components(components);
 
-App.views(views);
+App.init(init)
+	.then(() => {
+		App.views(views);
 
-App.routes(routes);
+		App.routes(routes);
 
-App.init(init);
+		App.run(run);
+	})
+	.catch(err => App.logger.error('something really bad happened', err));

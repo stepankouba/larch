@@ -115,7 +115,7 @@ const Injector = {
 		},
 
 		invoke(fn, thisArg = null) {
-			this._resolve(fn, thisArg);
+			return this._resolve(fn, thisArg);
 		}
 	}
 };

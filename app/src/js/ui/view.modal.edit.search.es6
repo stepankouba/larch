@@ -38,7 +38,7 @@ const ctrl = function(WidgetSrvc, Router, Dashboards, Logger) {
 			// let Model do the work
 			AppDispatcher.dispatch('dashboards.addWidget', [Router.current.props.id, widget, row]);
 			// add widget
-			AppDispatcher.dispatch('widgets.cacheWidget', [widget.id, widget]);
+			AppDispatcher.dispatch('widgets.load', [widget.id, widget]);
 		},
 		/**
 		 * show and hide drop down
@@ -85,7 +85,7 @@ ctrl.$injector = ['service.Widget', 'larch.Router', 'model.Dashboards', 'larch.L
 
 const View = {
 	id: 'ui.modal.edit.search',
-	templateUrl: './ui/modal.edit.search.hbs',
+	templateUrl: './modal.edit.search.hbs',
 	scope: {},
 	methods: {},
 	controller: ctrl

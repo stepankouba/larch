@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
+	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<base href="http://localhost:3333/build/">
 	<title>larch</title>
@@ -15,9 +15,9 @@
 	<!-- SCRIPTS -->
 </head>
 <body id="larch-app">
-	<nav class="navbar navbar-default navbar-fixed-top" data-view="ui.header"> </nav>
-
 	<div id="content-wrapper" class="container-fluid">
+		<nav class="navbar navbar-default navbar-fixed-top" data-view="ui.header"> </nav>
+
 		<div class="col-xs-2 sidebar-wrapper" data-view="ui.sidebar"></div> 
 		
 		<div class="col-xs-10 content" data-router=""></div>
@@ -28,5 +28,6 @@
 </body>
 <div id="modal-div">
 </div>
+@@include('./templates/templates.js')
 <script type="text/javascript" src="./js/larch.app.js"></script>
 </html>

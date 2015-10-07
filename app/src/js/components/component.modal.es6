@@ -23,23 +23,19 @@ const ModalFn = function(Viewer, Logger) {
 				logger.info(`open ${this.name} modal`);
 
 				this.container = document.querySelector('#modal-div');
-				return Viewer.processView(this.container, this.viewId)
-					.then(view => {
-						// store link to modal for the view
-						view.scope.modal = this;
+				const view = Viewer.processView(this.container, this.viewId);
 
-						this.display();
+				// store link to modal for the view
+				view.scope.modal = this;
 
-						this._toggleClassOnId('content-wrapper', 'larch-modal-open');
+				this.display();
 
-						return Promise.resolve(true);
-					})
-					.then(() => {
-						return new Promise((resolve, reject) => {
-							this.resolve = resolve;
-							this.reject = reject;
-						});
-					});
+				this._toggleClassOnId('content-wrapper', 'larch-modal-open');
+
+				return new Promise((resolve, reject) => {
+					this.resolve = resolve;
+					this.reject = reject;
+				});
 			},
 			_toggleClassOnId(id, className) {
 				document.getElementById(id).classList.toggle(className);

@@ -5,42 +5,28 @@ import AppDispatcher from '../larch.dispatcher.es6';
 const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
 	const logger = Logger.create('model.Widgets');
 
-	// register action
-	AppDispatcher.register('Widgets', 'widgets.getAll', dashboard => {
-		logger.log(`receiving data for`, dashboard.widgets);
-
-		Object.keys(dashboard.widgets).forEach(key => {
-			const w = dashboard.widgets[key];
-
-			WidgetMdl.get(key, w)
-				.then(widget => {
-					// send the loaded widget into view
-					WidgetMdl.emit('widgets.loaded', widget);
-				})
-				.catch(err => {
-					logger.error(err);
-				});
-		});
-	});
-
-	AppDispatcher.register('Widgets', 'widgets.cacheWidget', ([id, w]) => {
-		logger.log(`loading widget ${id}`);
-
-		WidgetMdl.get(id, w)
-			.then(widget => {
-				// send the loaded widget into view
-				WidgetMdl.emit('widgets.cached', widget.id);
-			})
-			.catch(err => {
-				logger.error(err);
-			});
-	});
-
 	// create model object
 	const WidgetMdl = assign(EventEmitter.prototype, {
 		cache: {},
 		cacheIsEmpty() {
 			return !!this.cache.length;
+		},
+		/**
+		 * get all widgets for particular dashboard
+		 * @param  {[type]} dashboard [description]
+		 * @return {[type]}           [description]
+		 */
+		getAll(dashboard) {
+			logger.log(`receiving data for`, dashboard.widgets);
+
+			Object.keys(dashboard.widgets).forEach(key => {
+				const w = dashboard.widgets[key];
+
+				WidgetMdl.get(key, w)
+					.catch(err => {
+						logger.error(err);
+					});
+			});
 		},
 		/**
 		 * get widgets
@@ -51,7 +37,7 @@ const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
 		get(id, wi) {
 			let widget;
 
-			// TODO: implement cache
+			logger.log(`loading widget ${id}`);
 
 			return WidgetSrvc.getById(id)
 				.then(data => {
@@ -59,8 +45,20 @@ const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
 					// get only latest version
 					widget.version = data[0].versions[0];
 					delete widget.versions;
+					// cache the widget
+					this.cache[widget.id] = widget;
+
+					// send the loaded widget into view
+					WidgetMdl.emit('widgets.loaded', widget);
 
 					return this.getData(widget, wi);
+				})
+				.then(widget => {
+					// send the loaded widget into view
+					WidgetMdl.emit('widgets.data-loaded', widget);
+				})
+				.catch(err => {
+					logger.error(err);
 				});
 		},
 		getData(widget, widgetInstance) {
@@ -69,18 +67,16 @@ const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
 				if (widgetInstance.settings) {
 					return DataSrvc.getData(widget, widgetInstance.settings)
 						.then(data => {
+							// cache only data
 							widget.data = data;
-
-							this.cache[widget.id] = widget;
+							this.cache[widget.id].data = data;
 
 							return resolve(widget);
 						})
 						.catch(err => reject(err));
-				} else {
-					this.cache[widget.id] = widget;
-					
-					return resolve(widget);
 				}
+
+				return resolve(widget);
 			});
 		},
 		/**
@@ -100,20 +96,27 @@ const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
 		 * @param  {Object} widgetInstance Widget instance object held by Dashboard
 		 * @return {Object}                Settings
 		 */
-		getWidgetSettings(widgetInstance) {
+		getWidgetSettings(widgetInstance = {}) {
 			let ws = widgetInstance.settings;
 
-			// if setting
+			logger.log('widget instances settings', ws);
+
+			// if settings
 			if (!ws) {
 				const widget = this.cache[widgetInstance.id];
 				ws = {};
-
-				Object.keys(widget.version.general.params).forEach(key => ws[key] = '');
+				if (widget) {
+					Object.keys(widget.version.general.params).forEach(key => ws[key] = '');
+				}
 			}
 
 			return ws;
 		}
 	});
+
+	// register action
+	AppDispatcher.register('Widgets', 'widgets.getAll', WidgetMdl.getAll);
+	AppDispatcher.register('Widgets', 'widgets.load', ([id, w]) => WidgetMdl.get(id, w));
 
 	return WidgetMdl;
 };

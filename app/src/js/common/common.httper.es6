@@ -37,12 +37,15 @@ const HTTPerFn = function(Logger) {
 					this.xhr.onload = cb;
 				} else {
 					this.xhr.onload = e => {
+
 						if (this.xhr.readyState === 4) {
 							if (this.xhr.status === 200) {
 								// if json set true, parse output as JSON, otherwise return plain textside
 								const r = this.conf.json ? JSON.parse(this.xhr.responseText) : this.xhr.responseText;
-
 								this.resolve(r);
+							} else if (this.xhr.status === 401) {
+								// unauthorized access to the API
+								window.location = 'login.html';
 							} else {
 								this.reject({
 									statusCode: this.xhr.status,
@@ -105,9 +108,9 @@ const HTTPerFn = function(Logger) {
 				r.send(stringifiedData);
 			});
 		},
-		remove(url, conf = {}) {
+		delete(url, conf = {}) {
 			return new Promise((resolve, reject) => {
-				const r = HTTPClass.create('REMOVE', conf);
+				const r = HTTPClass.create('DELETE', conf);
 				r.open(url, resolve, reject);
 
 				// default on error handlers
@@ -115,6 +118,19 @@ const HTTPerFn = function(Logger) {
 				r.onload();
 
 				r.send();
+			});
+		},
+		put(url, data, conf = {}) {
+			return new Promise((resolve, reject) => {
+				const stringifiedData = JSON.stringify(data);
+				const r = HTTPClass.create('PUT', conf);
+				r.open(url, resolve, reject);
+
+				// default on error handlers
+				r.onerror();
+				r.onload();
+
+				r.send(stringifiedData);
 			});
 		}
 	};

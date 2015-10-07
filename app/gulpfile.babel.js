@@ -10,6 +10,7 @@ import util from 'gulp-util';
 import uglify from 'gulp-uglify';
 import gzip from 'gulp-gzip';
 import karma from 'karma';
+import fileinclude from 'gulp-file-include';
 
 
 const BUILD_PATH = './build';
@@ -22,7 +23,7 @@ const paths = {
 		js: `${BUILD_PATH}/js`,
 		css: `${BUILD_PATH}/css`,
 		html: `${BUILD_PATH}/`,
-		templates: `${BUILD_PATH}/templates`,
+		templates: `${SRC_PATH}/templates`,
 		images: `${BUILD_PATH}/images`,
 		bootstrap: `${BUILD_PATH}/css/bootstrap`,
 		fontawesome: `${BUILD_PATH}/css/font-awesome/css`,
@@ -33,7 +34,7 @@ const paths = {
 		charts: `./../charts/**/*.es6`,
 		less: `${SRC_PATH}/less/**/*.less`,
 		html: `${SRC_PATH}/*.html`,
-		templates: `${SRC_PATH}/templates/**/*.*`,
+		templates: `${SRC_PATH}/templates/*.hbs`,
 		fonts: `${SRC_PATH}/fonts/*.*`,
 		images: `${SRC_PATH}/images/*.*`,
 		tests: './spec/**/*.es6',
@@ -111,13 +112,17 @@ gulp.task('fontawesome_fonts', () => {
 		.pipe(gulp.dest(paths.build.fontawesome_fonts));
 });
 
-gulp.task('html', () => {
+gulp.task('html', ['templates'], () => {
 	return gulp.src(paths.src.html)
+		.pipe(fileinclude({
+			prefix: '@@'
+		}))
 		.pipe(gulp.dest(paths.build.html));
 });
 
 gulp.task('templates', () => {
 	return gulp.src(paths.src.templates)
+		.pipe(concat('templates.js'))
 		.pipe(gulp.dest(paths.build.templates));
 });
 
@@ -167,7 +172,7 @@ gulp.task('watch', () => {
 	gulp.watch([paths.src.charts], ['test-chart', 'app']);
 	gulp.watch([paths.src.less], ['less']);
 	gulp.watch([paths.src.fonts], ['assets']);
-	gulp.watch([paths.src.templates], ['templates']);
+	gulp.watch([paths.src.templates], ['templates', 'html']);
 	gulp.watch([paths.src.html], ['html']);
 	gulp.watch([paths.src.images], ['images']);
 });
@@ -205,5 +210,5 @@ gulp.task('livereload', () => {
 });
 
 // gulp.task('production', ['app', 'login', 'compress','less', 'html', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
-gulp.task('build', ['app', 'login', 'test-chart', 'test', 'less', 'html', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
+gulp.task('build', ['templates', 'app', 'login', 'test-chart', 'test', 'less', 'html', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
 gulp.task('default', ['build', 'webserver', 'livereload', 'watch']);

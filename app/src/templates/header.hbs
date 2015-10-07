@@ -1,0 +1,37 @@
+<script id="ui.header" type="text/x-handlebars-template">
+	<div class="navbar-header">
+		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+	</div>
+
+	<div class="navbar-collapse collapse">
+		<div class="col-xs-4">
+			<ul class="nav navbar-nav">
+				<li><a class="navbar-nav-link" href="" data-on-click="newDashboard()">new dashboard</a></li>
+				<li><a class="navbar-nav-link" href="" data-on-click="authNewSource()">my accounts</a></li>
+			</ul>
+		</div>
+
+		<div class="col-xs-4 navbar-centered">
+			<ul class="nav navbar-nav">
+				<li>{{#if hasDashboards}}<a class="navbar-nav-link" href="" data-on-click="removeDashboard()">remove</a>{{/if}}</li>
+				<li>{{#if hasDashboards}}<a class="navbar-nav-link" href="" data-on-click="removeDashboard()">share</a>{{/if}}</li>
+				<li>{{#if hasDashboards}}<a class="navbar-nav-link" href="" data-on-click="openEdit()">edit</a>{{/if}}</li>
+				<li>{{#if hasDashboards}}<a class="navbar-nav-link" href="" data-on-click="likeDashboard()">
+						{{#if hasLike}}hate{{else}}like{{/if}}</a>
+					{{/if}}</li>
+			</ul>
+		</div>
+
+		<div class="col-xs-4">
+			<ul class="nav navbar-nav navbar-right">
+				<li><a class="navbar-nav-link" href="" data-on-click="logout()">logout</a></li>
+				<li><a class="navbar-nav-link" href="#">{{user.username}}</a></li>
+			</ul>
+		</div>
+	</div>
+</script>

@@ -1,6 +1,4 @@
-import { Global } from '../lib/lib.global.es6';
 import { assign, map2Array } from '../lib/lib.assign.es6';
-// import AppDispatcher from '../larch.dispatcher.es6';
 import { EventEmitter } from 'events';
 
 const RouterFn = function(Logger) {
@@ -10,7 +8,7 @@ const RouterFn = function(Logger) {
 		current: {},
 		conf(conf) {
 			this.conf = conf;
-			this.root = Global.document.base();
+			this.root = document.getElementsByTagName('base')[0].getAttribute('href').slice(0, -1);
 		},
 		routes: new Map(),
 		_parseUrl(routeObj) {
@@ -76,7 +74,7 @@ const RouterFn = function(Logger) {
 
 				// emit event
 				if (emitEvent) {
-					this.emit('router.navigate', route);
+					this.emit('router.navigate', this.current);
 				}
 			}
 		},

@@ -29,7 +29,7 @@ const Larch = {
 			this.Injector.singleton('larch.Viewer', Viewer);
 			this.Injector.singleton('larch.Router', Router);
 
-			logger = this.Injector.get('larch.Logger').create(`larch.${this.name}`);
+			this.logger = logger = this.Injector.get('larch.Logger').create(`larch.${this.name}`);
 		},
 
 		models(models) {
@@ -64,21 +64,20 @@ const Larch = {
 				}
 			});
 		},
+		/**
+		 * init method to be started before app runs
+		 * @param  {Function} fn [description]
+		 * @return {[type]}      [description]
+		 */
 		init(fn = undefined) {
-			let resInit;
-			// init
 			if (fn) {
-				resInit = this.Injector.invoke(fn);
-			}
-
-			if (resInit instanceof Promise) {
-				resInit
-					.then(() => this.run())
-					.catch(err => logger.error(err));
-			} else {
-				this.run();
+				return this.Injector.invoke(fn);
 			}
 		},
+		/**
+		 * starts the app, if function passed, it will be started right after the Router and Views
+		 * @param  {Function} fn run function
+		 */
 		run(fn = undefined) {
 			// initial router and viewer run
 			this._runRouter();

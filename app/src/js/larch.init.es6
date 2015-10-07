@@ -1,3 +1,4 @@
+import AppDispatcher from './larch.dispatcher.es6';
 import Cookies from './lib/lib.cookies.es6';
 
 const init = function(User, Logger) {
@@ -12,8 +13,13 @@ const init = function(User, Logger) {
 		window.location = 'login.html';
 	}
 
+	// check if the token is really for the user...
 	return User.getCurrent(token)
-			.then(() => logger.log('user properly logged in', User.current));
+			.then(() => {
+				logger.log('user properly logged in', User.current);
+
+				return Promise.resolve(true);
+			});
 };
 init.$injector = ['model.User', 'larch.Logger'];
 

@@ -1,12 +1,10 @@
 import Form from '../lib/lib.form.es6';
-import Cookies from '../lib/lib.cookies.es6';
 import AppDispatcher from '../larch.dispatcher.es6';
 
 const ctrl = function(User, Logger) {
 	const logger = Logger.create('ui.login');
 
 	User.on('user.logged', data => {
-		Cookies.setItem('larch.token', data.token, new Date(data.user.exp * 1000));
 		window.location = 'index.html';
 	});
 
@@ -31,7 +29,7 @@ ctrl.$injector = ['model.User', 'larch.Logger'];
 
 export default {
 	id: 'ui.login',
-	templateUrl: './ui/login.hbs',
+	templateUrl: './login.hbs',
 	scope: {},
 	methods: {},
 	controller: ctrl

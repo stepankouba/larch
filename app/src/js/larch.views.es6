@@ -5,21 +5,25 @@ import SidebarView from './ui/view.sidebar.es6';
 import HeaderView from './ui/view.header.es6';
 import ModalEditView from './ui/view.modal.edit.es6';
 import ModalNewView from './ui/view.modal.new.es6';
+import ModalRemoveView from './ui/view.modal.remove.es6';
 import SearchView from './ui/view.modal.edit.search.es6';
 import WidgetDetailView from './ui/view.modal.edit.widget.detail.es6';
+import ModalDashboardEditView from './ui/view.modal.edit.dashboard.es6';
 
 export default [
 	SidebarView,
 	HeaderView,
 	{
 		id: 'ui.footer',
-		templateUrl: './ui/footer.html',
+		templateUrl: './footer.hbs',
 		scope: {},
 		controller() {}
 	},
 	DashboardView,
 	ModalEditView,
 	ModalNewView,
+	ModalRemoveView,
 	SearchView,
-	WidgetDetailView
+	WidgetDetailView,
+	ModalDashboardEditView
 ];

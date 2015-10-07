@@ -1,13 +1,14 @@
 import { EventEmitter } from 'events';
 import { assign } from '../lib/lib.assign.es6';
 import AppDispatcher from '../larch.dispatcher.es6';
+import Cookies from '../lib/lib.cookies.es6';
 
 const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 	const logger = Logger.create('model.Dashboards');
 
 	// define model
 	const DashboardsMdl = assign(EventEmitter.prototype, {
-		cache: [],
+		cache: {},
 		/**
 		 * get all dashboards for particular user
 		 * @param  {string} user username
@@ -15,18 +16,40 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 		getAll(user) {
 			DashboardSrvc.getAll(user)
 				.then(data => {
-					DashboardsMdl.cache = data;
+					logger.log(`tracing get all request`);
+
+					data.forEach(i => DashboardsMdl.cache[i.id] = i);
+
 					DashboardsMdl.emit('dashboards.loaded');
+					logger.log('dashboards.loaded emited');
 				})
 				.catch(err => logger.error(err));
 		},
 		/**
 		 * get dashboard
-		 * @param  {String} id Dashboard id
+		 * @param  {String|Number} id Dashboard id if string, or position in cahce if Number
 		 * @return {Object}    Dashboard object
 		 */
 		get(id) {
-			return DashboardsMdl.cache.filter(item => item.id === id)[0];
+			if (Number.isInteger(id)) {
+				return DashboardsMdl.cache[Object.keys(DashboardsMdl.cache)[id]];
+			} else {
+				return DashboardsMdl.cache[id];
+			}
+		},
+		/**
+		 * remove item from a cache
+		 * @param  {String} id
+		 */
+		removeFromChache(id) {
+			delete DashboardsMdl.cache[id];
+		},
+		/**
+		 * test wether, there is any dashboard for a user
+		 * @return {Boolean}
+		 */
+		hasAny() {
+			return Object.keys(DashboardsMdl.cache).length > 0;
 		},
 		/**
 		 * create new dashboard
@@ -49,7 +72,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 					// append new id to the dashboard
 					newDS.id = newId;
 
-					DashboardsMdl.cache.push(newDS);
+					DashboardsMdl.cache[newId] = newDS;
 					DashboardsMdl.emit('dashboards.created', newId);
 				})
 				.catch(err => {
@@ -88,13 +111,41 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 				settings: undefined
 			};
 		},
-		update(id) {
+		update([id, data]) {
 			const currentDashboard = DashboardsMdl.get(id);
 
 			logger.log('updating dashboard', id);
 
-			// TODO: save to DB
-			DashboardsMdl.emit('dashboards.updated', id);
+			if (data.id || data.owner || data.layout) {
+				return DashboardsMdl.emit('dashboards.not-updated', 'UPDATE_FIELDS_NOT_ALLOWED_TO');
+			}
+
+			DashboardSrvc.update(id, data)
+				.then(result => {
+					// copy updated values to the cache
+					Object.keys(data).forEach(key => currentDashboard[key] = data[key]);
+
+					DashboardsMdl.emit('dashboards.updated', id);
+				})
+				.catch(err => DashboardsMdl.emit('dashboards.not-updated', err));
+		},
+		remove(id) {
+			DashboardSrvc.remove(id)
+				.then(res => {
+					// remove from cache
+					DashboardsMdl.removeFromChache(id);
+					// remove cookie
+					Cookies.removeItem('larch.lastSeenId');
+					// emit event
+					DashboardsMdl.emit('dashboards.removed', id);
+				})
+				.catch(err => DashboardsMdl.emit('dashboards.not-removed', err));
+		},
+		like(id) {
+			const currentDashboard = DashboardsMdl.get(id);
+			const like = !currentDashboard.like;
+
+			DashboardsMdl.update([id, { like }]);
 		},
 		getFreeSlots(id, height = 0) {
 			logger.log(id, height);
@@ -121,7 +172,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 		 */
 		getWidgetInstances(id) {
 			const currentDashboard = DashboardsMdl.get(id);
-			logger.log(id, currentDashboard, DashboardsMdl.cache);
+
 			return currentDashboard.widgets;
 		},
 		/**
@@ -134,14 +185,14 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 
 			return Object.keys(w)[0];
 		},
-		setSetting(id, widgetId, name, value) {
-			logger.log('changing settings for', id, widgetId, name, value);
+		setSettings([dashboardId, widgetId, settings]) {
+			const currentDashboard = DashboardsMdl.get(dashboardId);
 
-			const currentDashboard = DashboardsMdl.get(id);
-			const settings = currentDashboard.widgets[widgetId].settings || {};
-			settings[name] = value;
+			const s = currentDashboard.widgets[widgetId].settings || {};
 
-			currentDashboard.widgets[widgetId].settings = settings;
+			Object.keys(settings).forEach(k => {
+				s[k] = settings[k];
+			});
 		}
 	});
 
@@ -150,6 +201,10 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 	AppDispatcher.register('Dashboards', 'dashboards.addWidget', DashboardsMdl.addWidget);
 	AppDispatcher.register('Dashboards', 'dashboards.udpate', DashboardsMdl.update);
 	AppDispatcher.register('Dashboards', 'dashboards.create', DashboardsMdl.create);
+	AppDispatcher.register('Dashboards', 'dashboards.remove', DashboardsMdl.remove);
+	AppDispatcher.register('Dashboards', 'dashboards.like', DashboardsMdl.like);
+	AppDispatcher.register('Dashboards', 'dashboards.settings', DashboardsMdl.setSettings);
+
 
 	return DashboardsMdl;
 };

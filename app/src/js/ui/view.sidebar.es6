@@ -1,32 +1,41 @@
 import AppDispatcher from '../larch.dispatcher.es6';
+import Cookies from '../lib/lib.cookies.es6';
 
 const ctrl = function(Dashboards, Router, Modal, Logger) {
 	const logger = Logger.create('ui.sidebar');
 
-	// display all dashboards when loaded
-	Dashboards.on('dashboards.loaded', () => {
-		logger.info('dashboards.loaded event received');
+	const updateSidebar = eventName => {
+		logger.info(`${eventName} event received`);
 		this.scope.dashboards = Dashboards.cache;
+
 		this.recompile();
-	});
+	};
+
+	// display all dashboards when loaded
+	Dashboards.on('dashboards.loaded', () => updateSidebar('dashboards.loaded'));
+	Dashboards.on('dashboards.updated', () => updateSidebar('dashboards.updated'));
 
 	// handle router in sidebar
 	Router.on('router.navigate', route => {
 		logger.info('router.navigate event received');
 		// this.scope.route = route.props.id;
+
+		// last seen id is stored in cookie
+		if (route.props.id !== 'home') {
+			Cookies.setItem('larch.lastSeenId', route.props.id, undefined, '/build');
+			// logger.log(route.props.id);
+		}
+
 		this.recompile();
 	});
 
-	// assign event handlers
-	AppDispatcher.dispatch('dashboards.getAll', 'test@test.com');
-
-	this.scope.route = Router.current.props.id;
-
 	// definition of methods available as event handlers
 	this.methods = {
-		navigate(e, url) {
+		navigate(e, id) {
 			e.preventDefault();
-			Router.navigate(url);
+
+			Router.navigate(`${id}`);
+
 			return false;
 		}
 	};
@@ -36,7 +45,7 @@ ctrl.$injector = ['model.Dashboards', 'larch.Router', 'component.Modal','larch.L
 
 const View = {
 	id: 'ui.sidebar',
-	templateUrl: './ui/sidebar.hbs',
+	templateUrl: './sidebar.hbs',
 	scope: {},
 	methods: {},
 	controller: ctrl
