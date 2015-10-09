@@ -1,4 +1,4 @@
-// import AppDispatcher from './larch.dispatcher.es6';
+import AppDispatcher from './larch.dispatcher.es6';
 
 const run = function(User, Logger) {
 	const logger = Logger.create('app.run');
@@ -6,7 +6,7 @@ const run = function(User, Logger) {
 	logger.log('application started');
 
 	// ask for all dashboards
-	// AppDispatcher.dispatch('dashboards.getAll', User.current.username);
+	AppDispatcher.dispatch('dashboards.getAll', User.current.username);
 };
 run.$injector = ['model.User', 'larch.Logger'];
 
