@@ -2,21 +2,22 @@ import AppDispatcher from '../larch.dispatcher.es6';
 
 const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 	const logger = Logger.create('ui.header');
+	const view = this;
+	const scope = this.scope;
 
-	this.scope.user = User.current;
-	this.scope.hasDashboards = Dashboards.hasAny();
-	this.recompile();
+	function updateHeader() {
+		scope.user = User.current;
+		scope.hasDashboards = Dashboards.hasAny();
+		scope.hasLike = Dashboards.get(Router.current.props.id).like;
+		view.recompile();
+	}
 
-	Dashboards.on('dashboards.loaded', () => {
-		this.scope.hasDashboards = Dashboards.hasAny();
-		this.recompile();
-	});
+	// event handlers
+	Dashboards.on('dashboards.liked', () => updateHeader('dashboards.liked'));
+	Dashboards.on('dashboards.updated', () => updateHeader('dashboards.updated'));
 
-	Dashboards.on('dashboards.updated', id => {
-		this.scope.hasLike = id ? Dashboards.get(id).like : undefined;
-
-		this.recompile();
-	});
+	// by default display the header
+	updateHeader();
 
 	// define operations used in template
 	this.methods = {
@@ -70,7 +71,7 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 
 			m.open()
 				.then(() => {
-					Router.navigate(`/dashboard/home`);
+					Router.navigateToMain();
 				})
 				.catch(err => logger.error(err));
 		},

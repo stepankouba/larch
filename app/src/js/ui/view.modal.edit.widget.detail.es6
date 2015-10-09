@@ -4,22 +4,47 @@ import AppDispatcher from '../larch.dispatcher.es6';
 
 const ctrl = function(Router, Widgets, Dashboards, Logger) {
 	const logger = Logger.create('ui.modal.edit.widget.detail');
-
+	const view = this;
 	const scope = this.scope;
 
+	function updateDetail() {
+		// display widgets for current dashboard
+		scope.dashboardId = Router.current.props.id;
+		scope.dashboard = Dashboards.get(scope.dashboardId);
+		scope.widgets = Widgets.getAllByIds(scope.dashboard.widgets);
+
+		// by default first widget is selected
+		scope.selectedWidgetId = scope.selectedWidgetId || Dashboards.getFirstWidgetId(Router.current.props.id);
+		scope.selectedWidgetSettings = Widgets.getWidgetSettings(scope.dashboard.widgets[scope.selectedWidgetId]);
+		view.recompile();
+
+		// add drag drop support
+		DragDrop.init();
+		DragDrop.onDrop((elMoved, sibling) => {
+			// id target
+		});
+	}
+
+	Dashboards.on('dashboards.updated-settings', id => {
+		scope.updated = 'OK';
+		updateDetail();
+		// delete so that another recompile does not have this value in tempalte
+		delete scope.updated;
+	});
+
+	Dashboards.on('dashboards.updated-settings-not', errorText => {
+		scope.error = errorText;
+		updateDetail();
+		delete scope.error;
+	});
+
 	this.methods = {
-		_retrieveSettings(id) {
-			return Widgets.getWidgetSettings(scope.dashboard.widgets[id]);
-		},
 		showSettings(e, id) {
 			e.preventDefault();
 
-			scope.selectedWidgetId = id;
-			scope.selectedWidgetSettings = this.methods._retrieveSettings(id);
-
 			logger.log('showing settings', scope);
 
-			this.recompile();
+			updateDetail();
 		},
 		saveChanges(e) {
 			const widgetId = scope.selectedWidgetId;
@@ -31,22 +56,7 @@ const ctrl = function(Router, Widgets, Dashboards, Logger) {
 		}
 	};
 
-	// display widgets for current dashboard
-	scope.dashboardId = Router.current.props.id;
-	scope.dashboard = Dashboards.get(scope.dashboardId);
-	scope.widgets = Widgets.getAllByIds(scope.dashboard.widgets);
-
-	// by default first widget is selected
-	scope.selectedWidgetId = scope.selectedWidgetId || Dashboards.getFirstWidgetId(Router.current.props.id);
-	scope.selectedWidgetSettings = this.methods._retrieveSettings(scope.selectedWidgetId);
-	logger.log(scope);
-	this.recompile();
-
-	// add drag drop support
-	DragDrop.init();
-	DragDrop.onDrop((elMoved, sibling) => {
-		// id target
-	});
+	updateDetail();
 };
 ctrl.$injector = ['larch.Router', 'model.Widgets', 'model.Dashboards', 'larch.Logger'];
 

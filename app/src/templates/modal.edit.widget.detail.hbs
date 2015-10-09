@@ -66,6 +66,12 @@
 				{{/each}}
 				<button type="button" class="btn btn-primary"
 					data-on-click="saveChanges()">Confirm changes</button>
+					{{#if @root.error}}
+						{{@root.error}}
+					{{/if}}
+					{{#if @root.updated}}
+						{{@root.updated}}
+					{{/if}}
 			</form>
 		</div>
 	{{else}}

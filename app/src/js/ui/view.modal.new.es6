@@ -1,17 +1,17 @@
 import AppDispatcher from '../larch.dispatcher.es6';
 import Form from '../lib/lib.form.es6';
 
-
 const ctrl = function(Dashboards, Logger) {
 	const logger = Logger.create('ui.modal.new');
 	const scope = this.scope;
 
 	Dashboards.on('dashboards.created', id => {
 		scope.newlyCreatedId = id;
-		this.methods.close();
+		this.recompile();
+		scope.modal.display();
 	});
 
-	Dashboards.on('dashboards.not-created', errorText => {
+	Dashboards.on('dashboards.created-not', errorText => {
 		scope.error = errorText;
 		this.recompile();
 		scope.modal.display();

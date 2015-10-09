@@ -5,6 +5,19 @@ const ctrl = function(Router, Dashboards, Logger) {
 	const logger = Logger.create('ui.modal.edit.dashboard');
 	const scope = this.scope;
 
+	Dashboards.on('dashboards.updated-name', id => {
+		scope.udpated = 'OK';
+		this.recompile();
+		// delete so that another recompile does not have this value in tempalte
+		delete scope.updated;
+	});
+
+	Dashboards.on('dashboards.updated-name-not', errorText => {
+		scope.error = errorText;
+		this.recompile();
+		delete scope.error;
+	});
+
 	this.methods = {
 		updateDashboard(e) {
 			if (!Form.testValues('edit-dashboard-form')) {
@@ -13,7 +26,7 @@ const ctrl = function(Router, Dashboards, Logger) {
 
 			scope.ds = Form.getValues('edit-dashboard-form');
 
-			AppDispatcher.dispatch('dashboards.udpate', [Router.current.props.id, scope.ds]);
+			AppDispatcher.dispatch('dashboards.update-name', [Router.current.props.id, scope.ds]);
 		}
 	};
 

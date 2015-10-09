@@ -128,21 +128,21 @@
 			<div class="form-group">
 				<label class="col-sm-2 control-label">name</label>
 				<div class="col-sm-10">
-					<input name="name" class="settings form-control" placeholder="put the name here" type="text" data-model="name" value="{{ds.name}}">
+					<input class="settings form-control" placeholder="put the name here" type="text" data-model="name" value="{{ds.name}}">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-2 control-label">description</label>
 				<div class="col-sm-10">
-					<textarea name="desc" class="settings form-control" placeholder="this is my fancy new dashboard" data-model="desc">{{ds.desc}}</textarea>
+					<textarea class="settings form-control" placeholder="this is my fancy new dashboard" data-model="desc">{{ds.desc}}</textarea>
 				</div>
 			</div>
 			<button type="button" class="btn btn-primary" data-on-click="updateDashboard()">Update</button>
 			{{#if error}}
 				{{error}}
 			{{/if}}
-			{{#if newlyCreatedId}}
-				successfuly created new dashboard
+			{{#if updated}}
+				{{updated}}
 			{{/if}}
 		</form>
 	</div>
@@ -279,6 +279,12 @@
 				{{/each}}
 				<button type="button" class="btn btn-primary"
 					data-on-click="saveChanges()">Confirm changes</button>
+					{{#if @root.error}}
+						{{@root.error}}
+					{{/if}}
+					{{#if @root.updated}}
+						{{@root.updated}}
+					{{/if}}
 			</form>
 		</div>
 	{{else}}

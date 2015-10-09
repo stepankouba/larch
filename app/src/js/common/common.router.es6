@@ -78,11 +78,11 @@ const RouterFn = function(Logger) {
 				}
 			}
 		},
-		navigateToMain(emitEvent = true) {
+		navigateToMain() {
 			const main = map2Array(this.routes).filter(item => item.main)[0];
 
 			if (main) {
-				this.navigate(main.mainUrl, emitEvent);
+				Router.emit('router.navigate-main', main);
 			}
 		}
 	});

@@ -77,9 +77,9 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 				.catch(err => {
 					logger.error(err);
 					if (err.data && err.data.msg === 'SAME_NAME_EXISTS') {
-						DashboardsMdl.emit('dashboards.not-created', 'SAME_NAME_EXISTS');
+						DashboardsMdl.emit('dashboards.created-not', 'SAME_NAME_EXISTS');
 					} else {
-						DashboardsMdl.emit('dashboards.not-created', 'OTHER_ERROR');
+						DashboardsMdl.emit('dashboards.created-not', 'OTHER_ERROR');
 					}
 				});
 		},
@@ -110,7 +110,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 				settings: undefined
 			};
 		},
-		update([id, data]) {
+		_update(id, data, eventName) {
 			const currentDashboard = DashboardsMdl.get(id);
 
 			logger.log('updating dashboard', id);
@@ -123,10 +123,12 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 				.then(result => {
 					// copy updated values to the cache
 					Object.keys(data).forEach(key => currentDashboard[key] = data[key]);
-					logger.log('updated', data);
-					DashboardsMdl.emit('dashboards.updated', id);
+					DashboardsMdl.emit(eventName, id);
 				})
-				.catch(err => DashboardsMdl.emit('dashboards.not-updated', err));
+				.catch(err => {
+					logger.error(err);
+					DashboardsMdl.emit(`${eventName}-not`, err);
+				});
 		},
 		remove(id) {
 			DashboardSrvc.remove(id)
@@ -140,11 +142,27 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 				})
 				.catch(err => DashboardsMdl.emit('dashboards.not-removed', err));
 		},
+		updateName([id, data]) {
+			logger.log(`udpating name for ${id}`, data);
+			const newName = data.name;
+			let sameName = false;
+
+			// check if name is already existing
+			Object.keys(DashboardsMdl.cache).forEach(k => {
+				sameName = DashboardsMdl.get(k).name === newName;
+			});
+
+			if (sameName) {
+				return DashboardsMdl.emit('dashboards.updated-name-not', 'SAME_NAME_EXISTS');
+			}
+
+			DashboardsMdl._update(id, data, 'dashboards.updated-name');
+		},
 		like(id) {
 			const currentDashboard = DashboardsMdl.get(id);
 			const like = !currentDashboard.like;
 
-			DashboardsMdl.update([id, { like }]);
+			DashboardsMdl._update(id, { like }, 'dashboards.liked');
 		},
 		getFreeSlots(id, height = 0) {
 			const currentDashboard = DashboardsMdl.get(id);
@@ -173,6 +191,13 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 
 			return Object.keys(w)[0];
 		},
+		/**
+		 * update settings of a widgets instances
+		 * @param {Array} payload
+		 * @param {String} payload[0] dashboardId
+		 * @param {String} payload[1] widgetId
+		 * @param {Object} payload[2] newSettings
+		 */
 		setSettings([dashboardId, widgetId, newSettings]) {
 			logger.log(`saving settings for ${dashboardId}`, newSettings);
 			const currentDashboard = DashboardsMdl.get(dashboardId);
@@ -185,17 +210,17 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 				widgets[widgetId].settings[k] = newSettings[k];
 			});
 
-			DashboardsMdl.update([dashboardId, { widgets }]);
+			DashboardsMdl._update(dashboardId, { widgets }, 'dashboards.updated-settings');
 		}
 	});
 
 	// register actions
 	AppDispatcher.register('Dashboards', 'dashboards.getAll', DashboardsMdl.getAll);
 	AppDispatcher.register('Dashboards', 'dashboards.addWidget', DashboardsMdl.addWidget);
-	AppDispatcher.register('Dashboards', 'dashboards.udpate', DashboardsMdl.update);
 	AppDispatcher.register('Dashboards', 'dashboards.create', DashboardsMdl.create);
 	AppDispatcher.register('Dashboards', 'dashboards.remove', DashboardsMdl.remove);
 	AppDispatcher.register('Dashboards', 'dashboards.like', DashboardsMdl.like);
+	AppDispatcher.register('Dashboards', 'dashboards.update-name', DashboardsMdl.updateName);
 	AppDispatcher.register('Dashboards', 'dashboards.settings', DashboardsMdl.setSettings);
 
 	return DashboardsMdl;

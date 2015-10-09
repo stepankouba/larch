@@ -1,13 +1,15 @@
-import AppDispatcher from './larch.dispatcher.es6';
-
-const run = function(User, Logger) {
+const run = function(Router, Logger) {
 	const logger = Logger.create('app.run');
 
-	logger.log('application started');
+	// const timeLoad = (PerformanceTiming.domInteractive - PerformanceTiming.navigationStart) / 1000;
+	// const timeLaunch = (PerformanceTiming.loadEventEnd - PerformanceTiming.loadEventStart) / 1000;
 
-	// ask for all dashboards
-	AppDispatcher.dispatch('dashboards.getAll', User.current.username);
+	logger.log('larch application started');
+	// logger.log(`app loaded in: ${timeLoad}s`);
+	// logger.log(`app started in: ${timeLaunch}s`);
+
+	Router.emit('router.navigate', Router.current);
 };
-run.$injector = ['model.User', 'larch.Logger'];
+run.$injector = ['larch.Router', 'larch.Logger'];
 
 export default run;
