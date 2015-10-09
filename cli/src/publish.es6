@@ -10,19 +10,22 @@ const publish = {
 		const text = [
 			'',
 			'larch publish is used for publish a widget or source system definition to the repository',
-			'Use larch publish in directory, where larch.package.json is placed',
+			'Use larch publish in directory, where larch.package.json is stored',
+			'',
+			'usage: larch publish [registryURL]',
+			'\tregistry URL is optional parameter to specify URL',
 			''].join('\n');
 		return text;
 	},
 
 	invoke(subcommand, args) {
 		// load json
-		let conf;
+		let widget;
 		let rc;
 		const currentDir = process.cwd();
 
 		try {
-			conf = require(`${currentDir}/larch.package.json`);
+			widget = require(`${currentDir}/larch.package.json`);
 		} catch (e) {
 			logger.error('larch.package.json was not found in this directory');
 		}
@@ -38,18 +41,19 @@ const publish = {
 			LarchRegistry.registryURL = args[0];
 		}
 
+		// load index.es6 into version definition
+		widget.version = LarchRegistry.loadIndex(currentDir);
+
 		// perform checks on json
-		LarchRegistry.testConf(conf, WidgetValidator)
-			.then(LarchRegistry.createGzip(currentDir))
-			.then(LarchRegistry.postToServer(conf, rc.token))
+		LarchRegistry.testConf(widget, WidgetValidator, rc)
+			// .then(LarchRegistry.createGzip(currentDir))
+			.then(LarchRegistry.postToServer)
 			.then(res => {
 				logger.info('package was succesfully stored in the registry.');
 				logger.info(`visit: www.larch.io/widget/${res.id}`);
 				process.exit();
 			})
-			.catch(err => {
-				logger.error(err.stack);
-			});
+			.catch(err => logger.error(err));
 	}
 };
 

@@ -9,7 +9,6 @@ const Logger = {
 		const logger = Object.create(Logger.prototype);
 
 		logger.level = logLevels[level] || logLevels.DEBUG;
-		logger.ns = 'cli';
 
 		return logger;
 	},
@@ -20,7 +19,9 @@ const Logger = {
 			}
 
 			// add time and namespace
-			params.unshift(`${this.ns}: `);
+			if (this.ns) {
+				params.unshift(`${this.ns}: `);
+			}
 
 			console[type](...params);
 		},
@@ -44,4 +45,4 @@ const Logger = {
 	}
 };
 
-export default Logger.create('DEBUG');
+export default Logger.create('PROD');

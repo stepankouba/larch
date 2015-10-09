@@ -13,6 +13,9 @@ export default {
 	tags(value) {
 		return true;
 	},
+	shared(value) {
+		return Validator.isShared(value);
+	},
 	versions: {
 		version(value) {
 			return Validator.isValidVersion(value);
@@ -26,23 +29,37 @@ export default {
 			},
 			url(value) {
 				return Validator.isNotEmptyString(value);
-			},
-			auth(value) {
-				return Validator.isNotEmptyString(value);
+			}
+		},
+		server: {
+			requests: {
+				path(value) {
+					return Validator.isNotEmptyString(value);
+				},
+				method(value) {
+					return Validator.isHTTPMethod(value);
+				}
 			}
 		},
 		assets: {
 			template(value) {
-				return Validator.isExistingFile(`${process.cwd()}/${value}`);
-			},
-			js(value) {
-				return Validator.isExistingFile(`${process.cwd()}/${value}`);
+				return Validator.isString(value);
 			},
 			readme(value) {
 				return true; // Validator.isExistingFile(value);
 			},
 			screenshots(value) {
 				return true; // Validator.areExistingFiles(value);
+			}
+		},
+		client: {
+			display: {
+				width(value) {
+					return Validator.isNumber(value);
+				},
+				height(value) {
+					return Validator.isNumber(value);
+				}
 			}
 		}
 	}

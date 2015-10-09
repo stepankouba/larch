@@ -4,6 +4,7 @@ import logger from './logger.es6';
 // definition of all help text
 const allHelp = [
 	'',
+	'Command line interface for anylarch.com. This tool helps to create widgets.',
 	'usage: larch <command>',
 	'',
 	'where <command> is one of following:',

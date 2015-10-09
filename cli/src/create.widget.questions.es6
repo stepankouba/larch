@@ -24,39 +24,39 @@ export default {
 		default: false,
 		isArray: true
 	},
-	'versions.version': {
-		text: 'Widget version?',
-		default: '1.0.0'
-	},
-	'versions.description': {
-		text: 'Description?',
-		default: 'no description'
-	},
-	'versions.source.name': {
-		text: 'Which source system is used (one of the already existing in registry)?',
-		default: false
-	},
-	'versions.source.url': {
-		text: 'What is the URL o the source system?',
-		default: 'https://'
-	},
-	'versions.assets.template': {
-		text: 'Where the widget\'s template is located?',
-		default: 'index.html'
-	},
-	'versions.assets.js': {
-		text: 'Where the widget\'s core javascript file is located?',
-		default: 'index.es6'
-	},
-	'versions.assets.readme': {
-		text: 'Any readme to be used with the widget (MD syntax reaquired)?',
-		default: false
-	},
-	'versions.assets.screenshots': {
-		text: 'Any screenshots to be used?',
-		default: false,
-		isArray: true
-	},
+	// 'versions.version': {
+	// 	text: 'Widget version?',
+	// 	default: '1.0.0'
+	// },
+	// 'versions.description': {
+	// 	text: 'Description?',
+	// 	default: 'no description'
+	// },
+	// 'versions.source.name': {
+	// 	text: 'Which source system is used (one of the already existing in registry)?',
+	// 	default: false
+	// },
+	// 'versions.source.url': {
+	// 	text: 'What is the URL o the source system?',
+	// 	default: 'https://'
+	// },
+	// 'versions.assets.template': {
+	// 	text: 'Where the widget\'s template is located?',
+	// 	default: 'index.html'
+	// },
+	// 'versions.assets.js': {
+	// 	text: 'Where the widget\'s core javascript file is located?',
+	// 	default: 'index.es6'
+	// },
+	// 'versions.assets.readme': {
+	// 	text: 'Any readme to be used with the widget (MD syntax reaquired)?',
+	// 	default: false
+	// },
+	// 'versions.assets.screenshots': {
+	// 	text: 'Any screenshots to be used?',
+	// 	default: false,
+	// 	isArray: true
+	// },
 	[Symbol.iterator]: function* () {
 		for (const key of Object.keys(this)) {
 			yield [key, this[key]];

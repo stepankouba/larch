@@ -12,7 +12,7 @@ export const commands = [
 	'login',
 	'create',
 	// 'create',
-	// 'test',
+	'test',
 	'publish'
 ];
 

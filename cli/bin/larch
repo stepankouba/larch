@@ -1,7 +1,7 @@
 #!/bin/sh
 basedir=`dirname "$0"`
 
-CLI_JS="/Users/stepankouba/Source/larch/cli/bin/index.js"
+CLI_JS="$basedir/../lib/node_modules/larch/bin/index.js"
 
 NODE_EXE="$basedir/node.exe"
 if ! [ -x "$NODE_EXE" ]; then
