@@ -36,7 +36,9 @@ const ViewerFn = function(HTTPer, Logger) {
 		 */
 		recompile() {
 			return function recompile() {
-				return Viewer._appendTemplate(this);
+				this.element.innerHTML = Viewer._compileTemplate(this);
+
+				return Viewer._addEventListeners(this);
 			};
 		},
 
@@ -112,12 +114,13 @@ const ViewerFn = function(HTTPer, Logger) {
 		 * append a template to the DOM
 		 * @return {Promise}
 		 */
-		_appendTemplate(view) {
+		_appendTemplate(view, calledByRecompile = false) {
 			// need arrow function here to keep this pointing at Viewer
-			logger.log(view);
-			view.element.innerHTML = this._compileTemplate(view);
-
-			this._addEventListeners(view);
+			if (!view.onlyOnRecompile) {
+				logger.log('default append');
+				view.element.innerHTML = this._compileTemplate(view);
+				this._addEventListeners(view);
+			}
 
 			return view;
 		},
@@ -128,6 +131,7 @@ const ViewerFn = function(HTTPer, Logger) {
 		_addEventListeners(view) {
 			const onclicks = view.element.querySelectorAll('[data-on-click]');
 			const keypressed = view.element.querySelectorAll('[data-on-keypress]');
+			const keyup = view.element.querySelectorAll('[data-on-keyup]');
 
 			function processListeners(item, eventName) {
 				// attribute value
@@ -155,6 +159,7 @@ const ViewerFn = function(HTTPer, Logger) {
 
 			[].forEach.call(onclicks, item => processListeners(item, 'click'));
 			[].forEach.call(keypressed, item => processListeners(item, 'keypress'));
+			[].forEach.call(keyup, item => processListeners(item, 'keyup'));
 		},
 
 		/**
@@ -182,6 +187,9 @@ const ViewerFn = function(HTTPer, Logger) {
 				logger.error(`Can not add view ${obj}`);
 				return;
 			}
+
+			// default setting for compileOnAppend
+			obj.onlyOnRecompile = obj.onlyOnRecompile === undefined ? false : obj.onlyOnRecompile;
 
 			this.views.set(obj.id, obj);
 			logger.log('added view', obj);

@@ -9,7 +9,7 @@ const ctrl = function(Router, Widgets, Dashboards, Logger) {
 
 	this.methods = {
 		_retrieveSettings(id) {
-			return Widgets.getWidgetSettings(scope.widgetInstances[id]);
+			return Widgets.getWidgetSettings(scope.dashboard.widgets[id]);
 		},
 		showSettings(e, id) {
 			e.preventDefault();
@@ -33,24 +33,27 @@ const ctrl = function(Router, Widgets, Dashboards, Logger) {
 
 	// display widgets for current dashboard
 	scope.dashboardId = Router.current.props.id;
-	scope.widgetInstances = Dashboards.getWidgetInstances(Router.current.props.id);
-	scope.widgets = Widgets.getAllByIds(scope.widgetInstances);
+	scope.dashboard = Dashboards.get(scope.dashboardId);
+	scope.widgets = Widgets.getAllByIds(scope.dashboard.widgets);
 
 	// by default first widget is selected
 	scope.selectedWidgetId = scope.selectedWidgetId || Dashboards.getFirstWidgetId(Router.current.props.id);
 	scope.selectedWidgetSettings = this.methods._retrieveSettings(scope.selectedWidgetId);
-
+	logger.log(scope);
 	this.recompile();
 
 	// add drag drop support
 	DragDrop.init();
-	// DragDrop.onDrop()
+	DragDrop.onDrop((elMoved, sibling) => {
+		// id target
+	});
 };
 ctrl.$injector = ['larch.Router', 'model.Widgets', 'model.Dashboards', 'larch.Logger'];
 
 export default {
 	id: 'ui.modal.edit.widget.detail',
 	templateUrl: './modal.edit.widget.detail.hbs',
+	onlyOnRecompile: true,
 	scope: {},
 	methods: {},
 	controller: ctrl

@@ -1,5 +1,3 @@
-import AppDispatcher from '../larch.dispatcher.es6';
-
 const ctrl = function(Router, Viewer, Dashboards, Widgets, Logger) {
 	const logger = Logger.create('ui.modal.edit');
 	const scope = this.scope;
@@ -10,7 +8,7 @@ const ctrl = function(Router, Viewer, Dashboards, Widgets, Logger) {
 	};
 
 	// handle when new widget was added
-	Widgets.on('widgets.loaded', widget => {
+	Widgets.on('widgets.added', widget => {
 		logger.log('added id', widget.id);
 
 		scope.selectedWidgetId = { selectedWidgetId: widget.id };
@@ -23,6 +21,17 @@ const ctrl = function(Router, Viewer, Dashboards, Widgets, Logger) {
 		_appendView(parentElementId, viewId) {
 			logger.log('modal appends view');
 			return Viewer.processView(document.getElementById(parentElementId), viewId, scope.selectedWidgetId);
+		},
+		/**
+		 * hide dropdowns if opened in modal
+		 * @param  {Event} e DOM event
+		 */
+		hideOpenDropdowns(e) {
+			// close already opened
+			const opened = document.querySelectorAll('.btn-group.open');
+			if (e.target.tagName !== 'BUTTON' && opened.length) {
+				[].forEach.call(opened, el => el.classList.toggle('open'));
+			}
 		},
 		/**
 		 * toggle tab within edit modal
@@ -56,7 +65,7 @@ const ctrl = function(Router, Viewer, Dashboards, Widgets, Logger) {
 			}
 		},
 		close(e) {
-			Dashboards.emit('dashboards.udpated', Router.current.props.id);
+			Dashboards.emit('dashboards.updated', Router.current.props.id);
 			scope.modal.hide();
 			scope.modal.resolve('modal closed');
 			delete scope.modal;

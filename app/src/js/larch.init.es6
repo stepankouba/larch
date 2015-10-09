@@ -1,7 +1,6 @@
-import AppDispatcher from './larch.dispatcher.es6';
 import Cookies from './lib/lib.cookies.es6';
 
-const init = function(User, Logger) {
+const init = function(User, Dashboards, Logger) {
 	const logger = Logger.create('app.init');
 
 	const token = Cookies.getItem('larch.token');
@@ -18,9 +17,10 @@ const init = function(User, Logger) {
 			.then(() => {
 				logger.log('user properly logged in', User.current);
 
-				return Promise.resolve(true);
-			});
+				return Dashboards.getAll(User.current.username);
+			})
+			;
 };
-init.$injector = ['model.User', 'larch.Logger'];
+init.$injector = ['model.User', 'model.Dashboards', 'larch.Logger'];
 
 export default init;

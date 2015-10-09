@@ -1,32 +1,50 @@
 <script id="ui.sidebar" type="text/x-handlebars-template">
-	<h5>I LIKE</h5>
 	<ul class="sidebar-list">
+		<h6>I LIKE</h6>
 		{{#each-if dashboards "like" true}}
-			<li><a href="" class="{{toggle-class id ../route 'selected'}}">{{name}}</a></li>
+			<li class="{{toggle-class this.id @root.route 'selected'}}">
+				<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
+
+				{{#if-eq this.id @root.route}}
+					<span class="desc">{{this.desc}}</span>
+				{{/if-eq}}
+			</li>
 		{{else}}
-			<li>any dashboard you like?</li>
+			<li></li>
 		{{/each-if}}
 	</ul>
 
-	<h5>SHARED</h5>
 	<ul class="sidebar-list">
+		<h6>SHARED</h6>
 		{{#each-if dashboards "shared" true}}
-			<li><a href="" class="{{toggle-class id ../route 'selected'}}">{{name}}</a></li>
+			<li class="{{toggle-class this.id @root.route 'selected'}}">
+				<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
+
+				{{#if-eq this.id @root.route}}
+					<span class="desc">{{this.desc}}</span>
+				{{/if-eq}}
+			</li>
 		{{else}}
-			<li>any shared dashboard?</li>
+			<li></li>
 		{{/each-if}}
 	</ul>
 
 
-	<h5>THE OTHERS</h5>
 	<ul class="sidebar-list">
+		<h6>THE OTHERS</h6>
 		{{#each-if dashboards "like" false}}
 			{{#if this.shared}}
 			{{else}}
-				<li><a href="" data-on-click="navigate('/dashboard/{{this.id}}')" class="{{toggle-class this.id ../route 'selected'}}">{{this.name}}</a></li>
+				<li class="{{toggle-class this.id @root.route 'selected'}}">
+					<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
+
+					{{#if-eq this.id @root.route}}
+						<span class="desc">{{this.desc}}</span>
+					{{/if-eq}}
+				</li>
 			{{/if}}
 		{{else}}
-			<li>loader</li>
+			<li></li>
 		{{/each-if}}
 	</ul>
 </script>

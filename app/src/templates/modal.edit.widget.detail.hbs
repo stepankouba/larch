@@ -1,42 +1,51 @@
 <script id="ui.modal.edit.widget.detail" type="text/x-handlebars-template">
 	{{!-- edit widget panel --}}
 	<div class="col-md-4">
-		<h5>TOP WIDGET</h5>
-		<ul id="drag-drop-top">
-			{{#each-if widgetInstances "display.row" 0}}
+		{{#if-eq dashboard.layout.[0] "tall"}}
+		<ul class="sidebar-list" id="drag-drop-top">
+			<h6>TOP</h6>
+			{{#each-if dashboard.widgets "display.row" 0}}
 				{{#withHash @root.widgets id}}
-					<li class="widget-item"><a href="" class="{{toggle-class id @root.selectedWidgetId 'selected'}}"
-						data-on-click="showSettings('{{id}}')">{{name}}</a></li>
+					<li class="{{toggle-class id @root.selectedWidgetId 'selected'}}">
+						<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
+					</li>
 				{{/withHash}}
 			{{else}}
-				<li>add new top widget</li>
+				<li> </li>
 			{{/each-if}}
 		</ul>
-		<h5>MIDDLE WIDGETS</h5>
-		<ul id="drag-drop-middle">
-			{{!-- for all widgets --}}
-			{{#each-if widgetInstances "display.row" 1}}
+		{{/if-eq}}
+
+		{{#if-eq dashboard.layout.[1] "short"}}
+		<ul class="sidebar-list" id="drag-drop-middle">
+			<h6>MIDDLE</h6>
+			{{#each-if dashboard.widgets "display.row" 1}}
 				{{#withHash @root.widgets id}}
-					<li class="widget-item"><a href="" class="{{toggle-class id @root.selectedWidgetId 'selected'}}"
-						data-on-click="showSettings('{{id}}')">{{name}}</a></li>
-				{{/withHash}}
-			{{/each-if}}
-			{{!-- display add links --}}
-			{{#middle-widgets-add-links widgetInstances}}
-				<li>add new middle widget {{index}}</li>
-			{{/middle-widgets-add-links}}
-		</ul>
-		<h5>BOTTOM WIDGET</h5>
-		<ul id="drag-drop-bottom">
-			{{#each-if widgetInstances "display.row" 2}}			
-				{{#withHash @root.widgets id}}
-					<li class="widget-item"><a href="" class="{{toggle-class id @root.selectedWidgetId 'selected'}}"
-						data-on-click="showSettings('{{id}}')">{{name}}</a></li>
+					<li class="{{toggle-class this.id @root.selectedWidgetId 'selected'}}">
+						<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
+					</li>
 				{{/withHash}}
 			{{else}}
-				<li>add new bottom widget</li>
+				<li> </li>
 			{{/each-if}}
 		</ul>
+		{{/if-eq}}
+
+
+		{{#if-eq dashboard.layout.[2] "tall"}}
+		<ul class="sidebar-list" id="drag-drop-bottom">
+			<h6>BOTTOM </h6>
+			{{#each-if dashboard.widgets "display.row" 2}}
+				{{#withHash @root.widgets id}}
+					<li class="{{toggle-class this.id @root.selectedWidgetId 'selected'}}">
+						<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
+					</li>
+				{{/withHash}}
+			{{else}}
+				<li> </li>
+			{{/each-if}}
+		</ul>
+		{{/if-eq}}
 	</div>
 
 	{{!-- detail form --}}
@@ -49,7 +58,7 @@
 						<label class="col-sm-2 control-label">{{settingName}}</label>
 						<div class="col-sm-10">
 							{{#with @root.selectedWidgetSettings}}
-							<input name="{{settingName}}" class="settings form-control" placeholder="{{settingName}}" type="{{type}}"
+							<input data-model="{{settingName}}" class="settings form-control" placeholder="{{settingName}}" type="{{type}}"
 								value="{{lookup-property this settingName}}">
 							{{/with}}
 						</div>

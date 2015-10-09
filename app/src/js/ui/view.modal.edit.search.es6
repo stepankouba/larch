@@ -1,81 +1,93 @@
-import Awesomplete from 'awesomplete';
 import AppDispatcher from '../larch.dispatcher.es6';
+import Handlebars from '../common/common.handlebars.es6';
 
 const SEARCH_BOX = 'search-box';
 
 const ctrl = function(WidgetSrvc, Router, Dashboards, Logger) {
 	const logger = Logger.create('ui.modal.edit.search');
 	const input = document.getElementById(SEARCH_BOX);
-	const aws = new Awesomplete(input);
+	const resultTemplate = Handlebars.compile(document.getElementById('ui.modal.edit.search.results').innerHTML);
+	const resultsEl = document.getElementById('result-list');
+	const dashboardId = Router.current.props.id;
 	const scope = this.scope;
-	const self = this;
 
-	logger.log('search', input);
+	/**
+	 * add widget from search
+	 * @param {[type]} e   [description]
+	 * @param {[type]} id  [description]
+	 * @param {[type]} row [description]
+	 */
+	function addWidget(id, row) {
+		logger.log(`addWidget: ${id} ${row}`);
+		const widget = scope.results.filter(r => r.id === id)[0];
+		// let Model do the work
+		AppDispatcher.dispatch('dashboards.addWidget', [dashboardId, widget.id, row]);
+		// add widget
+		AppDispatcher.dispatch('widgets.add', widget.id);
+	}
+
+	/**
+	 * show and hide drop down
+	 * @param  {[type]} e [description]
+	 * @return {[type]}   [description]
+	 */
+	function showDropdown(e) {
+		// close already opened
+		const opened = document.querySelector('.btn-group.open');
+		if (opened) {
+			opened.classList.toggle('open');
+		}
+
+		const menu = e.target.parentNode;
+		menu.classList.toggle('open');
+
+		const links = document.querySelectorAll('.btn-group.open .dropdown-menu li > a');
+		[].forEach.call(links, el => el.addEventListener('click', e => {
+			e.preventDefault();
+
+			const params = e.target.getAttribute('data-add-widget').split(',');
+			addWidget(params[0], parseInt(params[1], 10));
+		}));
+
+		return false;
+	}
+
+	/**
+	 * create results in the list
+	 * @return {Object[]} array of widget definitions
+	 */
+	function createResults(results) {
+
+		if (results.length > 0) {
+			scope.emptySlots = {};
+			results.forEach(r => scope.emptySlots[r.name] = Dashboards.getFreeSlots(dashboardId, r.versions[0].client.display.height));
+		}
+
+		scope.results = results;
+
+		resultsEl.innerHTML = resultTemplate(scope);
+		[].forEach.call(document.querySelectorAll('button[data-toggle="dropdown"]'), el => el.addEventListener('click', showDropdown));
+	};
 
 	this.methods = {
-		/**
-		 * recompile after gathering all data
-		 * @return {[type]} [description]
-		 */
-		_updateResults() {
-			scope.emptySlots = {};
-
-			const dashboardId = Router.current.props.id;
-			// TODO: remove this exception in accessing latest version
-			scope.results.forEach(r => scope.emptySlots[r.name] = Dashboards.getFreeSlots(dashboardId, r.versions[0].client.display.height));
-
-			self.recompile();
-		},
-		/**
-		 * add widget from search
-		 * @param {[type]} e   [description]
-		 * @param {[type]} id  [description]
-		 * @param {[type]} row [description]
-		 */
-		addWidget(e, id, row) {
-			e.preventDefault();
-			const widget = scope.results.filter(r => r.id === id)[0];
-			// let Model do the work
-			AppDispatcher.dispatch('dashboards.addWidget', [Router.current.props.id, widget, row]);
-			// add widget
-			AppDispatcher.dispatch('widgets.load', [widget.id, widget]);
-		},
-		/**
-		 * show and hide drop down
-		 * @param  {[type]} e [description]
-		 * @return {[type]}   [description]
-		 */
-		showDropdown(e) {
-			e.preventDefault();
-			const menu = e.target.parentNode;
-			menu.classList.toggle('open');
-			return false;
-		},
 		/**
 		 * input box event handler
 		 * @param  {[type]} e [description]
 		 * @return {[type]}   [description]
 		 */
-		searchAutocomplete(e) {
-			const value = document.getElementById(SEARCH_BOX).value;
+		search(e) {
+			const value = input.value.trim();
 
-			if (value.length < 2 || e.keyCode === 27) {
-				return false;
+			if (value === '') {
+				scope.value = '';
+				return createResults([]);
 			}
 
-			if (e.keyCode === 13 && value.length >= 2) {
-				this.methods._updateResults();
-			}
-
+			// load complete widget definitions
 			WidgetSrvc.getByText(value)
 				.then(result => {
 					scope.value = value;
-					scope.results = result;
-					const sugg = [];
-					result.forEach(r => sugg.push(r.name));
-
-					aws.list = sugg;
-					aws.evaluate();
+					createResults(result);
 				})
 				.catch(err => logger.error(err));
 		}

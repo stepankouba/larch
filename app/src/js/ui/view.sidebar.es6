@@ -1,4 +1,3 @@
-import AppDispatcher from '../larch.dispatcher.es6';
 import Cookies from '../lib/lib.cookies.es6';
 
 const ctrl = function(Dashboards, Router, Modal, Logger) {
@@ -18,7 +17,7 @@ const ctrl = function(Dashboards, Router, Modal, Logger) {
 	// handle router in sidebar
 	Router.on('router.navigate', route => {
 		logger.info('router.navigate event received');
-		// this.scope.route = route.props.id;
+		this.scope.route = route.props.id;
 
 		// last seen id is stored in cookie
 		if (route.props.id !== 'home') {
@@ -46,6 +45,7 @@ ctrl.$injector = ['model.Dashboards', 'larch.Router', 'component.Modal','larch.L
 const View = {
 	id: 'ui.sidebar',
 	templateUrl: './sidebar.hbs',
+	onlyOnRecompile: false,
 	scope: {},
 	methods: {},
 	controller: ctrl

@@ -1,25 +1,34 @@
 <script id="ui.modal.edit.search" type="text/x-handlebars-template">
-	<div class="awesomplete">
-		<input id="search-box" autofocus="" class="awesomplete" autocomplete="false" aria-autocomplete="list" value="{{value}}" data-on-keypress="searchAutocomplete()">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<div class="modal-search">
+				<input id="search-box" autofocus="" autocomplete="false" aria-autocomplete="list" value="{{value}}"
+					placeholder="just type"
+					data-on-keyup="search()">
+			</div>	
+		</div>
 	</div>
-	<div class="results">
-		{{#each results}}
-			<div class="item">
-				<span class="name">{{name}}</span>
-				<span class="title">{{title}}</span>
-				<div>{{versions.0.description}} | latest version: {{versions.0.version}}</div>
-				<!-- Single button -->
-				<div class="btn-group">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-on-click="showDropdown()">add widget<span class="caret"></span></button>
-					<ul class="dropdown-menu">
-						{{#withHash @root.emptySlots name}}
-							{{#each this}}
-								<li><a href="" data-on-click="addWidget('{{../../id}}', {{this}})">{{get-position this}}</a></li>
-							{{/each}}
-						{{/withHash}}
-					</ul>
-				</div>
-			</div>
-		{{/each}}
+	<div class="results" id="result-list">
 	</div>
+</script>
+
+<script id="ui.modal.edit.search.results" type="text/x-handlebars-template">
+	{{#each results}}
+	<div class="item">
+		<span class="name">{{this.name}}</span>
+		<span class="title">{{this.title}}</span>
+		<div>{{versions.0.description}} | latest version: {{versions.0.version}}</div>
+		
+		<div class="btn-group">
+			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">add widget<span class="caret"></span></button>
+			<ul class="dropdown-menu">
+				{{#withHash @root.emptySlots name}}
+					{{#each this}}
+						<li><a href="" data-add-widget="{{../../id}},{{this}}">{{get-position this}}</a></li>
+					{{/each}}
+				{{/withHash}}
+			</ul>
+		</div>
+	</div>
+	{{/each}}
 </script>

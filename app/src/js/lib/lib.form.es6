@@ -1,6 +1,6 @@
 export default {
 	getValues(formId) {
-		const fields = document.querySelectorAll(`#${formId} > [data-model]`);
+		const fields = document.querySelectorAll(`#${formId} [data-model]`);
 		const result = {};
 
 		[].forEach.call(fields, field => {
@@ -13,7 +13,7 @@ export default {
 		return result;
 	},
 	testValues(formId) {
-		const fields = document.querySelectorAll(`#${formId} > [data-model]`);
+		const fields = document.querySelectorAll(`#${formId} [data-model]`);
 		let result = true;
 
 		[].forEach.call(fields, field => {

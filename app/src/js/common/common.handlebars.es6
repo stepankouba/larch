@@ -14,13 +14,19 @@ Handlebars.registerHelper('toggle-class', (a, b, className, options) => {
 });
 
 Handlebars.registerHelper('lookup-property', (obj, settingName, options) => {
-	return new Handlebars.SafeString(obj[settingName]);
+	return new Handlebars.SafeString(obj[settingName] || '');
 });
 
 Handlebars.registerHelper('get-position', (num, options) => {
 	const POSITIONS = ['TOP', 'MIDDLE', 'BOTTOM'];
 
 	return new Handlebars.SafeString(POSITIONS[num]);
+});
+
+Handlebars.registerHelper('if-eq', function(v1, v2, options) {
+	if (v1 === v2) {
+		return options.fn(this);
+	}
 });
 
 Handlebars.registerHelper('row-class', (layout, rowType, row, options) => {
@@ -103,7 +109,7 @@ Handlebars.registerPartial('resultMsg', `
 	{{else if success}}
 		{{success}}
 	{{else}}
-		
+		fdsfs
 	{{/if}}
 	`);
 

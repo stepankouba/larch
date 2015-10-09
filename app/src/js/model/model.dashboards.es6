@@ -14,14 +14,13 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 		 * @param  {string} user username
 		 */
 		getAll(user) {
-			DashboardSrvc.getAll(user)
+			return DashboardSrvc.getAll(user)
 				.then(data => {
 					logger.log(`tracing get all request`);
 
 					data.forEach(i => DashboardsMdl.cache[i.id] = i);
 
 					DashboardsMdl.emit('dashboards.loaded');
-					logger.log('dashboards.loaded emited');
 				})
 				.catch(err => logger.error(err));
 		},
@@ -64,7 +63,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 			};
 			const newDS = Object.assign(ds, defaultValues);
 
-			logger.log('creating new dashbord with settins', newDS);
+			logger.log('creating new dashbord', newDS);
 
 			DashboardSrvc.save(newDS)
 				.then(result => {
@@ -88,16 +87,16 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 		 * Add widget to the current dashboard
 		 * @param {Array} params
 		 * @param {String} params[]  id of the dashboard
-		 * @param {Object} params[]  widget object
+		 * @param {Object} params[]  widget id
 		 * @param {Number} params[]  row in dashboard
 		 */
-		addWidget([id, widget, row]) {
+		addWidget([id, widgetId, row]) {
 			let position;
 
 			logger.log('adding new widget to the dashboard');
 
 			const currentDashboard = DashboardsMdl.get(id);
-			// check rows and
+			// check rows and positions
 			if (row === 0 || row === 2) {
 				position = 0;
 			} else {
@@ -106,7 +105,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 				position = Object.keys(ws).filter(k => ws[k].display.row === 1).length;
 			}
 
-			currentDashboard.widgets[widget.id] = {
+			currentDashboard.widgets[widgetId] = {
 				display: {row, position},
 				settings: undefined
 			};
@@ -120,11 +119,11 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 				return DashboardsMdl.emit('dashboards.not-updated', 'UPDATE_FIELDS_NOT_ALLOWED_TO');
 			}
 
-			DashboardSrvc.update(id, data)
+			return DashboardSrvc.update(id, data)
 				.then(result => {
 					// copy updated values to the cache
 					Object.keys(data).forEach(key => currentDashboard[key] = data[key]);
-
+					logger.log('updated', data);
 					DashboardsMdl.emit('dashboards.updated', id);
 				})
 				.catch(err => DashboardsMdl.emit('dashboards.not-updated', err));
@@ -148,7 +147,6 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 			DashboardsMdl.update([id, { like }]);
 		},
 		getFreeSlots(id, height = 0) {
-			logger.log(id, height);
 			const currentDashboard = DashboardsMdl.get(id);
 			const widgets = currentDashboard.widgets;
 			const slots = [0,1,1,1,2];
@@ -166,33 +164,28 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 			return freeSlots;
 		},
 		/**
-		 * get widget instances hold by a dashboard
-		 * @param  {String} id dashboard id
-		 * @return {Object}    hash map of objects
-		 */
-		getWidgetInstances(id) {
-			const currentDashboard = DashboardsMdl.get(id);
-
-			return currentDashboard.widgets;
-		},
-		/**
 		 * get the id of the first widget. This is used for default selection of a widget for edit
 		 * @param  {[type]} id [description]
 		 * @return {[type]}    [description]
 		 */
 		getFirstWidgetId(id) {
-			const w = DashboardsMdl.getWidgetInstances(id);
+			const w = DashboardsMdl.get(id).widgets;
 
 			return Object.keys(w)[0];
 		},
-		setSettings([dashboardId, widgetId, settings]) {
+		setSettings([dashboardId, widgetId, newSettings]) {
+			logger.log(`saving settings for ${dashboardId}`, newSettings);
 			const currentDashboard = DashboardsMdl.get(dashboardId);
 
-			const s = currentDashboard.widgets[widgetId].settings || {};
+			// this is the simplest way of cloning objects
+			const widgets = JSON.parse(JSON.stringify(currentDashboard.widgets));
+			widgets[widgetId].settings = [widgetId].settings || {};
 
-			Object.keys(settings).forEach(k => {
-				s[k] = settings[k];
+			Object.keys(newSettings).forEach(k => {
+				widgets[widgetId].settings[k] = newSettings[k];
 			});
+
+			DashboardsMdl.update([dashboardId, { widgets }]);
 		}
 	});
 
@@ -204,7 +197,6 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 	AppDispatcher.register('Dashboards', 'dashboards.remove', DashboardsMdl.remove);
 	AppDispatcher.register('Dashboards', 'dashboards.like', DashboardsMdl.like);
 	AppDispatcher.register('Dashboards', 'dashboards.settings', DashboardsMdl.setSettings);
-
 
 	return DashboardsMdl;
 };

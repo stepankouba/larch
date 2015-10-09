@@ -9,7 +9,6 @@ const ctrl = function(Router, Widgets, Dashboards, Chart, Logger) {
 		if (id !== 'home') {
 			// display widgets for current dashboard
 			scope.dashboard = Dashboards.get(id);
-			scope.widgetInstances = Dashboards.getWidgetInstances(id);
 			this.recompile();
 		}
 	}
@@ -54,11 +53,14 @@ const ctrl = function(Router, Widgets, Dashboards, Chart, Logger) {
 
 		// after recompile add widgets
 		Object.keys(w).forEach(k => {
+			console.log(w[k], wi[k]);
 			Widgets.getData(w[k], wi[k])
 				.then(() => Widgets.emit('widgets.data-loaded', w[k]))
 				.catch(err => logger.error(err));
 		});
 	});
+
+	Widgets.on('data-not-loaded', () => logger.log('data were not loaded, try again later'));
 
 	// handle loaded widget event
 	Widgets.on('widgets.data-loaded', widget => {

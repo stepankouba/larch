@@ -18,7 +18,7 @@ const ctrl = function(User, Logger) {
 		login(e) {
 			e.preventDefault();
 
-			const user = Form.getValues();
+			const user = Form.getValues('login-form');
 
 			AppDispatcher.dispatch('user.login', user);
 		}

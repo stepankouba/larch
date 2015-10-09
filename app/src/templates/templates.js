@@ -2,7 +2,7 @@
 	{{#if dashboard}}
 		<div class="row {{row-class dashboard.layout "tall" 0}}">
 			<div class="col-xs-12 chart-container">
-				{{#each-if widgetInstances "display.row" 0}}
+				{{#each-if dashboard.widgets "display.row" 0}}
 					<div class="chart chart-large" id="container-widget{{id}}">
 						<div class="widget" id="widget{{id}}">
 						</div>
@@ -33,7 +33,7 @@
 		</div>
 		<div class="row {{row-class dashboard.layout "tall" 2}}">
 			<div class="col-xs-12 chart-container last">
-				{{#each-if widgetInstances "display.row" 2}}
+				{{#each-if dashboard.widgets "display.row" 2}}
 					<div class="chart chart-large" id="container-widget{{id}}">
 						<div class="widget" id="widget{{id}}">
 						</div>
@@ -103,7 +103,7 @@
 <script id="ui.login" type="text/x-handlebars-template">
     <h2>Login</h2>
     <div class="alert alert-danger"></div>
-    <form name="form" role="form">
+    <form name="form" role="form" id="login-form">
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" name="username" data-model="username" class="form-control" required value="test@test.com" />
@@ -150,7 +150,7 @@
 <script id="ui.modal.edit" type="text/x-handlebars-template">
 	<div class="modal larch-modal">
 		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
+			<div class="modal-content" data-on-click="hideOpenDropdowns()">
 				<div class="modal-header">
 					<button type="button" class="close" data-on-click="close()" aria-label="Close"><span aria-hidden="true">done</span></button>
 					<ul class="nav nav-tabs">
@@ -178,69 +178,87 @@
 </script>
 
 <script id="ui.modal.edit.search" type="text/x-handlebars-template">
-	<div class="awesomplete">
-		<input id="search-box" autofocus="" class="awesomplete" autocomplete="false" aria-autocomplete="list" value="{{value}}" data-on-keypress="searchAutocomplete()">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<div class="modal-search">
+				<input id="search-box" autofocus="" autocomplete="false" aria-autocomplete="list" value="{{value}}"
+					placeholder="just type"
+					data-on-keyup="search()">
+			</div>	
+		</div>
 	</div>
-	<div class="results">
-		{{#each results}}
-			<div class="item">
-				<span class="name">{{name}}</span>
-				<span class="title">{{title}}</span>
-				<div>{{versions.0.description}} | latest version: {{versions.0.version}}</div>
-				<!-- Single button -->
-				<div class="btn-group">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-on-click="showDropdown()">add widget<span class="caret"></span></button>
-					<ul class="dropdown-menu">
-						{{#withHash @root.emptySlots name}}
-							{{#each this}}
-								<li><a href="" data-on-click="addWidget('{{../../id}}', {{this}})">{{get-position this}}</a></li>
-							{{/each}}
-						{{/withHash}}
-					</ul>
-				</div>
-			</div>
-		{{/each}}
+	<div class="results" id="result-list">
 	</div>
+</script>
+
+<script id="ui.modal.edit.search.results" type="text/x-handlebars-template">
+	{{#each results}}
+	<div class="item">
+		<span class="name">{{this.name}}</span>
+		<span class="title">{{this.title}}</span>
+		<div>{{versions.0.description}} | latest version: {{versions.0.version}}</div>
+		
+		<div class="btn-group">
+			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">add widget<span class="caret"></span></button>
+			<ul class="dropdown-menu">
+				{{#withHash @root.emptySlots name}}
+					{{#each this}}
+						<li><a href="" data-add-widget="{{../../id}},{{this}}">{{get-position this}}</a></li>
+					{{/each}}
+				{{/withHash}}
+			</ul>
+		</div>
+	</div>
+	{{/each}}
 </script>
 <script id="ui.modal.edit.widget.detail" type="text/x-handlebars-template">
 	{{!-- edit widget panel --}}
 	<div class="col-md-4">
-		<h5>TOP WIDGET</h5>
-		<ul id="drag-drop-top">
-			{{#each-if widgetInstances "display.row" 0}}
+		{{#if-eq dashboard.layout.[0] "tall"}}
+		<ul class="sidebar-list" id="drag-drop-top">
+			<h6>TOP</h6>
+			{{#each-if dashboard.widgets "display.row" 0}}
 				{{#withHash @root.widgets id}}
-					<li class="widget-item"><a href="" class="{{toggle-class id @root.selectedWidgetId 'selected'}}"
-						data-on-click="showSettings('{{id}}')">{{name}}</a></li>
+					<li class="{{toggle-class id @root.selectedWidgetId 'selected'}}">
+						<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
+					</li>
 				{{/withHash}}
 			{{else}}
-				<li>add new top widget</li>
+				<li> </li>
 			{{/each-if}}
 		</ul>
-		<h5>MIDDLE WIDGETS</h5>
-		<ul id="drag-drop-middle">
-			{{!-- for all widgets --}}
-			{{#each-if widgetInstances "display.row" 1}}
+		{{/if-eq}}
+
+		{{#if-eq dashboard.layout.[1] "short"}}
+		<ul class="sidebar-list" id="drag-drop-middle">
+			<h6>MIDDLE</h6>
+			{{#each-if dashboard.widgets "display.row" 1}}
 				{{#withHash @root.widgets id}}
-					<li class="widget-item"><a href="" class="{{toggle-class id @root.selectedWidgetId 'selected'}}"
-						data-on-click="showSettings('{{id}}')">{{name}}</a></li>
-				{{/withHash}}
-			{{/each-if}}
-			{{!-- display add links --}}
-			{{#middle-widgets-add-links widgetInstances}}
-				<li>add new middle widget {{index}}</li>
-			{{/middle-widgets-add-links}}
-		</ul>
-		<h5>BOTTOM WIDGET</h5>
-		<ul id="drag-drop-bottom">
-			{{#each-if widgetInstances "display.row" 2}}			
-				{{#withHash @root.widgets id}}
-					<li class="widget-item"><a href="" class="{{toggle-class id @root.selectedWidgetId 'selected'}}"
-						data-on-click="showSettings('{{id}}')">{{name}}</a></li>
+					<li class="{{toggle-class this.id @root.selectedWidgetId 'selected'}}">
+						<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
+					</li>
 				{{/withHash}}
 			{{else}}
-				<li>add new bottom widget</li>
+				<li> </li>
 			{{/each-if}}
 		</ul>
+		{{/if-eq}}
+
+
+		{{#if-eq dashboard.layout.[2] "tall"}}
+		<ul class="sidebar-list" id="drag-drop-bottom">
+			<h6>BOTTOM </h6>
+			{{#each-if dashboard.widgets "display.row" 2}}
+				{{#withHash @root.widgets id}}
+					<li class="{{toggle-class this.id @root.selectedWidgetId 'selected'}}">
+						<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
+					</li>
+				{{/withHash}}
+			{{else}}
+				<li> </li>
+			{{/each-if}}
+		</ul>
+		{{/if-eq}}
 	</div>
 
 	{{!-- detail form --}}
@@ -253,7 +271,7 @@
 						<label class="col-sm-2 control-label">{{settingName}}</label>
 						<div class="col-sm-10">
 							{{#with @root.selectedWidgetSettings}}
-							<input name="{{settingName}}" class="settings form-control" placeholder="{{settingName}}" type="{{type}}"
+							<input data-model="{{settingName}}" class="settings form-control" placeholder="{{settingName}}" type="{{type}}"
 								value="{{lookup-property this settingName}}">
 							{{/with}}
 						</div>
@@ -333,34 +351,52 @@
 	</div>
 </script>
 <script id="ui.sidebar" type="text/x-handlebars-template">
-	<h5>I LIKE</h5>
 	<ul class="sidebar-list">
+		<h6>I LIKE</h6>
 		{{#each-if dashboards "like" true}}
-			<li><a href="" class="{{toggle-class id ../route 'selected'}}">{{name}}</a></li>
+			<li class="{{toggle-class this.id @root.route 'selected'}}">
+				<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
+
+				{{#if-eq this.id @root.route}}
+					<span class="desc">{{this.desc}}</span>
+				{{/if-eq}}
+			</li>
 		{{else}}
-			<li>any dashboard you like?</li>
+			<li></li>
 		{{/each-if}}
 	</ul>
 
-	<h5>SHARED</h5>
 	<ul class="sidebar-list">
+		<h6>SHARED</h6>
 		{{#each-if dashboards "shared" true}}
-			<li><a href="" class="{{toggle-class id ../route 'selected'}}">{{name}}</a></li>
+			<li class="{{toggle-class this.id @root.route 'selected'}}">
+				<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
+
+				{{#if-eq this.id @root.route}}
+					<span class="desc">{{this.desc}}</span>
+				{{/if-eq}}
+			</li>
 		{{else}}
-			<li>any shared dashboard?</li>
+			<li></li>
 		{{/each-if}}
 	</ul>
 
 
-	<h5>THE OTHERS</h5>
 	<ul class="sidebar-list">
+		<h6>THE OTHERS</h6>
 		{{#each-if dashboards "like" false}}
 			{{#if this.shared}}
 			{{else}}
-				<li><a href="" data-on-click="navigate('/dashboard/{{this.id}}')" class="{{toggle-class this.id ../route 'selected'}}">{{this.name}}</a></li>
+				<li class="{{toggle-class this.id @root.route 'selected'}}">
+					<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
+
+					{{#if-eq this.id @root.route}}
+						<span class="desc">{{this.desc}}</span>
+					{{/if-eq}}
+				</li>
 			{{/if}}
 		{{else}}
-			<li>loader</li>
+			<li></li>
 		{{/each-if}}
 	</ul>
 </script>

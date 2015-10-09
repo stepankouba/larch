@@ -2,8 +2,9 @@ import AppDispatcher from '../larch.dispatcher.es6';
 
 const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 	const logger = Logger.create('ui.header');
-	this.scope.user = User.current;
 
+	this.scope.user = User.current;
+	this.scope.hasDashboards = Dashboards.hasAny();
 	this.recompile();
 
 	Dashboards.on('dashboards.loaded', () => {
@@ -90,6 +91,7 @@ ctrl.$injector = ['model.User', 'model.Dashboards','larch.HTTPer', 'component.Mo
 const View = {
 	id: 'ui.header',
 	templateUrl: './header.hbs',
+	onlyOnRecompile: true,
 	scope: {},
 	methods: {},
 	controller: ctrl
