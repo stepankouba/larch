@@ -20,7 +20,19 @@ export default [
 	{
 		path: '/dashboard/',
 		httpMethod: 'POST',
-		requiresAuth: false,
+		requiresAuth: true,
 		middleware: [api.saveDashboard]
+	},
+	{
+		path: '/dashboard/:id',
+		httpMethod: 'DELETE',
+		requiresAuth: true,
+		middleware: [api.remove]
+	},
+	{
+		path: '/dashboard/:id',
+		httpMethod: 'PUT',
+		requiresAuth: true,
+		middleware: [api.updateDashboard]
 	}
 ];

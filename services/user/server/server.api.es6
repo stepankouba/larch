@@ -54,7 +54,7 @@ const user = {
 		delete req.user;
 
 		Auth.logout(username)
-			.then(() => res.json({msg: 'logged out'}))
+			.then(() => res.json({responseCode: 200, msg: 'logged out'}))
 			.catch(err => next(err));
 	},
 	/**

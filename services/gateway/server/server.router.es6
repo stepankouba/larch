@@ -110,6 +110,18 @@ export default [
 				middleware: []
 			},
 			{
+				path: '/api/dashboard/:id',
+				httpMethod: 'DELETE',
+				requiresAuth: true,
+				middleware: []
+			},
+			{
+				path: '/api/dashboard/:id',
+				httpMethod: 'PUT',
+				requiresAuth: true,
+				middleware: []
+			},
+			{
 				path: '/api/dashboards/:user',
 				httpMethod: 'GET',
 				requiresAuth: true,
@@ -118,7 +130,7 @@ export default [
 			{
 				path: '/api/dashboard/',
 				httpMethod: 'POST',
-				requiresAuth: false,
+				requiresAuth: true,
 				middleware: []
 			}
 		]

@@ -30,7 +30,7 @@ const api = {
 
 		logger.info(`requesting all dashboards for user ${user}`);
 
-		if (!user) {
+		if (!user || user !== req.user.username) {
 			return next({responseCode: 404, msg: 'user is not specified'});
 		}
 
@@ -42,10 +42,55 @@ const api = {
 			.catch(err => next(err));
 			// .finally(() => r.getPool().drain());
 	},
+	remove(req, res, next) {
+		const id = req.params.id;
+		const conf = Service.instance.conf;
+		const owner = req.user.username;
+
+		if (!id || !owner) {
+			return next({responseCode: 404, msg: 'id or owner is not specified'});
+		}
+
+		r.db(conf.db.database)
+			.table('dashboards')
+			.filter({id, owner})
+			.delete()
+			.run()
+			.then(result => {
+				if (result.deleted === 1) {
+					return res.json({msg: 'deleted'});
+				} else {
+					return res.json({responseCode: 409, msg: 'can not delete, because you do not own it'});
+				}
+			})
+			.catch(err => next(err));
+	},
+	updateDashboard(req, res, next) {
+		const ds = req.body;
+		const conf = Service.instance.conf;
+		const id = req.params.id;
+
+		if (ds.id) {
+			delete ds.id;
+		}
+
+		if (!id) {
+			return next({responseCode: 404, msg: 'missing dashboard id'});
+		}
+
+		r.db(conf.db.database)
+			.table('dashboards')
+			.get(id)
+			.update(ds)
+			.run()
+			.then(result => res.json({msg: 'updated'}))
+			.catch(err => next(err));
+	},
 	saveDashboard(req, res, next) {
 		const ds = req.body;
 		const logger = Service.instance.server.logger;
 		const conf = Service.instance.conf;
+		ds.owner = req.user.username;
 
 		/**
 		 * testing, whether sent
@@ -69,7 +114,7 @@ const api = {
 		if (!ds && !hasAllRequired(ds)) {
 			return next({responseCode: 404, msg: 'dashboard is not properly defined'});
 		}
-		logger.error('this is insert');
+
 		// insert and if same name exists, return error
 		r.db(conf.db.database)
 			.table('dashboards')

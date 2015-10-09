@@ -86,6 +86,7 @@ const Service = {
 				res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3333');
 				res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
 				res.setHeader('Access-Control-Allow-Credentials', 'true');
+				res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
 				next();
 			});
 		},

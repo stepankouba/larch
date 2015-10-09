@@ -19,15 +19,25 @@ const api = {
 		}
 
 		// parse id param if containing ','
-		const ids = req.params.id.indexOf(',') > -1 ? req.params.id.split(',') : [req.params.id];
+		// const ids = req.params.id.indexOf(',') > -1 ? req.params.id.split(',') : [req.params.id];
+		const id = req.params.id;
 
 		// request by getAll
 		r.db(conf.db.database)
 			.table('widgets')
-			.getAll(...ids)
+			.get(id)
 			.run()
 			.then(result => {
-				res.json(result);
+				if (!null) {
+					// ensure only latest version is returned (this might change in future)
+					const ver = result.versions[0];
+					result.version = ver;
+					delete result.versions;
+
+					res.json([result]);
+				} else {
+					res.json([]);
+				}
 			})
 			.catch(err => next(err));
 			// .finally(() => r.getPool().drain());
@@ -43,7 +53,7 @@ const api = {
 		if (!req.query.phrase) {
 			return next(new Error('getByText: phrase not specified'));
 		}
-
+		const RESULTS_MAX = 10;
 		const conf = Service.instance.conf;
 
 		// syntax: https://code.google.com/p/re2/wiki/Syntax
@@ -55,6 +65,7 @@ const api = {
 				return w('name').match(phrase) || w('title').match(phrase) || w('desc').match(phrase) ||
 					w('tags').toString().match(phrase);
 			})
+			.limit(RESULTS_MAX)
 			.then(result => {
 				res.json(result);
 			})
