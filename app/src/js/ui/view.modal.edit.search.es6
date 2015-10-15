@@ -41,6 +41,7 @@ const ctrl = function(WidgetSrvc, Router, Dashboards, Logger) {
 		const menu = e.target.parentNode;
 		menu.classList.toggle('open');
 
+		// add event listeners to the created dropdowns
 		const links = document.querySelectorAll('.btn-group.open .dropdown-menu li > a');
 		[].forEach.call(links, el => el.addEventListener('click', e => {
 			e.preventDefault();
@@ -66,6 +67,7 @@ const ctrl = function(WidgetSrvc, Router, Dashboards, Logger) {
 		scope.results = results;
 
 		resultsEl.innerHTML = resultTemplate(scope);
+		// add dynamically event handlers to the buttons
 		[].forEach.call(document.querySelectorAll('button[data-toggle="dropdown"]'), el => el.addEventListener('click', showDropdown));
 	};
 
