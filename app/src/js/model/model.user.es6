@@ -30,11 +30,11 @@ const UserMdlFn = function(UserSrvc, Logger) {
 					}
 				});
 		},
-		getCurrent(token) {
-			if (!token) {
-				return logger.error('token not set');
-			}
-
+		/**
+		 * load data for a current user
+		 * @return {Promise.true}       [description]
+		 */
+		getCurrent() {
 			return UserSrvc.getCurrent()
 					.then(data => {
 						UserMdl.current = data.user;
@@ -48,6 +48,21 @@ const UserMdlFn = function(UserSrvc, Logger) {
 					Cookies.removeItem('larch.token');
 					window.location = 'login.html';
 				});
+		},
+		/**
+		 * get particular setting for a source belonging to user
+		 * @param  {String} source source name
+		 * @return {String|Object} whatever is defined for a source in user's settings
+		 */
+		getSourceSetting(source) {
+			return UserMdl.current.settings.sources[source];
+		},
+		/**
+		 * get sources defined for the user
+		 * @return {[type]} [description]
+		 */
+		getSourcesSettings() {
+			return UserMdl.current.settings.sources;
 		}
 	});
 
