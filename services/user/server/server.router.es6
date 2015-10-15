@@ -37,13 +37,13 @@ export default [
 		middleware: [api.update]
 	},
 	{
-		path: '/user/auth/source/:name',
+		path: '/user/auth/:name',
 		httpMethod: 'GET',
 		requiresAuth: false,
 		middleware: [api.authSource]
 	},
 	{
-		path: '/user/auth/callback',
+		path: '/user/auth/:name/callback',
 		httpMethod: 'GET',
 		requiresAuth: false,
 		middleware: [api.authSourceCallback]
