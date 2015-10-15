@@ -1,5 +1,4 @@
 // taken from https://developer.mozilla.org
-
 export default {
 	/**
 	 * get cookie item by name

@@ -1,4 +1,9 @@
 export default {
+	/**
+	 * get values from form based on data-model attribute
+	 * @param  {String} formId form id
+	 * @return {Object}        created hashmap based on the form
+	 */
 	getValues(formId) {
 		const fields = document.querySelectorAll(`#${formId} [data-model]`);
 		const result = {};
@@ -12,6 +17,13 @@ export default {
 
 		return result;
 	},
+	/**
+	 * check values in form before they are passed to the processing
+	 * if the item does not pass, has-error is added to the field
+	 * 
+	 * @param  {String} formId form id
+	 * @return {Boolean} if everything OK, true, else false
+	 */
 	testValues(formId) {
 		const fields = document.querySelectorAll(`#${formId} [data-model]`);
 		let result = true;
