@@ -19,7 +19,7 @@ const ctrl = function(Router, Widgets, Dashboards, Chart, Logger) {
 	// on loading all dashboards, show the selected one
 	Dashboards.on('dashboards.updated', () => reloadDashboard('dashboards.updated'));
 
-	Widgets.on('data-not-loaded', () => logger.log('data were not loaded, try again later'));
+	Widgets.on('widgets.data-loaded-not', err => logger.log(err));
 
 	// handle loaded widget event
 	Widgets.on('widgets.data-loaded', widget => {
