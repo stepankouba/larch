@@ -30,7 +30,7 @@ const init = function(User, Dashboards, Router, Logger) {
 	});
 
 	// check if the token is really for the user...
-	return User.getCurrent(token)
+	return User.getCurrent()
 			.then(() => {
 				logger.log('user properly logged in', User.current);
 
