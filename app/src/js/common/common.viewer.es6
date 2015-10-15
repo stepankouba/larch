@@ -115,7 +115,7 @@ const ViewerFn = function(HTTPer, Logger) {
 		 * @return {Promise}
 		 */
 		_appendTemplate(view, calledByRecompile = false) {
-			// need arrow function here to keep this pointing at Viewer
+			// if view is not set to onlyOnRecompile
 			if (!view.onlyOnRecompile) {
 				logger.log('default append');
 				view.element.innerHTML = this._compileTemplate(view);
