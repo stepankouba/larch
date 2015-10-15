@@ -10,7 +10,7 @@ const HTTPerFn = function(Logger) {
 
 			h.xhr = new XMLHttpRequest();
 			h.conf = conf;
-
+			
 			return h;
 		},
 		prototype: {
@@ -23,6 +23,7 @@ const HTTPerFn = function(Logger) {
 			open(url, resolve, reject) {
 				const token = Cookies.getItem('larch.token');
 
+				this.url = url;
 				this.xhr.open(this.method, url, true);
 
 				if (token) {
@@ -45,7 +46,8 @@ const HTTPerFn = function(Logger) {
 								this.resolve(r);
 							} else if (this.xhr.status === 401) {
 								// unauthorized access to the API
-								window.location = 'login.html';
+								// window.location = 'login.html';
+								logger.error(`unauthorized access to ${this.url}`);
 							} else {
 								this.reject({
 									statusCode: this.xhr.status,
@@ -87,7 +89,6 @@ const HTTPerFn = function(Logger) {
 			return new Promise((resolve, reject) => {
 				const r = HTTPClass.create('GET', conf);
 				r.open(url, resolve, reject);
-
 				// default on error handlers
 				r.onerror();
 				r.onload();
