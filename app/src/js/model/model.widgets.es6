@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import { assign } from '../lib/lib.assign.es6';
 import AppDispatcher from '../larch.dispatcher.es6';
 
-const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
+const WidgetsMdlFn = function(User, WidgetSrvc, DataSrvc, Logger) {
 	const logger = Logger.create('model.Widgets');
 
 	// create model object
@@ -70,33 +70,23 @@ const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
 
 					return WidgetMdl.getData(widget, wi);
 				})
-				.then(widget => {
+				.then(data => {
+					WidgetMdl.cache[widget.id].data = data;
 					// send the loaded widget into view
-					WidgetMdl.emit('widgets.data-loaded', widget);
+					WidgetMdl.emit('widgets.data-loaded', WidgetMdl.cache[widget.id]);
 				})
 				.catch(err => {
-					WidgetMdl.emit('widgets.data-not-loaded', err);
+					WidgetMdl.emit('widgets.data-loaded-not', err);
 				});
 		},
 		getData(widget, widgetInstance) {
-			return new Promise((resolve, reject) => {
-				// get data if needed
-				if (widgetInstance.settings) {
-					return DataSrvc.getData(widget, widgetInstance.settings)
-						.then(data => {
-							// cache only data
-							// widget.data = data;
-							WidgetMdl.cache[widget.id].data = data;
+			// get data if needed
+			if (widgetInstance.settings) {
+				return DataSrvc.getData(widget, widgetInstance.settings,
+					User.getSourceSetting(widget.version.source.name));
+			}
 
-							logger.log(WidgetMdl.cache[widget.id].data);
-
-							return resolve(widget);
-						})
-						.catch(err => reject(err));
-				}
-
-				return resolve(widget);
-			});
+			return Promise.resolve(widget);
 		},
 		/**
 		 * [getAllByIds description]
@@ -140,7 +130,7 @@ const WidgetsMdlFn = function(WidgetSrvc, DataSrvc, Logger) {
 
 	return WidgetMdl;
 };
-WidgetsMdlFn.$injector = ['service.Widget', 'service.Data', 'larch.Logger'];
+WidgetsMdlFn.$injector = ['model.User', 'service.Widget', 'service.Data', 'larch.Logger'];
 
 export default {
 	name: 'model.Widgets',
