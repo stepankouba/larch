@@ -1,0 +1,46 @@
+<script id="ui.modal.accounts.detail" type="text/x-handlebars-template">
+	{{!-- edit widget panel --}}
+	<div class="col-md-4">
+		<ul class="sidebar-list">
+			<h6>MY ACCOUNTS</h6>
+			{{#each sourcesSettings}}
+				{{#withHash @root.sources @key}}
+					<li class="{{toggle-class id @root.selectedSourceName 'selected'}}">
+						<a href="" data-on-click="showSettings('{{name}}')">{{name}}</a>
+					</li>
+				{{/withHash}}
+			{{else}}
+				<li> </li>
+			{{/each}}
+		</ul>
+	</div>
+
+	{{!-- detail form --}}
+	{{#each-if sources "name" selectedSourceName}}
+		<div id="account-detail-{{id}}" class="col-md-8">
+			<form class="form-horizontal" id="edit-account-form">
+				{{#each settings as |type settingName|}}
+					<div class="form-group">
+						<label class="col-sm-2 control-label">{{settingName}}</label>
+						<div class="col-sm-10">
+							{{#withHash @root.sourcesSettings @root.selectedSourceName}}
+							<input data-model="{{settingName}}" class="settings form-control" placeholder="{{settingName}}" type="{{type}}"
+								value="{{lookup-property this settingName}}" readonly>
+							{{/withHash}}
+						</div>
+					</div>
+				{{/each}}
+				<button type="button" class="btn btn-danger"
+					data-on-click="remove()">Remove account</button>
+					{{#if @root.error}}
+						{{@root.error}}
+					{{/if}}
+					{{#if @root.updated}}
+						{{@root.updated}}
+					{{/if}}
+			</form>
+		</div>
+	{{else}}
+		hello, anything to setup?
+	{{/each-if}}
+</script>

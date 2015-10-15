@@ -23,19 +23,16 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 	this.methods = {
 		authNewSource(e, ...val) {
 			e.preventDefault();
-			logger.info('new source auth started');
+			logger.info('opening accounts modal');
 
-			const w = window.open('about:blank', 'larch_auth_source', 'height=800, width=1000, top=500, left=200, scrollable=yes, menubar=yes, resizable=yes');
+			const m = Modal.create('accounts');
 
-			HTTPer.get('https://localhost:9101/api/user/auth/source/lo-github', {json: true})
-				.then(data => {
-					logger.log('received data', data);
-					w.location = data.url;
-					w.focus();
+			m.open()
+				.then(result => {
+					logger.log(result);
 				})
 				.catch(err => logger.error(err));
 
-			return false;
 		},
 		openEdit(e) {
 			e.preventDefault();

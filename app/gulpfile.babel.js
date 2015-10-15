@@ -70,6 +70,19 @@ gulp.task('login', () => {
 		;
 });
 
+gulp.task('auth', () => {
+	browserify({
+		entries: `${paths.src.js}/larch.auth.es6`,
+		debug: true
+	})
+		.transform(babelify)
+		.bundle()
+		.on('error', util.log)
+		.pipe(source('larch.auth.js'))
+		.pipe(gulp.dest(paths.build.js))
+		;
+});
+
 gulp.task('test-chart', () => {
 	browserify({
 		entries: `${paths.src.js}/larch.test.chart.es6`,
@@ -168,7 +181,7 @@ gulp.task('test', done => {
  * Watch custom files
  */
 gulp.task('watch', () => {
-	gulp.watch([`${paths.src.js}/**/*.es6`], ['login', 'app']);
+	gulp.watch([`${paths.src.js}/**/*.es6`], ['login', 'auth', 'app']);
 	gulp.watch([paths.src.charts], ['test-chart', 'app']);
 	gulp.watch([paths.src.less], ['less']);
 	gulp.watch([paths.src.fonts], ['assets']);
@@ -192,7 +205,8 @@ gulp.task('webserver', () => {
 					// only in case url is following format: /build/dashboard/1
 					// and not in these cases: /build/index.html#/dashboard/1
 					if (req.url.indexOf('build') > -1 && req.url.indexOf('#') === -1 &&
-						!req.url.match(/\..{2,4}$/g) && req.url.indexOf('css') === -1) {
+						!req.url.match(/\..{2,4}$/g) && req.url.indexOf('css') === -1 &&
+						req.url.indexOf('?') === -1) {
 						req.url = '/build/index.html';
 					}
 
@@ -209,6 +223,6 @@ gulp.task('livereload', () => {
 		.pipe(connect.reload());
 });
 
-// gulp.task('production', ['app', 'login', 'compress','less', 'html', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
-gulp.task('build', ['templates', 'app', 'login', 'test-chart', 'test', 'less', 'html', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
+// gulp.task('production', ['app', 'login', 'auth', 'compress','less', 'html', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
+gulp.task('build', ['templates', 'app', 'auth', 'login', 'test-chart', 'test', 'less', 'html', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
 gulp.task('default', ['build', 'webserver', 'livereload', 'watch']);
