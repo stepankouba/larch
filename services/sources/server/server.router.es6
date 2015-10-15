@@ -10,5 +10,11 @@ export default [
 		httpMethod: 'GET',
 		requiresAuth: false,
 		middleware: [api.getSource]
+	},
+	{
+		path: '/sources',
+		httpMethod: 'GET',
+		requiresAuth: true,
+		middleware: [api.getAllSources]
 	}
 ];

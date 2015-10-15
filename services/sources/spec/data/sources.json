@@ -1,14 +1,14 @@
 {
 	"name": "lo-github",
 	"title": "Github official source",
-	"clientId": "d5954016069aaddfd1d6",
-	"clientSecret": "8ffeae9c39e4ecfd87503c0c5d9680e12e65e891",
-	"baseUrl": "https://github.com",
-	"authorizePath": "/login/oauth/authorize",
-	"customHeaders": "Accept: application/vnd.github.v3+json",
-	"accessTokenPath": "/login/oauth/access_token",
-	"authorizeUrl": {
-		"redirect_uri": "https://localhost:9101/api/user/auth/callback?source=lo-github",
-		"scope": ["repo"]
+	"desc": "Official access to github repositories and user information. Allowing this account dashboards may access public and private repositories and user information.",
+	"params": {
+		"clientID": "d5954016069aaddfd1d6",
+		"clientSecret": "8ffeae9c39e4ecfd87503c0c5d9680e12e65e891",
+		"callbackURL": "https://localhost:9101/api/user/auth/lo-github/callback",
+		"scope": ["repo", "user"]
+	},
+	"settings": {
+		"token": "text"
 	}
 }

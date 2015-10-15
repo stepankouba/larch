@@ -15,10 +15,24 @@ const api = {
 		r.db(conf.db.database)
 			.table('sources')
 			.filter({name})
+			.pluck('id', 'name', 'title', 'desc', 'settings')
+			.run()
+			.then(result => {
+				console.log(result);
+				res.json(result);
+			})
+			.catch(err => next(err));
+	},
+	getAllSources(req, res, next) {
+		const conf = Service.instance.conf;
+
+		r.db(conf.db.database)
+			.table('sources')
+			.filter({})
+			.pluck('id', 'name', 'title', 'desc', 'settings')
 			.run()
 			.then(result => res.json(result))
 			.catch(err => next(err));
-			// .finally(() => r.getPool().drain());
 	}
 };
 
