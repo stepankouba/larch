@@ -41,13 +41,13 @@ export default [
 				middleware: []
 			},
 			{
-				path: '/api/user/auth/source/:name',
+				path: '/api/user/auth/:name',
 				httpMethod: 'GET',
 				requiresAuth: false,
 				middleware: []
 			},
 			{
-				path: '/api/user/auth/callback',
+				path: '/api/user/auth/:name/callback',
 				httpMethod: 'GET',
 				requiresAuth: false,
 				middleware: []
@@ -144,6 +144,12 @@ export default [
 				path: '/api/source/:name',
 				httpMethod: 'GET',
 				requiresAuth: false,
+				middleware: []
+			},
+			{
+				path: '/api/sources',
+				httpMethod: 'GET',
+				requiresAuth: true,
 				middleware: []
 			}
 		]
