@@ -2,6 +2,7 @@
 import OAuth from 'oauth';
 import strformat from 'strformat';
 import https from 'https';
+// import { transform } from 'larch.lib';
 
 const api = {
 	_getSource(name) {
@@ -44,10 +45,8 @@ const api = {
 	getData(req, res, next) {
 		const widgetId = req.params.widgetId;
 		const widget = req.body.widget;
-		const userSource = req.body.user.settings.source;
+		const token = req.body.security.token;
 		const raw = req.body;
-
-		console.log(userSource);
 
 		if (!widgetId || !widget) {
 			return next({responseCode: 404, msg: 'widget id or settings is missing in the call'});
@@ -60,7 +59,7 @@ const api = {
 				const apiPath = strformat(widget.version.server.requests.path, raw);
 				const method = widget.version.server.requests.method;
 
-				oauth[method](`${baseUrl}${apiPath}`, userSource.token, (err, result, response) => {
+				oauth[method](`${baseUrl}${apiPath}`, token, (err, result, response) => {
 					if (err) {
 						return next(err);
 					}
