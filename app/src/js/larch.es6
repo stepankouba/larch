@@ -7,6 +7,9 @@ import services from './larch.services.es6';
 import models from './larch.models.es6';
 import components from './larch.components.es6';
 
+// define global larch prop
+window.larch = window.larch || {};
+
 const App = Larch.create();
 
 App.services(services);
@@ -17,6 +20,7 @@ App.components(components);
 
 App.init(init)
 	.then(() => {
+
 		App.views(views);
 
 		App.routes(routes);
