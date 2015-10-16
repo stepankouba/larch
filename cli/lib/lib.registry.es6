@@ -1,6 +1,6 @@
 import * as LarchFS from './lib.fs.es6';
 import restler from 'restler';
-import fs from 'fs';
+import { JSONParser } from 'larch.lib';
 // import path from 'path';
 
 const REGISTRY = 'https://localhost:9101/api';
@@ -40,9 +40,10 @@ const LarchRegistry = {
 	},
 	loadIndex(dir) {
 		/*eslint no-sync:0*/
-		const fileContent = fs.readFileSync(`${dir}/index.es6`, 'utf8');
+		const fileContent = require(`${dir}/index.es6`);
 		/*eslint no-eval:0*/
-		return eval(`(function(){ ${fileContent} \n return widget;})()`);
+		return fileContent;
+		// return eval(`(function() {return ${fileContent}})()`);
 	},
 	/**
 	 * Promisification of _testConf method
@@ -108,10 +109,18 @@ const LarchRegistry = {
 
 	postToServer([widget, rc]) {
 		return new Promise((resolve, reject) => {
-			restler.postJson(`${REGISTRY}/widget`, widget, {accessToken: rc.token})
+			restler.post(`${REGISTRY}/widget`,
+				{
+					data: JSONParser.stringify(widget),
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					accessToken: rc.token
+				})
 				.on('complete', (result, res) => {
 					if (result instanceof Error || res.statusCode > 399) {
-						return reject(result);
+						console.log(result);
+						return reject(`can not post widget to registry (code: ${result.responseCode}, reason: ${result.msg})`);
 					}
 
 					return resolve(result);
