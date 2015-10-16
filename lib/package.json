@@ -1,0 +1,15 @@
+{
+  "name": "larch.lib",
+  "version": "0.1.0",
+  "description": "lib for larch",
+  "main": "index.es6",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stepan Kouba <stepan.kouba@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "JSONPath": "^0.10.0"
+  }
+}
