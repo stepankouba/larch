@@ -59,10 +59,16 @@ const user = {
 	logout(req, res, next) {
 		const username = req.user.username;
 
-		delete req.user;
+		if (!req.headers.authorization || req.headers.authorization.split(' ')[0] !== 'Bearer') {
+			return next({responseCode: 401, msg: 'worng authorization of logout'});
+		}
+		const token = req.headers.authorization.split(' ')[1];;
 
-		Auth.logout(username)
-			.then(() => res.json({responseCode: 200, msg: 'logged out'}))
+		Auth.logout(username, token)
+			.then(() => {
+				delete req.user;
+				return res.json({responseCode: 200, msg: 'logged out'});
+			})
 			.catch(err => next(err));
 	},
 	/**

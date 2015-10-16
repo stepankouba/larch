@@ -86,7 +86,7 @@ const Auth = {
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)
 				.table('tokens')
-				.insert({username: user.username, token}, {conflict: 'replace'})
+				.insert({username: user.username, token, createdAt: new Date()})
 				.run()
 				.then(res => resolve({user, token}))
 				.catch(err => reject(err));
@@ -123,16 +123,19 @@ const Auth = {
 	/**
 	 * logout method
 	 * @param  {string} username just a username
+	 * @param  {string} token 	just a token
 	 * @return {Promise.<boolean|Error>}
 	 */
-	logout(username) {
+	logout(username, token) {
 		const conf = Service.instance.conf;
 		const r = RethinkDb();
+
+		console.log(username, token);
 
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)
 				.table('tokens')
-				.get(username)
+				.filter({username, token})
 				.delete()
 				.run()
 				.then(res => resolve(true))
@@ -153,6 +156,7 @@ const Auth = {
 		const r = RethinkDb();
 
 		user.password = password;
+		user.createdAt = new Date();
 
 		return new Promise((resolve, reject) => {
 			r.branch(

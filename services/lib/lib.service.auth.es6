@@ -4,6 +4,7 @@ import RethinkDB from 'rethinkdbdash';
 
 const SECRET = 'sleeeeppppppiiiiiinnnnnngggggg';
 const EXPIRE_IN_MINUTES = 5 * 24 * 60;
+const r = RethinkDB();
 
 const Auth = {
 	database: 'larch_users',
@@ -18,8 +19,6 @@ const Auth = {
 	secure: jwt({
 		secret: SECRET,
 		isRevoked(req, payload, done) {
-			const r = RethinkDB();
-
 			let token;
 			if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
 				token = req.headers.authorization.split(' ')[1];
@@ -30,8 +29,7 @@ const Auth = {
 				.filter({username: payload.username, token})
 				.run()
 				.then(result => done(null, result.length === 0))
-				.catch(err => done(err))
-				.finally(() => r.getPool().drain());
+				.catch(err => done(err));
 		}
 	}),
 	/**
