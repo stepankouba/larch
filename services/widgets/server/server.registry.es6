@@ -1,10 +1,6 @@
 import RethinkDb from 'rethinkdbdash';
 import semver from 'semver';
-// import fs from 'fs';
-// import zlib from 'zlib';
-// import tar from 'tar';
-// import path from 'path';
-
+import { JSONParser } from 'larch.lib';
 import { Service } from '../../lib/';
 
 const r = RethinkDb();
@@ -26,7 +22,6 @@ const Registry = {
 				.filter({name})
 				.then(result => resolve([widget, result]))
 				.catch(err => reject(err));
-			// .finally(() => r.getPool().drain());
 		});
 
 	},
@@ -79,7 +74,6 @@ const Registry = {
 				.insert(currentWidget, {conflict: 'replace'})
 				.then(result => resolve(result))
 				.catch(err => reject(err));
-			// .finally(() => r.getPool().drain());
 		});
 	},
 	postWidget(widget) {
