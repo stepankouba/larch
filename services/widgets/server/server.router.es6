@@ -14,7 +14,7 @@ export default [
 	{
 		path: '/widget',
 		httpMethod: 'POST',
-		requiresAuth: false,
+		requiresAuth: true,
 		middleware: [api.postWidget]
 	},
 	{

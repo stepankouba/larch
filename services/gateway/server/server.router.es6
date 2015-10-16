@@ -68,7 +68,7 @@ export default [
 			{
 				path: '/api/widget',
 				httpMethod: 'POST',
-				requiresAuth: false,
+				requiresAuth: true,
 				middleware: []
 			},
 			{
