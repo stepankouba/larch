@@ -48,6 +48,16 @@ export function save(fileName = FILE_NAME) {
 	};
 };
 
+/**
+ * simple load of configuration file
+ * @param  {[type]} fileName [description]
+ * @return {[type]}          [description]
+ */
+export function loadConfig(fileName) {
+	/*eslint no-sync:0*/
+	return JSON.parse(fs.readFileSync(fileName, 'utf-8'));
+}
+
 export function createGzip(dir) {
 	return new Promise((resolve, reject) => {
 		const gzip = zlib.createGzip();
