@@ -1,7 +1,8 @@
 import { LarchRegistry } from '../lib';
 import logger from './logger.es6';
 import express from 'express';
-import path from 'path';
+// import path from 'path';
+import { transform } from 'larch.lib';
 
 const test = {
 	subcommands: ['widget', 'source'],
@@ -41,15 +42,21 @@ const test = {
 		server.use(express.static(`${__dirname}`));
 
 		server.get('/', (req, res) => {
+			let rawData;
 			try {
 				widget = require(`${currentDir}/larch.package.json`);
-				widget.data = require(`${currentDir}/test.data.json`);
+				rawData = require(`${currentDir}/test.data.json`);
 			} catch (e) {
-				logger.error('larch.package.json was not found in this directory');
+				return logger.error('larch.package.json or test.data.json was not found in this directory');
 			}
 
 			// load index.es6 into version definition
 			widget.version = LarchRegistry.loadIndex(currentDir);
+			if (widget.version.transform) {
+				widget.data = transform(rawData, widget.version.transform.template, widget.version.transform.methods);
+			} else {
+				widget.data = rawData;
+			}
 
 			const html = `
 			<!doctype html>
