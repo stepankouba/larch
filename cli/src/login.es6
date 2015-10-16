@@ -1,18 +1,23 @@
 import { larchRead, LarchFS } from '../lib/';
 import questions from './login.questions.es6';
 import logger from './logger.es6';
+import restler from 'restler';
 
 // TODO: replace this with real login call, when user service is implemented
 function loginAPI(user) {
-	// let {username, password} = user;
+	const API_URL = 'https://localhost:9101/api';
+	const {username, password} = user;
 
-	// TODO: remove this somewhere, where it makes more sense. REGISTRY URL has to be configurable in .larchrc
-	const obj = {
-		registryURL: 'https://localhost:9205',
-		token: 1234567890
-	};
+	return new Promise((resolve, reject) => {
+		restler.get(`https://localhost:9101/api/user/login?username=${username}&password=${password}`)
+			.on('complete', (result, res) => {
+				if (result instanceof Error || res.statusCode > 399) {
+					return reject(`can not log in (reason: ${result.msg})`);
+				}
 
-	return Promise.resolve(obj);
+				return resolve({api: API_URL, token: result.token});
+			});
+	});
 }
 
 const login = {
@@ -32,7 +37,7 @@ const login = {
 
 		read()
 			.then(loginAPI)
-			.then(LarchFS.save('./larchrc.json'))
+			.then(LarchFS.save('./.larchrc'))
 			.catch(err => {
 				logger.error(err);
 				process.exit(1);
