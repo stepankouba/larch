@@ -6,12 +6,6 @@ const TYPE = 'chart-line';
 export function append(parentElement) {
 	const {width, height} = this.getDimensions();
 	const margin = this.margin;
-	const rawData = this.getData();
-	const data = [{key: 'Commits avg per week', area: true, values: []}];
-
-	rawData.forEach(d => {
-		data[0].values.push({x: d.week, y: Math.round(d.total / d.days.length * 100) / 100});
-	});
 
 	nv.addGraph(() => {
 		const chart = nv.models.lineChart()
@@ -48,7 +42,7 @@ export function append(parentElement) {
 			.attr('preserveAspectRatio', 'xMidYMid')
 			.append('g')
 			.attr('transform', `translate(${margin.left},${margin.top})`)
-			.datum(data)
+			.datum(this.getData())
 			.call(chart);
 
 		return chart;
