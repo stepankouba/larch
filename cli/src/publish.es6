@@ -1,4 +1,4 @@
-import { LarchRegistry } from '../lib/';
+import { LarchRegistry, LarchFS } from '../lib/';
 import logger from './logger.es6';
 import WidgetValidator from './publish.widget.validator.es6';
 
@@ -19,7 +19,6 @@ const publish = {
 	},
 
 	invoke(subcommand, args) {
-		// load json
 		let widget;
 		let rc;
 		const currentDir = process.cwd();
@@ -31,7 +30,10 @@ const publish = {
 		}
 
 		try {
-			rc = require(`${currentDir}/larchrc.json`);
+			rc = LarchFS.loadConfig(`${currentDir}/.larchrc`);
+			if (!rc.token) {
+				throw new Error('no token');
+			}
 		} catch (e) {
 			logger.error('user is not logged in. Use larch login command before larch publish');
 		}
@@ -44,7 +46,7 @@ const publish = {
 		// load index.es6 into version definition
 		widget.version = LarchRegistry.loadIndex(currentDir);
 
-		// perform checks on json
+		// // perform checks on json
 		LarchRegistry.testConf(widget, WidgetValidator, rc)
 			// .then(LarchRegistry.createGzip(currentDir))
 			.then(LarchRegistry.postToServer)
