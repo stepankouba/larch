@@ -15,6 +15,7 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 	// event handlers
 	Dashboards.on('dashboards.liked', () => updateHeader('dashboards.liked'));
 	Dashboards.on('dashboards.updated', () => updateHeader('dashboards.updated'));
+	Router.on('router.navigate', () => updateHeader('router.navigate'));
 
 	// by default display the header
 	updateHeader();
