@@ -1,9 +1,11 @@
 import * as LineChart from './linechart.es6';
 import * as PunchCard from './punchcard.es6';
+import * as PieChart from './piechart.es6';
 
 const TYPES = {
 	'chart-line': LineChart,
-	'punch-card': PunchCard
+	'punch-card': PunchCard,
+	'pie-chart': PieChart
 };
 
 const Chart = {
