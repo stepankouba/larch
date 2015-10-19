@@ -26,7 +26,7 @@ export function append(parentElement) {
 
 	const maxRadius = d3.max(data.map(d => d[2]));
 
-	const r = d3.scale.linear().domain([3, maxRadius]).range([0, 12]);
+	const r = d3.scale.linear().domain([0, maxRadius]).range([0, 12]);
 
 	const _svg = d3.select(parentElement)
 			.append('svg')
