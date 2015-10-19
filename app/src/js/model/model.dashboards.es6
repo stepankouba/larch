@@ -145,14 +145,14 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 		updateName([id, data]) {
 			logger.log(`udpating name for ${id}`, data);
 			const newName = data.name;
-			let sameName = false;
 
-			// check if name is already existing
-			Object.keys(DashboardsMdl.cache).forEach(k => {
-				sameName = DashboardsMdl.get(k).name === newName;
+			// check for the same name
+			const sameName = Object.keys(DashboardsMdl.cache).filter(k => {
+				const did = DashboardsMdl.get(k);
+				return (did.name === newName && did.id !== id);
 			});
 
-			if (sameName) {
+			if (sameName.length > 0) {
 				return DashboardsMdl.emit('dashboards.updated-name-not', 'SAME_NAME_EXISTS');
 			}
 
@@ -173,9 +173,9 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 
 			Object.keys(widgets).forEach(key => slots.splice(slots.indexOf(widgets[key].display.row), 1));
 
-			if (height > 0 && height < 150) {
+			if (height > 0 && height < 151) {
 				freeSlots = slots.filter(item => item === 1);
-			} else if (height > 0 && height > 149) {
+			} else if (height > 0 && height > 150) {
 				freeSlots = slots.filter(item => item !== 1);
 			}
 
