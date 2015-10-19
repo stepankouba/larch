@@ -6,11 +6,16 @@
 				<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
 
 				{{#if-eq this.id @root.route}}
-					<span class="desc">{{this.desc}}</span>
+					<span class="desc">{{max-char this.desc 30}}</span>
 				{{/if-eq}}
 			</li>
 		{{else}}
-			<li></li>
+			{{#random-text}}
+				<li>you're right... hate the world</li>
+				<li>love is like a bee...</li>
+				<li>to like or to hate?</li>
+				<li>shouldn't you like someone</li>
+			{{/random-text}}
 		{{/each-if}}
 	</ul>
 
@@ -21,11 +26,16 @@
 				<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
 
 				{{#if-eq this.id @root.route}}
-					<span class="desc">{{this.desc}}</span>
+					<span class="desc">{{max-char this.desc 30}}</span>
 				{{/if-eq}}
 			</li>
 		{{else}}
-			<li>does anybody like you?</li>
+			{{#random-text}}
+				<li>hey, are you talking to anyone?</li>
+				<li>does anybody like you?</li>
+				<li>hmm.... boy or girl?</li>
+				<li>no facebook? no twitter?</li>
+			{{/random-text}}
 		{{/each-if}}
 	</ul>
 
@@ -39,7 +49,7 @@
 					<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
 
 					{{#if-eq this.id @root.route}}
-						<span class="desc">{{this.desc}}</span>
+						<span class="desc">{{max-char this.desc 30}}</span>
 					{{/if-eq}}
 				</li>
 			{{/if}}

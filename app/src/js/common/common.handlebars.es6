@@ -17,6 +17,12 @@ Handlebars.registerHelper('lookup-property', (obj, settingName, options) => {
 	return new Handlebars.SafeString(obj[settingName] || '');
 });
 
+Handlebars.registerHelper('max-char', (text, max, options) => {
+	const len = text.length;
+	text = len > max ? `${text.substr(0, max)}...` : text;
+	return new Handlebars.SafeString(text);
+});
+
 Handlebars.registerHelper('get-position', (num, options) => {
 	const POSITIONS = ['TOP', 'MIDDLE', 'BOTTOM'];
 
@@ -77,6 +83,15 @@ Handlebars.registerHelper('each-if', function(list, key, condition, options) {
 	return result === '' ? options.inverse(this) : result;
 });
 
+Handlebars.registerHelper('random-text', options => {
+	const lines = options.fn(this).trim().split('\n');
+	const random = Math.floor(Math.random() * lines.length);
+
+	console.log(random, lines, lines[random - 1]);
+
+	return new Handlebars.SafeString(lines[random - 1]);
+});
+
 Handlebars.registerHelper('withHash', (list, key, options) => {
 	return options.fn(list[key]);
 });
@@ -102,15 +117,5 @@ Handlebars.registerHelper('middle-widgets-add-links', (list, options) => {
 
 	return result;
 });
-
-Handlebars.registerPartial('resultMsg', `
-	{{#if error}}
-		{{error}}
-	{{else if success}}
-		{{success}}
-	{{else}}
-		fdsfs
-	{{/if}}
-	`);
 
 export default Handlebars;
