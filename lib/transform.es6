@@ -50,7 +50,12 @@ function seekSingle(data, pathStr, result, key) {
 	// recognize path definition by first character
 	if (['$', '#', '@', '.'].indexOf(pathStr[0]) > -1) {
 		const seek = evaluate(data, pathStr, methods) || [];
-		result[key] = seek.length ? seek[0] : undefined;
+
+		if (Array.isArray(seek)) {
+			result[key] = seek.length > 1 ? seek : seek[0];
+		} else {
+			result[key] = undefined;
+		}
 	} else {
 		result[key] = pathStr;
 	}
@@ -101,5 +106,6 @@ export default function(data, path, m = {}) {
 		walk(data, path, result);
 	}
 
-	return result;
+	// this is in case, template was a pure string
+	return result['undefined'] ? result['undefined'] : result;
 };
