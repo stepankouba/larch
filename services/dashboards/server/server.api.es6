@@ -81,9 +81,9 @@ const api = {
 		r.db(conf.db.database)
 			.table('dashboards')
 			.get(id)
-			.update(ds)
+			.update(ds, {returnChanges: true})
 			.run()
-			.then(result => res.json({msg: 'updated'}))
+			.then(result => res.json(result.changes[0].new_val))
 			.catch(err => next(err));
 	},
 	saveDashboard(req, res, next) {
