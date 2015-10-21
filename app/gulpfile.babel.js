@@ -38,7 +38,8 @@ const paths = {
 		fonts: `${SRC_PATH}/fonts/*.*`,
 		images: `${SRC_PATH}/images/*.*`,
 		tests: './spec/**/*.es6',
-		bootstrap: `${NODE_MODULES_PATH}/bootstrap/dist/**/*.*`,
+		bootstrap: `${NODE_MODULES_PATH}/bootstrap/less/**/*.less`,
+		bootstrap_less: `${NODE_MODULES_PATH}/bootstrap/less/bootstrap.less`,
 		fontawesome: `${NODE_MODULES_PATH}/font-awesome/css/*.*`,
 		fontawesome_fonts: `${NODE_MODULES_PATH}/font-awesome/fonts/*.*`
 	}
@@ -110,9 +111,11 @@ gulp.task('less', () => {
 		.pipe(gulp.dest(paths.build.css));
 });
 
-gulp.task('bootstrap', () => {
-	return gulp.src(paths.src.bootstrap)
-		.pipe(gulp.dest(paths.build.bootstrap));
+gulp.task('bootstrap_less', () => {
+	return gulp.src(paths.src.bootstrap_less)
+		.pipe(less())
+		.pipe(concat('bootstrap.css'))
+		.pipe(gulp.dest(paths.build.css));
 });
 
 gulp.task('fontawesome', () => {
@@ -184,6 +187,7 @@ gulp.task('watch', () => {
 	gulp.watch([`${paths.src.js}/**/*.es6`], ['login', 'auth', 'app']);
 	gulp.watch([paths.src.charts], ['test-chart', 'app']);
 	gulp.watch([paths.src.less], ['less']);
+	gulp.watch([paths.src.bootstrap], ['bootstrap_less']);
 	gulp.watch([paths.src.fonts], ['assets']);
 	gulp.watch([paths.src.templates], ['templates', 'html']);
 	gulp.watch([paths.src.html], ['html']);
@@ -223,6 +227,6 @@ gulp.task('livereload', () => {
 		.pipe(connect.reload());
 });
 
-// gulp.task('production', ['app', 'login', 'auth', 'compress','less', 'html', 'templates', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
-gulp.task('build', ['templates', 'app', 'auth', 'login', 'test-chart', 'test', 'less', 'html', 'assets', 'images', 'bootstrap', 'fontawesome', 'fontawesome_fonts']);
+// gulp.task('production', ['app', 'login', 'auth', 'compress','less', 'bootstrap_less', 'html', 'templates', 'assets', 'images', 'fontawesome', 'fontawesome_fonts']);
+gulp.task('build', ['templates', 'app', 'auth', 'login', 'test-chart', 'test', 'less', 'bootstrap_less', 'html', 'assets', 'images', 'fontawesome', 'fontawesome_fonts']);
 gulp.task('default', ['build', 'webserver', 'livereload', 'watch']);
