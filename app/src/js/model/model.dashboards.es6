@@ -26,7 +26,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 		},
 		/**
 		 * get dashboard
-		 * @param  {String|Number} id Dashboard id if string, or position in cahce if Number
+		 * @param  {String|Number} 	id Dashboard id if string, or position in cahce if Number
 		 * @return {Object}    Dashboard object
 		 */
 		get(id) {
@@ -111,8 +111,6 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 			};
 		},
 		_update(id, data, eventName) {
-			const currentDashboard = DashboardsMdl.get(id);
-
 			logger.log('updating dashboard', id);
 
 			if (data.id || data.owner || data.layout) {
@@ -121,8 +119,8 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 
 			return DashboardSrvc.update(id, data)
 				.then(result => {
-					// copy updated values to the cache
-					Object.keys(data).forEach(key => currentDashboard[key] = data[key]);
+					// update dashboard in the cache
+					DashboardsMdl.cache[id] = result;
 					DashboardsMdl.emit(eventName, id);
 				})
 				.catch(err => {
@@ -211,6 +209,11 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 			});
 
 			DashboardsMdl._update(dashboardId, { widgets }, 'dashboards.updated-settings');
+		},
+		share([dashboardId, type, users = undefined]) {
+			logger.log(`sharing ${dashboardId} as ${type} for`, users);
+
+			DashboardsMdl._update(dashboardId, {shared: type}, 'dashboards.shared');
 		}
 	});
 
@@ -221,6 +224,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 	AppDispatcher.register('Dashboards', 'dashboards.remove', DashboardsMdl.remove);
 	AppDispatcher.register('Dashboards', 'dashboards.like', DashboardsMdl.like);
 	AppDispatcher.register('Dashboards', 'dashboards.update-name', DashboardsMdl.updateName);
+	AppDispatcher.register('Dashboards', 'dashboards.share', DashboardsMdl.share);
 	AppDispatcher.register('Dashboards', 'dashboards.settings', DashboardsMdl.setSettings);
 
 	return DashboardsMdl;
