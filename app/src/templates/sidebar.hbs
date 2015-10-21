@@ -3,7 +3,11 @@
 		<h6>I LIKE</h6>
 		{{#each-if dashboards "like" true}}
 			<li class="{{toggle-class this.id @root.route 'selected'}}">
-				<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
+				<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}
+					{{#if this.shared}}
+						<span class="shared" title="this view is shared with many happy people"><i class="fa fa-share-alt"></i></span>
+					{{/if}}
+				</a>
 
 				{{#if-eq this.id @root.route}}
 					<span class="desc">{{max-char this.desc 30}}</span>
@@ -20,8 +24,8 @@
 	</ul>
 
 	<ul class="sidebar-list">
-		<h6>SHARED</h6>
-		{{#each-if dashboards "shared" true}}
+		<h6>SHARED WITH ME</h6>
+		{{#each-if dashboards "fromShared" true}}
 			<li class="{{toggle-class this.id @root.route 'selected'}}">
 				<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
 
@@ -43,11 +47,14 @@
 	<ul class="sidebar-list">
 		<h6>THE OTHERS</h6>
 		{{#each-if dashboards "like" false}}
-			{{#if this.shared}}
+			{{#if this.fromShared}}
 			{{else}}
 				<li class="{{toggle-class this.id @root.route 'selected'}}">
-					<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
-
+					<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}
+						{{#if this.shared}}
+							<span class="shared" title="this view is shared with many happy people"><i class="fa fa-share-alt"></i></span>
+						{{/if}}
+					</a>
 					{{#if-eq this.id @root.route}}
 						<span class="desc">{{max-char this.desc 30}}</span>
 					{{/if-eq}}
