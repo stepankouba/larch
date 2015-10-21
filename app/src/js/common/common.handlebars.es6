@@ -5,8 +5,8 @@ const MAX_MIDDLE_WIDGETS = 3;
 // TODO: precompilation step into gulp should be added and only runtime should be include here
 // TODO: precompile all templates: http://handlebarsjs.com/precompilation.html
 
-Handlebars.registerHelper('toggle-class', (a, b, className, options) => {
-	const val = (a === b) ? className : '';
+Handlebars.registerHelper('toggle-class', (a, b, className, elseClassName = '', options) => {
+	const val = (a === b) ? className : elseClassName;
 
 	// options.data._parent.root.test = 'testing value';
 
