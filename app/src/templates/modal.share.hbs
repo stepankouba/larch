@@ -1,0 +1,68 @@
+<script id="ui.modal.share" type="text/x-handlebars-template">
+	<div class="modal larch-modal">
+		<div class="fullscreen-modal">
+			<div class="modal-close-button">
+				<a href="" class="close" data-on-click="close()"></a>
+			</div>
+			<div class="row">
+				<h3><i class="fa fa-share-alt"></i> share your view</h3>
+				<div class="row modal-options">
+					<div class="col-xs-8 col-xs-offset-2">
+						<div class="col-md-4 enabled {{toggle-class ds.shared 'public' 'selected'}}" id="modal-option-public" data-on-click="show('public')">
+							<h4>publicly</h4>
+							<p class="description">Share via <strong>publicly available link</strong>. Anyone will share the view.</p>
+						</div>
+
+						<div class="col-md-4 disabled">
+							<h4>privately</h4>
+							{{!-- <p>Share only with your team mates.</p> --}}
+							<p class="description"><br>AVAILABLE SOONER</p>
+						</div>
+
+						<div class="col-md-4 disabled last">
+							<h4>as template</h4>
+							{{!-- <p>Share with team mates to make their own views.</p> --}}
+							<p class="description"><br>AVAILABLE SOON</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			{{!-- <div class="row">
+				<h3>your view is publicly shared</h3>
+				<div class="row modal-options">
+					<div class="col-xs-8 col-xs-offset-2">
+						public link: https://www.dropbox.com/help/16
+					</div>
+					<button type="button" class="btn btn-danger">remove public sharing</button>
+				</div>
+
+			</div> --}}
+
+			<div id="modal-detail" class="row {{toggle-class ds.shared 'public' 'displayed' 'hidden'}}">
+				<div class="col-md-6 col-md-offset-3">
+					<form>
+						<div class="form-group">
+							<label class="control-label">refresh view</label>
+							<select class="form-control">
+							  <option value="60" selected>hourly</option>
+							  <option value="1440" disabled>daily</option>
+							  <option value="10080" disabled>weekly</option>
+							</select>
+						</div>
+						{{#if ds.shared}}
+							<button type="button" class="btn btn-danger" data-on-click="removeShared()">remove sharing</button>
+						{{else}}
+							<button type="button" class="btn btn-primary" data-on-click="sharePublic()">make my view public</button>
+						{{/if}}
+						{{#if @root.error}}
+							{{@root.error}}
+						{{/if}}
+						{{#if @root.updated}}
+							{{@root.updated}}
+						{{/if}}
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
