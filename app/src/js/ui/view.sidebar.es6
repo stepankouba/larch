@@ -12,6 +12,7 @@ const ctrl = function(Dashboards, Router, Modal, Logger) {
 	// display all dashboards when loaded
 	Dashboards.on('dashboards.updated', () => updateSidebar('dashboards.updated'));
 	Dashboards.on('dashboards.liked', () => updateSidebar('dashboards.liked'));
+	Dashboards.on('dashboards.shared', () => updateSidebar('dashboards.shared'));
 	Router.on('router.navigate', () => updateSidebar('router.navigate'));
 
 	// definition of methods available as event handlers
