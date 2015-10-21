@@ -61,6 +61,18 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 				})
 				.catch(err => logger.error(err));
 		},
+		shareDashboard(e) {
+			e.preventDefault();
+			logger.info('opening new share dashboard modal');
+
+			const m = Modal.create('share');
+
+			m.open()
+				.then(() => {
+					
+				})
+				.catch(err => logger.error(err));
+		},
 		removeDashboard(e) {
 			e.preventDefault();
 			logger.info('opening new dashboard modal');
