@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import { assign } from '../lib/lib.assign.es6';
 import AppDispatcher from '../larch.dispatcher.es6';
 import Cookies from '../lib/lib.cookies.es6';
+import Errors from '../larch.errors.es6';
 
 const UserMdlFn = function(UserSrvc, Logger) {
 	const logger = Logger.create('model.User');
@@ -24,9 +25,9 @@ const UserMdlFn = function(UserSrvc, Logger) {
 				})
 				.catch(err => {
 					if (err.statusCode === 401) {
-						UserMdl.emit('user.not-logged', 'WRONG_USERNAME_AND_PASS');
+						UserMdl.emit('user.logged-not', Errors.WRONG_USERNAME_AND_PASS);
 					} else {
-						UserMdl.emit('user.not-logged', 'ERROR');
+						UserMdl.emit('user.logged-not', Errors.LOGIN_ERR);
 					}
 				});
 		},
