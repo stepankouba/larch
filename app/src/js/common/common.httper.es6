@@ -48,6 +48,7 @@ const HTTPerFn = function(Logger) {
 								// unauthorized access to the API
 								// window.location = 'login.html';
 								logger.error(`unauthorized access to ${this.url}`);
+								this.reject({statusCode: 401, message: 'wrong username / password used'});
 							} else {
 								this.reject({
 									statusCode: this.xhr.status,
