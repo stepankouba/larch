@@ -37,6 +37,17 @@ const RouterFn = function(Logger) {
 
 			this.routes.set(route.id, route);
 		},
+		/**
+		 * get current Route property
+		 * @param  {String} prop property name
+		 * @return {*}      value of the property
+		 */
+		getCurrentProps(prop) {
+			return this.current && this.current.props ? this.current.props[prop] : undefined;
+		},
+		getCurrentId() {
+			return this.getCurrentProps('id');
+		},
 		navigate(url, emitEvent = true) {
 			let route;
 			let values;
