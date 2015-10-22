@@ -1,9 +1,7 @@
-import Cookies from './lib/lib.cookies.es6';
-
-const init = function(User, Dashboards, Router, Logger) {
+const init = function(User, Dashboards, Cookies, Router, Logger) {
 	const logger = Logger.create('app.init');
 
-	const token = Cookies.getItem('larch.token');
+	const token = Cookies.get('token');
 
 	if (!token) {
 		logger.log('token not found');
@@ -15,18 +13,23 @@ const init = function(User, Dashboards, Router, Logger) {
 	// implementation of Router.navigateToMain
 	Router.on('router.navigate-main', route => {
 		// handle home
-		const lastId = Cookies.getItem('larch.lastSeenId');
+		const lastId = Cookies.get('lastSeenId');
 
 		if (lastId && Dashboards.get(lastId)) {
 			Router.navigate(`/dashboard/${lastId}`);
 		} else if (Dashboards.hasAny()) {
 			Router.navigate(`/dashboard/${Dashboards.get(0).id}`);
+		} else {
+			// use has no dashboard at all
+			logger.log('here', Dashboards.hasAny(), lastId, Dashboards.get(lastId), Dashboards.cache);
 		}
 	});
 
-	// handle router navigatre - store last seen id
+	// handle router navigate - store last seen id
 	Router.on('router.navigate', route => {
-		Cookies.setItem('larch.lastSeenId', route.props.id);
+		if (route && route.props) {
+			Cookies.set('lastSeenId', route.props.id);
+		}
 	});
 
 	// check if the token is really for the user...
@@ -38,6 +41,6 @@ const init = function(User, Dashboards, Router, Logger) {
 				return Dashboards.getAll(User.current.username);
 			});
 };
-init.$injector = ['model.User', 'model.Dashboards', 'larch.Router', 'larch.Logger'];
+init.$injector = ['model.User', 'model.Dashboards', 'larch.Cookies', 'larch.Router', 'larch.Logger'];
 
 export default init;
