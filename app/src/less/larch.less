@@ -15,12 +15,34 @@ body {
 	position: relative;
 }
 
+h1, h2, h3, h4, h5, h6 {
+	text-align: center;
+	font-weight: 200;
+
+	.fa {
+		display: inline-block;
+		position: relative;
+		top: 3px;
+		left: -5px;
+		font-weight: 100;
+		color: @link-color;
+	}
+}
+
 #content-wrapper {
-	padding-top: 60px;
+	padding-top: 40px;
 	height: calc(~"100vh - 40px") ;
 	overflow-y: hidden;
 	top: 0;
 	min-width: @viewport-width !important;
+}
+
+.larch-loader {
+	margin-left: 10px;
+}
+
+.form-actions {
+	text-align: center;
 }
 
 .content { 
@@ -28,6 +50,10 @@ body {
 	overflow: scroll;
 }
 
-.centered {
-	border: 1px solid black;
+.hidden {
+	display: none;
+}
+
+.displayed {
+	display: block;
 }

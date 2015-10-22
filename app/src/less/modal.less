@@ -1,3 +1,93 @@
+@import 'variables.less';
+
+.fullscreen-modal {
+	background: -webkit-linear-gradient(left, 
+                rgba(255,255,255,0.1) 0%, 
+                rgba(255,255,255,1) 10%,
+                rgba(255,255,255,1) 90%,
+                rgba(255,255,255,0.1) 100%
+    );
+	position: fixed;
+	top: 50px;
+	left: 10%;
+	width: 85%;
+	height: 800px;
+	margin: 0 auto;
+	text-align: center;
+
+	.disabled {
+		color: grey;
+	}
+}
+
+
+.modal-options {
+	margin-top: 30px;
+	height: 7em;
+
+	.col-md-4 {
+		border-radius: 5px;
+
+		&:hover {
+			cursor: pointer;
+			background-color: @modal-selected-color;
+			border: none;
+			& > p {
+				display: block;	
+			}
+		}
+
+		&:not(.last) {
+			// border-width: 0 2px 0 0;
+			// border-image: url('../images/border.png') 0 2 0 0 repeat;
+			// border-image-outset: 0;
+		}
+	}
+
+	.selected {
+		background-color: @modal-selected-color;
+		border: none;
+	}
+}
+
+#modal-detail {
+	text-align: left;
+	margin-top: 15px;
+}
+
+.modal-close-button {
+
+	.close {
+		position: absolute;
+		right: 32px;
+		top: 32px;
+		width: 32px;
+		height: 32px;
+		opacity: 0.3;
+
+		&:hover {
+			color: @link-color;
+		}
+
+		&:before, &:after {
+			position: absolute;
+			left: 15px;
+			content: ' ';
+			height: 33px;
+			width: 2px;
+			background-color: #333;
+		}
+		
+		&:before {
+			transform: rotate(45deg);
+		}
+		&:after {
+			transform: rotate(-45deg);
+		}
+
+	}
+}
+
 .modal-header {
 	padding-bottom: 0px;
 	border-bottom: none;
@@ -13,30 +103,6 @@
 
 #tab-addwidget {
 	min-height: 200px;
-}
-
-// dragula css copied from npm repository
-.gu-mirror {
-	position: fixed !important;
-	margin: 0 !important;
-	z-index: 9999 !important;
-	opacity: 0.8;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
-	filter: alpha(opacity=80);
-}
-.gu-hide {
-	display: none !important;
-}
-.gu-unselectable {
-	-webkit-user-select: none !important;
-	-moz-user-select: none !important;
-	-ms-user-select: none !important;
-	user-select: none !important;
-}
-.gu-transit {
-	opacity: 0.2;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
-	filter: alpha(opacity=20);
 }
 
 #tab-widgets {
