@@ -46,7 +46,6 @@ const UserMdlFn = function(UserSrvc, Cookies, Logger) {
 			UserSrvc.logout()
 				.then(() => {
 					Cookies.remove('token');
-					// Cookies.removeItem('larch.lastSeenId');
 					window.location = 'login.html';
 				});
 		},
@@ -109,7 +108,6 @@ const UserMdlFn = function(UserSrvc, Cookies, Logger) {
 				.then(data => {
 					logger.log(data);
 					Cookies.set('token', data.token, {end: new Date(data.user.exp * 1000)});
-					Cookies.set('firstTime', 'yes');
 					UserMdl.emit('user.registered', data.user);
 				})
 				.catch(err => {
