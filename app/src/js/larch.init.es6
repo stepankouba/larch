@@ -13,7 +13,7 @@ const init = function(User, Dashboards, Cookies, Router, Logger) {
 	// implementation of Router.navigateToMain
 	Router.on('router.navigate-main', route => {
 		// handle home
-		const lastId = Cookies.get('lastSeenId');
+		const lastId = Dashboards.getLastSeenId();
 
 		if (lastId && Dashboards.get(lastId)) {
 			Router.navigate(`/dashboard/${lastId}`);
@@ -28,7 +28,7 @@ const init = function(User, Dashboards, Cookies, Router, Logger) {
 	// handle router navigate - store last seen id
 	Router.on('router.navigate', route => {
 		if (route && route.props) {
-			Cookies.set('lastSeenId', route.props.id);
+			Dashboards.setLastSeenId(route.props.id);
 		}
 	});
 
