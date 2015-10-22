@@ -169,7 +169,13 @@ const Auth = {
 					.insert(user, {returnChanges: true}),
 				r.error('existing user')
 			).run()
-				.then(result => resolve(result.changes[0].new_val))
+				.then(result => {
+					const user = result.changes[0].new_val;
+					delete user.login;
+					delete user.password;
+
+					return resolve(user);
+				})
 				.catch(err => reject(err));
 			// .finally(() => r.getPool().drain());
 		});
@@ -185,8 +191,7 @@ const Auth = {
 		const text = [
 			'User has been succesfully created',
 			'',
-			`Please use this hash: ${user.login.hashForConfirmation}`,
-			`or this link: https://larch.io/new?hash=${user.login.hashForConfirmation}`,
+			`You can start using the app immediatelly`,
 		].join('\n');
 
 		logger.info(text);
@@ -206,18 +211,18 @@ const Auth = {
 		const password = user.password;
 		delete user.password;
 
-		// set user not awailable for the app
-		user.available = false;
+		user.available = true;
 		user.login = {
 			salt: this.getSalt(),
 			iterations: this.getIterations(),
-			hashForConfirmation: crypto.randomBytes(25).toString('hex'),
-			hashValidity: Date.now() + HASH_VALIDITY
+			// hashForConfirmation: crypto.randomBytes(25).toString('hex'),
+			// hashValidity: Date.now() + HASH_VALIDITY
 		};
 
 		return this.hash([user, password])
 			.then(this._saveUser)
-			.then(this._sendEmail);
+			.then(this._sendEmail)
+			.then(this.createUserAndToken);
 	},
 	/**
 	 * check the password

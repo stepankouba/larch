@@ -120,30 +120,25 @@ const user = {
 	signin(req, res, next) {
 		// check posted values
 		const user = req.body;
-		if (!user.name || !user.username || !user.password) {
-			return next({responseCode: 400, msg: 'signin not properly called'});
+		if (!user.username || !user.password) {
+			return next({responseCode: 400, msg: 'MISSING_DATA'});
 		}
 
 		if (!isEmail(user.username)) {
-			return next({responseCode: 400, msg: 'username is not an email'});
+			return next({responseCode: 400, msg: 'INVALID_EMAIL'});
 		}
 
 		if (!Auth.isPassword(user.password)) {
-			return next({responseCode: 400, msg: 'wrong password set'});
+			return next({responseCode: 400, msg: 'INVALID_PASS'});
 		}
 
 		Auth.signin(user)
-			.then(result => {
-				delete user.password;
-				delete user.login;
-
-				return res.json({responseCode: 200, msg: 'user created', user});
-			})
+			.then(result => res.json(result))
 			.catch(err => {
 				if (err.message.startsWith('existing user')) {
-					return next({responseCode: 400, msg: 'existing user'});
+					return next({responseCode: 400, msg: 'EXISTING_USER'});
 				} else {
-					return next(err);
+					return next({responseCode: 400, msg: 'GENERAL_ERR'}, err);
 				}
 			});
 	},

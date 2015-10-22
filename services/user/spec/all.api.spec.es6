@@ -114,7 +114,7 @@ describe('(api) User service tests', () => {
 		});
 	});
 
-	describe('confirm new user with hash with error', () => {
+	xdescribe('confirm new user with hash with error', () => {
 		beforeEach(done => {
 			r = Request.create('GET', '/user/confirm?password=asdfasd&hash=4362e93e0703821eddab5d2200', conf);
 
@@ -127,7 +127,7 @@ describe('(api) User service tests', () => {
 		});
 	});
 
-	describe('confirm new user with hash without error', () => {
+	xdescribe('confirm new user with hash without error', () => {
 		beforeEach(done => {
 			r = Request.create('GET', '/user/confirm?password=test&hash=4362e93e0703821eddab5d220', conf);
 

@@ -37,6 +37,12 @@ export default [
 		middleware: [api.update]
 	},
 	{
+		path: '/user/register/',
+		httpMethod: 'POST',
+		requiresAuth: false,
+		middleware: [api.signin]
+	},
+	{
 		path: '/user/auth/:name',
 		httpMethod: 'GET',
 		requiresAuth: false,

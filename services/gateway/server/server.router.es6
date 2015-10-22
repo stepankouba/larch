@@ -35,7 +35,7 @@ export default [
 				middleware: []
 			},
 			{
-				path: '/api/user',
+				path: '/api/user/register/',
 				httpMethod: 'POST',
 				requiresAuth: false,
 				middleware: []
