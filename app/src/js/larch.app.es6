@@ -3,6 +3,7 @@ import Logger from './common/common.logger.es6';
 import HTTPer from './common/common.httper.es6';
 import Viewer from './common/common.viewer.es6';
 import Router from './common/common.router.es6';
+import Cookies from './common/common.cookies.es6';
 
 let logger;
 
@@ -25,6 +26,7 @@ const Larch = {
 
 			// include main deps
 			this.Injector.class('larch.Logger', Logger);
+			this.Injector.singleton('larch.Cookies', Cookies);
 			this.Injector.singleton('larch.HTTPer', HTTPer);
 			this.Injector.singleton('larch.Viewer', Viewer);
 			this.Injector.singleton('larch.Router', Router);
