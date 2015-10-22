@@ -11,7 +11,7 @@ const ctrl = function(User, Logger) {
 	});
 
 	User.on('user.registered-not', error => {
-		logger.log('error login', error);
+		logger.log('error register', error);
 
 		scope.error = Msg.get(error);
 
@@ -22,7 +22,8 @@ const ctrl = function(User, Logger) {
 
 	// definition of methods available as event handlers
 	this.methods = {
-		register() {
+		register(e) {
+			e.preventDefault();
 			const user = Form.getValues('register-form');
 
 			AppDispatcher.dispatch('user.register', user);
