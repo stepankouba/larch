@@ -10,6 +10,9 @@ const UserSrvc = function(HTTPer, Logger) {
 		},
 		logout() {
 			return HTTPer.get(`https://localhost:9101/api/user/current/logout`, {json: true});
+		},
+		register(user) {
+			return HTTPer.post(`https://localhost:9101/api/user/register`, user, {json: true});
 		}
 	};
 
