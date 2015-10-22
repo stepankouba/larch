@@ -192,7 +192,7 @@ const ViewerFn = function(HTTPer, Logger) {
 			obj.onlyOnRecompile = obj.onlyOnRecompile === undefined ? false : obj.onlyOnRecompile;
 
 			this.views.set(obj.id, obj);
-			logger.log('added view', obj);
+			logger.log(`added view ${obj.id}`);
 		}
 	};
 
