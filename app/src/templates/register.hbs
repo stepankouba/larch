@@ -1,14 +1,17 @@
 <script id="ui.register" type="text/x-handlebars-template">
     <h2>register</h2>
     {{#if error}}
-        <div class="alert alert-danger">{{error}}</div>
+        <div class="alert alert-danger">{{{error}}}</div>
     {{/if}}
     <form name="form" role="form" id="register-form">
         <div class="form-group">
-            <input type="text" placeholder="e-mail" data-model="username" class="form-control" required />
+            <input type="text" placeholder="e-mail" data-model="username" class="form-control" required value="stepan@anylarch.com"/>
         </div>
         <div class="form-group" >
-            <input type="password" placeholder="password" data-model="password" class="form-control" required />
+            <input type="password" placeholder="password" data-model="password" class="form-control" required value="12345Aa"/>
+        </div>
+        <div class="form-group" >
+            <input type="password" placeholder="confirm password" data-model="confirmPassword" class="form-control" required value="12345Aa" />
         </div>
         <div class="form-actions">
             <button class="btn btn-primary" data-on-click="register()">register</button>
