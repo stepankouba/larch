@@ -1,6 +1,4 @@
-import Cookies from '../lib/lib.cookies.es6';
-
-const HTTPerFn = function(Logger) {
+const HTTPerFn = function(Cookies, Logger) {
 	const logger = Logger.create('larch.HTTPer');
 
 	const HTTPClass = {
@@ -10,7 +8,7 @@ const HTTPerFn = function(Logger) {
 
 			h.xhr = new XMLHttpRequest();
 			h.conf = conf;
-			
+
 			return h;
 		},
 		prototype: {
@@ -21,7 +19,7 @@ const HTTPerFn = function(Logger) {
 			 * @param  {Function} reject  [description]
 			 */
 			open(url, resolve, reject) {
-				const token = Cookies.getItem('larch.token');
+				const token = Cookies.get('token');
 
 				this.url = url;
 				this.xhr.open(this.method, url, true);
@@ -140,7 +138,7 @@ const HTTPerFn = function(Logger) {
 	return HTTPer;
 };
 
-HTTPerFn.$injector = ['larch.Logger'];
+HTTPerFn.$injector = ['larch.Cookies', 'larch.Logger'];
 
 export default HTTPerFn;
 
