@@ -3,7 +3,7 @@ const ctrl = function(Dashboards, Router, Modal, Logger) {
 
 	const updateSidebar = eventName => {
 		logger.info(`${eventName} event received`);
-		this.scope.route = Router.current.props.id;
+		this.scope.route = Router.getCurrentId();
 		this.scope.dashboards = Dashboards.cache;
 
 		this.recompile();

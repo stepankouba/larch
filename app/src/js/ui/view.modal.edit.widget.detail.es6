@@ -2,19 +2,19 @@ import DragDrop from './dragdrop.es6';
 import Form from '../lib/lib.form.es6';
 import AppDispatcher from '../larch.dispatcher.es6';
 
-const ctrl = function(Router, Widgets, Dashboards, Logger) {
+const ctrl = function(Router, Widgets, Dashboards, User, Logger) {
 	const logger = Logger.create('ui.modal.edit.widget.detail');
 	const view = this;
 	const scope = this.scope;
 
 	function updateDetail() {
 		// display widgets for current dashboard
-		scope.dashboardId = Router.current.props.id;
+		scope.dashboardId = Router.getCurrentId();
 		scope.dashboard = Dashboards.get(scope.dashboardId);
 		scope.widgets = Widgets.getAllByIds(scope.dashboard.widgets);
 
 		// by default first widget is selected
-		scope.selectedWidgetId = scope.selectedWidgetId || Dashboards.getFirstWidgetId(Router.current.props.id);
+		scope.selectedWidgetId = scope.selectedWidgetId || Dashboards.getFirstWidgetId(Router.getCurrentId());
 		scope.selectedWidgetSettings = Widgets.getWidgetSettings(scope.dashboard.widgets[scope.selectedWidgetId]);
 		view.recompile();
 
@@ -39,16 +39,17 @@ const ctrl = function(Router, Widgets, Dashboards, Logger) {
 	});
 
 	this.methods = {
+		
 		showSettings(e, id) {
 			e.preventDefault();
 
 			logger.log('showing settings', scope);
-
+			scope.selectedWidgetId = id;
 			updateDetail();
 		},
 		saveChanges(e) {
 			const widgetId = scope.selectedWidgetId;
-			const dashboardId = Router.current.props.id;
+			const dashboardId = Router.getCurrentId();
 
 			const settings = Form.getValues('edit-widget-form');
 
@@ -58,7 +59,7 @@ const ctrl = function(Router, Widgets, Dashboards, Logger) {
 
 	updateDetail();
 };
-ctrl.$injector = ['larch.Router', 'model.Widgets', 'model.Dashboards', 'larch.Logger'];
+ctrl.$injector = ['larch.Router', 'model.Widgets', 'model.Dashboards', 'model.User','larch.Logger'];
 
 export default {
 	id: 'ui.modal.edit.widget.detail',

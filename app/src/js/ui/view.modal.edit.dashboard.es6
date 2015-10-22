@@ -26,7 +26,7 @@ const ctrl = function(Router, Dashboards, Logger) {
 
 			scope.ds = Form.getValues('edit-dashboard-form');
 
-			AppDispatcher.dispatch('dashboards.update-name', [Router.current.props.id, scope.ds]);
+			AppDispatcher.dispatch('dashboards.update-name', [Router.getCurrentId(), scope.ds]);
 		}
 	};
 

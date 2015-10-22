@@ -7,7 +7,7 @@ const ctrl = function(Dashboards, Router, Logger) {
 	const view = this;
 
 	function updateView(forceGet = false) {
-		scope.ds = Dashboards.get(Router.current.props.id);
+		scope.ds = Dashboards.get(Router.getCurrentId());
 		view.recompile();
 	}
 
@@ -31,12 +31,12 @@ const ctrl = function(Dashboards, Router, Logger) {
 	this.methods = {
 		removeShared(e) {
 			logger.log('remove sharing');
-			const dashboardId = Router.current.props.id;
+			const dashboardId = Router.getCurrentId();
 			AppDispatcher.dispatch('dashboards.share', [dashboardId, false]);
 		},
 		sharePublic(e) {
 			logger.log('sharing dashboard');
-			const dashboardId = Router.current.props.id;
+			const dashboardId = Router.getCurrentId();
 			AppDispatcher.dispatch('dashboards.share', [dashboardId, 'public']);
 		},
 		show(e, option) {
@@ -53,8 +53,7 @@ const ctrl = function(Dashboards, Router, Logger) {
 			if (e) {
 				e.preventDefault();
 			}
-
-			// Dashboards.emit('dashboards.updated', Router.current.props.id);
+			
 			scope.modal.hide();
 			scope.modal.resolve('modal closed');
 			delete scope.modal;

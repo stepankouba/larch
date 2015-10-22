@@ -5,7 +5,7 @@ const ctrl = function(Router, Widgets, Dashboards, Chart, Logger) {
 	const scope = this.scope;
 	const view = this;
 
-	function reloadDashboard(eventName, id = Router.current.props.id) {
+	function reloadDashboard(eventName, id = Router.getCurrentId()) {
 		logger.log(`${eventName} event received`);
 		// display widgets for current dashboard
 		scope.dashboard = Dashboards.get(id);

@@ -8,7 +8,7 @@ const ctrl = function(WidgetSrvc, Router, Dashboards, Logger) {
 	const input = document.getElementById(SEARCH_BOX);
 	const resultTemplate = Handlebars.compile(document.getElementById('ui.modal.edit.search.results').innerHTML);
 	const resultsEl = document.getElementById('result-list');
-	const dashboardId = Router.current.props.id;
+	const dashboardId = Router.getCurrentId();
 	const scope = this.scope;
 
 	/**

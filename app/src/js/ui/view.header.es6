@@ -6,9 +6,10 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 	const scope = this.scope;
 
 	function updateHeader() {
+		const routeId = Router.getCurrentId();
 		scope.user = User.current;
 		scope.hasDashboards = Dashboards.hasAny();
-		scope.hasLike = Dashboards.get(Router.current.props.id).like;
+		scope.hasLike = routeId ? Dashboards.get(routeId).like : undefined;
 		view.recompile();
 	}
 
@@ -69,7 +70,6 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 
 			m.open()
 				.then(() => {
-					
 				})
 				.catch(err => logger.error(err));
 		},
@@ -88,7 +88,7 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 		likeDashboard(e) {
 			e.preventDefault();
 
-			AppDispatcher.dispatch('dashboards.like', Router.current.props.id);
+			AppDispatcher.dispatch('dashboards.like', Router.getCurrentId());
 		},
 		logout(e) {
 			e.preventDefault();

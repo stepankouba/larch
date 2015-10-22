@@ -21,7 +21,7 @@ const ctrl = function(Dashboards, Router, Logger) {
 			e.preventDefault();
 
 			// dispatch save
-			AppDispatcher.dispatch('dashboards.remove', Router.current.props.id);
+			AppDispatcher.dispatch('dashboards.remove', Router.getCurrentId());
 		},
 		close(e) {
 			scope.modal.hide();
@@ -30,7 +30,7 @@ const ctrl = function(Dashboards, Router, Logger) {
 		}
 	};
 
-	scope.dashboard = Dashboards.get(Router.current.props.id);
+	scope.dashboard = Dashboards.get(Router.getCurrentId());
 	this.recompile();
 };
 ctrl.$injector = ['model.Dashboards', 'larch.Router','larch.Logger'];
