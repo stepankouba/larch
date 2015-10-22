@@ -22,7 +22,8 @@ const ctrl = function(User, Logger) {
 
 	// definition of methods available as event handlers
 	this.methods = {
-		login() {
+		login(e) {
+			e.preventDefault();
 			const user = Form.getValues('login-form');
 
 			AppDispatcher.dispatch('user.login', user);
