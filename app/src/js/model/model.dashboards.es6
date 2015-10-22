@@ -1,9 +1,8 @@
 import { EventEmitter } from 'events';
 import { assign } from '../lib/lib.assign.es6';
 import AppDispatcher from '../larch.dispatcher.es6';
-import Cookies from '../lib/lib.cookies.es6';
 
-const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
+const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 	const logger = Logger.create('model.Dashboards');
 
 	// define model
@@ -134,7 +133,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 					// remove from cache
 					DashboardsMdl.removeFromChache(id);
 					// remove cookie
-					Cookies.removeItem('larch.lastSeenId');
+					Cookies.remove('lastSeenId');
 					// emit event
 					DashboardsMdl.emit('dashboards.removed', id);
 				})
@@ -229,7 +228,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Logger) {
 
 	return DashboardsMdl;
 };
-DashboardsMdlFn.$injector = ['model.User', 'service.Dashboard', 'larch.Logger'];
+DashboardsMdlFn.$injector = ['model.User', 'service.Dashboard', 'larch.Cookies', 'larch.Logger'];
 
 export default {
 	name: 'model.Dashboards',
