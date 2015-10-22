@@ -174,9 +174,9 @@ const ViewerFn = function(HTTPer, Logger) {
 			if (template) {
 				return template;
 			} else {
-				const view = this.views.get(viewId);
+				// const view = this.views.get(viewId);
 				// TODO: this is wrong URL!!!!
-				logger.log('getting template', viewId, view);
+				logger.log(`getting template viewId`);
 
 				return document.getElementById(viewId).innerHTML;
 			}

@@ -87,8 +87,6 @@ Handlebars.registerHelper('random-text', options => {
 	const lines = options.fn(this).trim().split('\n');
 	const random = Math.floor(Math.random() * lines.length);
 
-	console.log(random, lines, lines[random]);
-
 	return new Handlebars.SafeString(lines[random]);
 });
 
