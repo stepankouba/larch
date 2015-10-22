@@ -133,7 +133,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 					// remove from cache
 					DashboardsMdl.removeFromChache(id);
 					// remove cookie
-					Cookies.remove('lastSeenId');
+					DashboardsMdl.removeLastSeenId();
 					// emit event
 					DashboardsMdl.emit('dashboards.removed', id);
 				})
@@ -213,6 +213,18 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 			logger.log(`sharing ${dashboardId} as ${type} for`, users);
 
 			DashboardsMdl._update(dashboardId, {shared: type}, 'dashboards.shared');
+		},
+		getLastSeenId() {
+			const username = User.current.username;
+			return Cookies.get(`${username}.lastSeenId`);
+		},
+		setLastSeenId(id) {
+			const username = User.current.username;
+			Cookies.set(`${username}.lastSeenId`, id);
+		},
+		removeLastSeenId() {
+			const username = User.current.username;
+			Cookies.remove(`${username}.lastSeenId`);
 		}
 	});
 
