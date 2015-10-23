@@ -17,10 +17,7 @@ const api = {
 			.filter({name})
 			.pluck('id', 'name', 'title', 'desc', 'settings')
 			.run()
-			.then(result => {
-				console.log(result);
-				res.json(result);
-			})
+			.then(result => res.json(result))
 			.catch(err => next(err));
 	},
 	getAllSources(req, res, next) {
