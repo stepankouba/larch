@@ -6,6 +6,8 @@ const LENGTH = 512;
 // twenty minutes
 const HASH_VALIDITY = 20 * 60 * 60;
 
+const r = RethinkDb();
+
 const Auth = {
 	/**
 	 * get user from DB by username
@@ -15,7 +17,6 @@ const Auth = {
 	 */
 	_getByName(username, pass) {
 		const conf = Service.instance.conf;
-		const r = RethinkDb();
 
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)
@@ -81,7 +82,6 @@ const Auth = {
 	createUserAndToken(user) {
 		const token = Service.Auth.createToken(user);
 		const conf = Service.instance.conf;
-		const r = RethinkDb();
 
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)
@@ -108,6 +108,19 @@ const Auth = {
 
 		});
 	},
+	_updateLastLogin(user) {
+		const conf = Service.instance.conf;
+
+		return new Promise((resolve, reject) => {
+			r.db(conf.db.database)
+				.table('users')
+				.get(user.id)
+				.update({lastLogin: new Date()})
+				.run()
+				.then(res => resolve(user))
+				.catch(err => reject(err));
+		});
+	},
 	/**
 	 * perform login operation
 	 * @param  {string} name username
@@ -118,6 +131,7 @@ const Auth = {
 		return this._getByName(name, pass)
 			.then(this.hash)
 			.then(this._checkPassword)
+			.then(this._updateLastLogin)
 			.then(this.createUserAndToken);
 	},
 	/**
@@ -128,7 +142,6 @@ const Auth = {
 	 */
 	logout(username, token) {
 		const conf = Service.instance.conf;
-		const r = RethinkDb();
 
 		console.log(username, token);
 
@@ -153,7 +166,6 @@ const Auth = {
 	_saveUser(data) {
 		const conf = Service.instance.conf;
 		const [user, password] = data;
-		const r = RethinkDb();
 
 		user.password = password;
 		user.createdAt = new Date();
@@ -218,6 +230,8 @@ const Auth = {
 			// hashForConfirmation: crypto.randomBytes(25).toString('hex'),
 			// hashValidity: Date.now() + HASH_VALIDITY
 		};
+		// store the information about help
+		user.showHelp = 'basic';
 
 		return this.hash([user, password])
 			.then(this._saveUser)
@@ -239,7 +253,6 @@ const Auth = {
 	},
 	_searchForHash(hash, password) {
 		const conf = Service.instance.conf;
-		const r = RethinkDb();
 
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)
@@ -266,7 +279,6 @@ const Auth = {
 	},
 	_updateAvailable(user) {
 		const conf = Service.instance.conf;
-		const r = RethinkDb();
 
 		return new Promise((resolve, reject) => {
 			r.db(conf.db.database)

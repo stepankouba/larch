@@ -23,7 +23,12 @@ const user = {
 			.table('users')
 			.get(user.id)
 			.run()
-			.then(user => res.json({user}))
+			.then(user => {
+				delete user.login;
+				delete user.password;
+
+				return res.json({user});
+			})
 			.catch(err => next(err));
 	},
 	/**
