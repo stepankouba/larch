@@ -93,7 +93,7 @@ export default [
 			{
 				path: '/api/data/:widgetId',
 				httpMethod: 'POST',
-				requiresAuth: true,
+				requiresAuth: false,
 				middleware: []
 			}
 		]
