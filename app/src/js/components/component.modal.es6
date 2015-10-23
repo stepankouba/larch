@@ -35,6 +35,8 @@ const ModalFn = function(Viewer, Logger) {
 				return new Promise((resolve, reject) => {
 					this.resolve = resolve;
 					this.reject = reject;
+
+					this._run(resolve, reject);
 				});
 			},
 			_toggleClassOnId(id, className) {
@@ -70,12 +72,23 @@ const ModalFn = function(Viewer, Logger) {
 					this.hide();
 					resolve('yeah');
 				});
+
+				// default modal esc keyup handler
+				const keyHandler = e => {
+					if (e.keyCode === 27) {
+						e.preventDefault();
+						this.hide();
+						document.removeEventListener('keyup', keyHandler);
+						return reject('modal closed by keyboard');
+					}
+				};
+				document.addEventListener('keyup', keyHandler);
 			},
 			/**
 			 * add event listeners required by modal component to the modal elements
 			 * @param {string} selector css3 selector of element
 			 * @param {string} type     event name
-			 * @param {Function} handler 
+			 * @param {Function} handler
 			 */
 			_addEventListeners(selector, type, handler) {
 				const els = this.element.querySelectorAll(selector);
