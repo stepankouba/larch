@@ -1,44 +1,8 @@
 // import { Service } from '../../lib/';
-import OAuth from 'oauth';
-import https from 'https';
 import { transform, JSONParser } from 'larch.lib';
 import Path from './server.path.es6';
 
 const api = {
-	_getSource(name) {
-		const options = {
-			hostname: 'localhost',
-			port: 9101,
-			path: `/api/source/${name}`,
-			rejectUnauthorized: false,
-			method: 'GET'
-		};
-
-		return new Promise((resolve, reject) => {
-			const req = https.request(options, res => {
-				if (res.statusCode !== 200) {
-					return reject(res);
-				}
-
-				res.on('data', data => resolve(JSON.parse(data)));
-			});
-
-			req.end();
-			req.on('error', err => reject(err));
-		});
-	},
-	_createOAuth(source) {
-		const oauth = new OAuth.OAuth2(
-			source.clientId,
-			source.clientSecret,
-			source.baseUrl,
-			source.authorizePath,
-			source.accessTokenPath,
-			source.customHeaders
-		);
-
-		return Promise.resolve(oauth);
-	},
 	/**
 	 * [_performRequests description]
 	 * @param  {Object} widget            [description]
@@ -47,9 +11,7 @@ const api = {
 	 * @return {[type]}                   [description]
 	 */
 	_performRequests(widget, token, strFormatSettings) {
-		return function _performRequests(oauth) {
-			return Path.perform(widget, token, oauth, strFormatSettings);
-		};
+		return Path.perform(widget, token, strFormatSettings);
 	},
 	_transformData(widget) {
 		return function _transformData(data) {
@@ -79,9 +41,7 @@ const api = {
 			return next({responseCode: 404, msg: 'widget id or settings is missing in the call'});
 		}
 
-		api._getSource(widget.version.source.name)
-			.then(api._createOAuth)
-			.then(api._performRequests(widget, token, { settings: req.body.settings }))
+		api._performRequests(widget, token, { settings: req.body.settings })
 			.then(api._transformData(widget))
 			.then(data => res.json(data))
 			.catch(err => next(err));
