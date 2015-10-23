@@ -1,5 +1,6 @@
 import strformat from 'strformat';
 import { transform } from 'larch.lib';
+import restler from 'restler';
 
 const Path = {
 	/**
@@ -18,11 +19,10 @@ const Path = {
 	 * [_resolveRequest description]
 	 * @param  {Object} request      containing info about request from widget
 	 * @param  {[type]} baseUrl      [description]
-	 * @param  {[type]} oauth        [description]
 	 * @param  {[type]} pathSettings [description]
 	 * @return {[type]}              [description]
 	 */
-	_resolveRequest(request, token, baseUrl, oauth, pathSettings) {
+	_resolveRequest(request, token, baseUrl, pathSettings) {
 		return function _resolveRequest(response) {
 			return new Promise((resolve, reject) => {
 				// do not allow path as array
@@ -49,23 +49,22 @@ const Path = {
 
 				let url = (pathType === 'string') ? `${baseUrl}${request.path}` : request.path.url;
 				url = strformat(url, settings);
-
+				console.log('request', url, token);
 				// do request
-				oauth[method](`${url}`, token, (err, result, response) => {
-					if (err) {
-						return reject(err);
+				restler[method](`${url}`, {
+					headers: {
+						'Authorization': `token ${token}`
 					}
-
-					return resolve(JSON.parse(result));
-				});
+				})	.on('success', (data, res) => resolve(data))
+					.on('fail', (data, res) => reject(data));
 			});
 		};
 	},
-	perform(widget, token, oauth, pathSettings) {
+	perform(widget, token, pathSettings) {
 		const r = Path._checkRequests(widget.version.server.requests);
 		const baseUrl = widget.version.source.url;
 
-		return r.reduce((p, request) => p.then(Path._resolveRequest(request, token, baseUrl, oauth, pathSettings)),
+		return r.reduce((p, request) => p.then(Path._resolveRequest(request, token, baseUrl, pathSettings)),
 			Promise.resolve(undefined));
 	}
 };
