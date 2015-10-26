@@ -95,6 +95,12 @@ export default [
 				httpMethod: 'POST',
 				requiresAuth: false,
 				middleware: []
+			},
+			{
+				path: '/api/data/public/:dashboardId/:widgetId',
+				httpMethod: 'GET',
+				requiresAuth: false,
+				middleware: []
 			}
 		]
 	},
@@ -105,6 +111,12 @@ export default [
 		routes: [
 			{
 				path: '/api/dashboard/:id',
+				httpMethod: 'GET',
+				requiresAuth: true,
+				middleware: []
+			},
+			{
+				path: '/api/dashboard/public/:id',
 				httpMethod: 'GET',
 				requiresAuth: false,
 				middleware: []
@@ -129,6 +141,12 @@ export default [
 			},
 			{
 				path: '/api/dashboard/',
+				httpMethod: 'POST',
+				requiresAuth: true,
+				middleware: []
+			},
+			{
+				path: '/api/dashboard/shared',
 				httpMethod: 'POST',
 				requiresAuth: true,
 				middleware: []
