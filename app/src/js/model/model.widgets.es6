@@ -22,7 +22,7 @@ const WidgetsMdlFn = function(User, WidgetSrvc, DataSrvc, Logger) {
 			Object.keys(dashboard.widgets).forEach(key => {
 				const w = dashboard.widgets[key];
 
-				WidgetMdl.get([key, w])
+				WidgetMdl.get([key, w, dashboard])
 					.catch(err => {
 						logger.error(err);
 					});
@@ -49,9 +49,10 @@ const WidgetsMdlFn = function(User, WidgetSrvc, DataSrvc, Logger) {
 		 * get widgets
 		 * @param  {string} id widget id
 		 * @param  {Object} wi widget instance settings
+		 * @param  {Object} dashboard dashboard object
 		 * @return {Promise}
 		 */
-		get([id, wi]) {
+		get([id, wi, dashboard]) {
 			let widget;
 
 			logger.log(`loading widget ${id}`);
@@ -68,7 +69,7 @@ const WidgetsMdlFn = function(User, WidgetSrvc, DataSrvc, Logger) {
 					// cache the widget
 					WidgetMdl.cache[widget.id] = widget;
 
-					return WidgetMdl.getData(widget, wi);
+					return WidgetMdl.getData(widget, wi, dashboard);
 				})
 				.then(data => {
 					WidgetMdl.cache[widget.id].data = data;
@@ -79,11 +80,16 @@ const WidgetsMdlFn = function(User, WidgetSrvc, DataSrvc, Logger) {
 					WidgetMdl.emit('widgets.data-loaded-not', err);
 				});
 		},
-		getData(widget, widgetInstance) {
+		getData(widget, widgetInstance, dashboard) {
 			// get data if needed
 			if (widgetInstance.settings) {
-				return DataSrvc.getData(widget, widgetInstance.settings,
-					User.getSourceSetting(widget.version.source.name));
+				// in case of from shared ds
+				if (dashboard.originId) {
+					return DataSrvc.getPublicData(dashboard.id, widget.id);
+				} else {
+					return DataSrvc.getData(widget, widgetInstance.settings,
+						User.getSourceSetting(widget.version.source.name));
+				}
 			}
 
 			return Promise.resolve(widget);

@@ -12,6 +12,9 @@ const DataSrvc = function(HTTPer, Logger) {
 			};
 
 			return HTTPer.post(`https://localhost:9101/api/data/${widget.id}`, postData, {json: true});
+		},
+		getPublicData(dashboardId, widgetId) {
+			return HTTPer.get(`https://localhost:9101/api/data/public/${dashboardId}/${widgetId}`, {json: true});
 		}
 	};
 
