@@ -8,18 +8,18 @@
 				<h3><i class="fa fa-share-alt"></i> share your view</h3>
 				<div class="row modal-options">
 					<div class="col-xs-8 col-xs-offset-2">
-						<div class="col-md-4 enabled {{toggle-class ds.shared 'public' 'selected'}}" id="modal-option-public" data-on-click="show('public')">
+						<div class="col-md-4 modal-option enabled {{toggle-class ds.shared 'public' 'selected'}}" id="modal-option-public" data-on-click="show('public')">
 							<h4>publicly</h4>
-							<p class="description">Share via <strong>publicly available link</strong>. Anyone will share the view.</p>
+							<p class="description">Share via <strong>publicly available link</strong>. Anyone will be able to see the view.</p>
 						</div>
 
-						<div class="col-md-4 disabled">
+						<div class="col-md-4 modal-option disabled">
 							<h4>privately</h4>
 							{{!-- <p>Share only with your team mates.</p> --}}
 							<p class="description"><br>AVAILABLE SOONER</p>
 						</div>
 
-						<div class="col-md-4 disabled last">
+						<div class="col-md-4 modal-option disabled last">
 							<h4>as template</h4>
 							{{!-- <p>Share with team mates to make their own views.</p> --}}
 							<p class="description"><br>AVAILABLE SOON</p>
@@ -38,27 +38,19 @@
 
 			</div> --}}
 
-			<div id="modal-detail" class="row {{toggle-class ds.shared 'public' 'displayed' 'hidden'}}">
+			<div id="modal-detail-public" class="modal-detail row {{toggle-class ds.shared 'public' 'displayed' 'hidden'}}">
 				<div class="col-md-6 col-md-offset-3">
+					<div class="alert hidden">
+						<!-- errors -->
+					</div>
 					<form>
-						<div class="form-group">
-							<label class="control-label">refresh view</label>
-							<select class="form-control">
-							  <option value="60" selected>hourly</option>
-							  <option value="1440" disabled>daily</option>
-							  <option value="10080" disabled>weekly</option>
-							</select>
-						</div>
 						{{#if ds.shared}}
+							<p>Your view is available to anyone at this URL:<br>
+							<a href="https://anylarch.com/public/{{ds.id}}" target="_blank">https://anylarch.com/public/{{ds.id}}</a></p>
 							<button type="button" class="btn btn-danger" data-on-click="removeShared()">remove sharing</button>
 						{{else}}
+							<p>Immediatelly, after sharing the view, your view will be hourly updated to provide other users the latest data.</p>
 							<button type="button" class="btn btn-primary" data-on-click="sharePublic()">make my view public</button>
-						{{/if}}
-						{{#if @root.error}}
-							{{@root.error}}
-						{{/if}}
-						{{#if @root.updated}}
-							{{@root.updated}}
 						{{/if}}
 					</form>
 				</div>
