@@ -12,24 +12,55 @@
 		<div class="col-xs-4">
 			<ul class="nav navbar-nav">
 				<li><a class="navbar-nav-link" href="" data-on-click="newDashboard()">new view</a></li>
+				<li>
+					{{#if hasDashboards}}
+						{{#unless isFromShared}}
+							<a class="navbar-nav-link" href="" data-on-click="newDashboard()">edit</a>
+						{{/unless}}
+					{{/if}}
+				</li>
 			</ul>
 		</div>
 
 		<div class="col-xs-4 navbar-centered">
 			<ul class="nav navbar-nav">
-				<li>{{#if hasDashboards}}<a class="navbar-nav-link" href="" data-on-click="removeDashboard()">remove</a>{{/if}}</li>
-				<li>{{#if hasDashboards}}<a class="navbar-nav-link" href="" data-on-click="removeDashboard()">share</a>{{/if}}</li>
-				<li>{{#if hasDashboards}}<a class="navbar-nav-link" href="" data-on-click="openEdit()">edit</a>{{/if}}</li>
-				<li>{{#if hasDashboards}}<a class="navbar-nav-link" href="" data-on-click="likeDashboard()">
-						{{#if hasLike}}hate{{else}}like{{/if}}</a>
-					{{/if}}</li>
+				<li>
+					{{#if hasDashboards}}
+						{{#unless isFromShared}}
+							<a class="navbar-nav-link" href="" data-on-click="shareDashboard()">share</a>
+						{{/unless}}
+					{{/if}}
+				</li>
+				<li>
+					{{#if hasDashboards}}
+						{{#unless isFromShared}}
+							<a class="navbar-nav-link" href="" data-on-click="openEdit()">widgets</a>
+						{{/unless}}
+					{{/if}}
+				</li>
+				<li>
+					{{#if hasDashboards}}
+						{{#unless isFromShared}}
+							<a class="navbar-nav-link" href="" data-on-click="likeDashboard()">
+								{{#if hasLike}}hate{{else}} like{{/if}}
+							</a>
+						{{/unless}}
+					{{/if}}
+				</li>
+				<li>
+					{{#if hasDashboards}}
+						{{#unless isFromShared}}
+							<a class="navbar-nav-link" href="" data-on-click="removeDashboard()">remove</a>
+						{{/unless}}
+					{{/if}}
+				</li>
 			</ul>
 		</div>
 
 		<div class="col-xs-4">
 			<ul class="nav navbar-nav navbar-right">
 				<li><a class="navbar-nav-link" href="" data-on-click="logout()">logout</a></li>
-				<li><a class="navbar-nav-link" href="#">{{user.username}}</a></li>
+				<li><a class="navbar-nav-link" href="#">{{max-char user.username 30 '...'}}</a></li>
 			</ul>
 		</div>
 	</div>
