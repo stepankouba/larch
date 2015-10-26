@@ -14,6 +14,10 @@ const DashSrvc = function(HTTPer, Logger) {
 			logger.log(`request POST to /api/dashboard/ sent`);
 			return HTTPer.post(`https://localhost:9101/api/dashboard/`, obj, {json: true});
 		},
+		saveFromShared(url) {
+			logger.log(`request POST to /api/dashboard/shared sent`);
+			return HTTPer.post(`https://localhost:9101/api/dashboard/shared/`, {url}, {json: true});
+		},
 		remove(id) {
 			logger.log(`request DELETE to /api/dashboard/${id} sent`);
 			return HTTPer.delete(`https://localhost:9101/api/dashboard/${id}`, {json: true});
