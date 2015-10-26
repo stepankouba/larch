@@ -3,7 +3,8 @@ import Msg from '../larch.messages.es6';
 const Form = {
 	validate(value, name) {
 		const Validators = {
-			'public-url': /^https:\/\/anylarch.com\/public\/(.*)$/
+			'public-url': /^https:\/\/anylarch.com\/public\/(.*)$/,
+			'dashboard-description': /.*/
 		};
 
 		if (Validators[name]) {
@@ -46,17 +47,24 @@ const Form = {
 			const validator = field.getAttribute('data-validate');
 			const err = field.getAttribute('data-error');
 
-			if (!value) {
-				field.parentNode.classList.add('has-error');
-				result.push(err);
+			// if validator check it
+			if (validator) {
+				if (!Form.validate(value, validator)) {
+					field.parentNode.classList.add('has-error');
+					result.push(err);
+				} else {
+					field.parentNode.classList.remove('has-error');
+				}
 			} else {
-				if (validator && !Form.validate(value, validator)) {
+				if (!value) {
 					field.parentNode.classList.add('has-error');
 					result.push(err);
 				} else {
 					field.parentNode.classList.remove('has-error');
 				}
 			}
+
+			// if not, empty
 		});
 
 		return result.length ? result : undefined;
