@@ -24,7 +24,8 @@ const api = {
 						.table('dashboards')
 						.getAll(id)
 					.eqJoin('originId', r.db(conf.db.database).table('dashboards'))
-					.without({right: 'id'})
+					// here we need to remove props, that are defined by the new DS (not the origin one)
+					.without({right: 'id'}, {right: 'owner'}, {right: 'like'})
 					.zip(),
 				r.db(conf.db.database)
 						.table('dashboards')
@@ -76,7 +77,7 @@ const api = {
 					.table('dashboards')
 					.filter({owner: user})
 					.eqJoin('originId', r.db(conf.db.database).table('dashboards'))
-					.without({right: 'id'})
+					.without({right: 'id'}, {right: 'owner'}, {right: 'like'})
 					.zip()
 			).run()
 			.then(dashboards => res.json(dashboards))
@@ -121,9 +122,34 @@ const api = {
 		r.db(conf.db.database)
 			.table('dashboards')
 			.get(id)
-			.update(ds, {returnChanges: true})
+			// using return changes always, so that even when no changes done, changes are sent back
+			.update(ds, {returnChanges: 'always'})
 			.run()
 			.then(result => res.json(result.changes[0].new_val))
+			.catch(err => next(err));
+	},
+	removeSharing(req, res, next) {
+		const conf = Service.instance.conf;
+		const id = req.params.id;
+
+		if (!id) {
+			return next({responseCode: 404, msg: 'UPDATE_MISSING_ID_ERR'});
+		}
+
+		r.db(conf.db.database)
+			.table('dashboards')
+			.get(id)
+			.update({shared: false}, {returnChanges: true})
+			.run()
+			.then(result => {
+				r.db(conf.db.database)
+					.table('dashboards')
+					.filter({originId: id})
+					.update({originId: false})
+					.run()
+					.then(data => res.json(result.changes[0].new_val))
+					.catch(err => next(err));
+			})
 			.catch(err => next(err));
 	},
 	saveFromShared(req, res, next) {
@@ -143,23 +169,38 @@ const api = {
 			.table('dashboards')
 			.get(originId)
 			.run()
-			.then(originDS => {
-				if (!originDS || originDS.shared === false) {
+			.then(originDs => {
+				// firstly check originDS
+				if (!originDs || originDs.shared === false) {
 					return next({responseCode: 404, msg: 'INVALID_PUBLIC_ID_ERR'});
 				}
 
 				const ds = {
-					originId: originDS.id,
+					originId,
 					owner: req.user.username,
 					fromShared: true
 				};
 
+				// create new DS
 				r.db(conf.db.database)
 					.table('dashboards')
 					.insert(ds, {returnChanges: true})
 					.run()
-					.then(result => res.json({responseCode: 200, msg: 'GENERAL_RESULT_OK', data: result}))
-					.catch(err => next(err));
+					.then(result => {
+						const newId = result.changes[0].new_val.id;
+						// we need to return merge of originDs and ds to the front end
+						result.changes[0].new_val = Object.assign(result.changes[0].new_val, originDs);
+						result.changes[0].new_val.id = newId;
+
+						res.json({responseCode: 200, msg: 'GENERAL_RESULT_OK', data: result});
+					})
+					.catch(err => {
+						if (/SAME_NAME_EXISTS/g.test(err)) {
+							return next({responseCode: 409, msg: 'SAME_NAME_EXISTS_ERR'});
+						} else {
+							return next(err);
+						}
+					});
 			})
 			.catch(err => next(err));
 	},
@@ -224,7 +265,6 @@ const api = {
 					return next(err);
 				}
 			});
-			// .finally(() => r.getPool().drain());
 	}
 };
 
