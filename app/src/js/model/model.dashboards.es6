@@ -66,21 +66,36 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 
 			DashboardSrvc.save(newDS)
 				.then(result => {
-					const newId = result.data.generated_keys[0];
-					// append new id to the dashboard
-					newDS.id = newId;
+					const newDS = result.data.changes[0].new_val;
 
-					DashboardsMdl.cache[newId] = newDS;
-					DashboardsMdl.emit('dashboards.created', newId);
+					DashboardsMdl.cache[newDS.id] = newDS;
+					DashboardsMdl.emit('dashboards.created', newDS.id);
 				})
 				.catch(err => {
 					logger.error(err);
 					if (err.data && err.data.msg === 'SAME_NAME_EXISTS') {
-						DashboardsMdl.emit('dashboards.created-not', 'SAME_NAME_EXISTS');
+						DashboardsMdl.emit('dashboards.created-not', 'SAME_NAME_EXISTS_ERR');
 					} else {
-						DashboardsMdl.emit('dashboards.created-not', 'OTHER_ERROR');
+						DashboardsMdl.emit('dashboards.created-not', 'CREATE_ERR');
 					}
 				});
+		},
+		createFromShared(url) {
+			logger.log('createing new dashboard from shared', url);
+
+			// get id from public url
+			DashboardSrvc.saveFromShared(url)
+				.then(result => {
+					const newDS = result.data.changes[0].new_val;
+
+					DashboardsMdl.cache[newDS.id] = newDS;
+					DashboardsMdl.emit('dashboards.created', newDS.id);
+				})
+				.catch(err => {
+					logger.error(err);
+					DashboardsMdl.emit('dashboards.created-not', 'CREATE_ERR');
+				});
+			// send request to the db
 		},
 		/**
 		 * Add widget to the current dashboard
@@ -113,7 +128,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 			logger.log('updating dashboard', id);
 
 			if (data.id || data.owner || data.layout) {
-				return DashboardsMdl.emit('dashboards.not-updated', 'UPDATE_FIELDS_NOT_ALLOWED_TO');
+				return DashboardsMdl.emit('dashboards.not-updated', 'UPDATE_FIELDS_NOT_ALLOWED_ERR');
 			}
 
 			return DashboardSrvc.update(id, data)
@@ -150,7 +165,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 			});
 
 			if (sameName.length > 0) {
-				return DashboardsMdl.emit('dashboards.updated-name-not', 'SAME_NAME_EXISTS');
+				return DashboardsMdl.emit('dashboards.updated-name-not', 'SAME_NAME_EXISTS_ERR');
 			}
 
 			DashboardsMdl._update(id, data, 'dashboards.updated-name');
@@ -232,6 +247,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 	AppDispatcher.register('Dashboards', 'dashboards.getAll', DashboardsMdl.getAll);
 	AppDispatcher.register('Dashboards', 'dashboards.addWidget', DashboardsMdl.addWidget);
 	AppDispatcher.register('Dashboards', 'dashboards.create', DashboardsMdl.create);
+	AppDispatcher.register('Dashboards', 'dashboards.create-from', DashboardsMdl.createFromShared);
 	AppDispatcher.register('Dashboards', 'dashboards.remove', DashboardsMdl.remove);
 	AppDispatcher.register('Dashboards', 'dashboards.like', DashboardsMdl.like);
 	AppDispatcher.register('Dashboards', 'dashboards.update-name', DashboardsMdl.updateName);
