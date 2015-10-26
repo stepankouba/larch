@@ -46,5 +46,11 @@ export default [
 		httpMethod: 'PUT',
 		requiresAuth: true,
 		middleware: [api.updateDashboard]
+	},
+	{
+		path: '/dashboard/:id/unshare',
+		httpMethod: 'PUT',
+		requiresAuth: true,
+		middleware: [api.removeSharing]
 	}
 ];

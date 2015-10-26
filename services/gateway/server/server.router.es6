@@ -150,6 +150,12 @@ export default [
 				httpMethod: 'POST',
 				requiresAuth: true,
 				middleware: []
+			},
+			{
+				path: '/api/dashboard/:id/unshare',
+				httpMethod: 'PUT',
+				requiresAuth: true,
+				middleware: []
 			}
 		]
 	},
