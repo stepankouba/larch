@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import { assign } from '../lib/lib.assign.es6';
 import AppDispatcher from '../larch.dispatcher.es6';
-import Errors from '../larch.errors.es6';
 
 const UserMdlFn = function(UserSrvc, Cookies, Logger) {
 	const logger = Logger.create('model.User');
@@ -24,9 +23,9 @@ const UserMdlFn = function(UserSrvc, Cookies, Logger) {
 				})
 				.catch(err => {
 					if (err.statusCode === 401) {
-						UserMdl.emit('user.logged-not', Errors.WRONG_USERNAME_AND_PASS);
+						UserMdl.emit('user.logged-not', 'WRONG_USERNAME_AND_PASS_ERR');
 					} else {
-						UserMdl.emit('user.logged-not', Errors.LOGIN_ERR);
+						UserMdl.emit('user.logged-not', 'LOGIN_ERR');
 					}
 				});
 		},
@@ -87,19 +86,19 @@ const UserMdlFn = function(UserSrvc, Cookies, Logger) {
 		register(user) {
 			const re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
 			if (!user.username || !user.password) {
-				return UserMdl.emit('user.registered-not', Errors.REGISTER_MISSING_DATA);
+				return UserMdl.emit('user.registered-not', 'REGISTER_MISSING_DATA_ERR');
 			}
 
 			if (!re.test(user.username)) {
-				return UserMdl.emit('user.registered-not', Errors.INVALID_EMAIL);
+				return UserMdl.emit('user.registered-not', 'INVALID_EMAIL_ERR');
 			}
 
 			if (user.password !== user.confirmPassword) {
-				return UserMdl.emit('user.registered-not', Errors.REGISTER_CONFIRM_PASS);
+				return UserMdl.emit('user.registered-not', 'REGISTER_CONFIRM_PASS_ERR');
 			}
 
 			if (!UserMdl.isPassword(user.password)) {
-				return UserMdl.emit('user.registered-not', Errors.INVALID_PASS);
+				return UserMdl.emit('user.registered-not', 'INVALID_PASS_ERR');
 			}
 
 			delete user.confirmPassword;
@@ -111,7 +110,7 @@ const UserMdlFn = function(UserSrvc, Cookies, Logger) {
 					UserMdl.emit('user.registered', data.user);
 				})
 				.catch(err => {
-					UserMdl.emit('user.registered-not', Errors[err.data.msg] || Errors.LOGIN_ERR);
+					UserMdl.emit('user.registered-not', err.data.msg);
 				});
 
 		}
