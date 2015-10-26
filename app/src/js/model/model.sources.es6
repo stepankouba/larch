@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import { assign } from '../lib/lib.assign.es6';
 import AppDispatcher from '../larch.dispatcher.es6';
 
-const SourceMdlFn = function(User, SourceSrvc, Logger) {
+const SourceMdlFn = function(SourceSrvc, Logger) {
 	const logger = Logger.create('model.Sources');
 
 	// create model object
@@ -30,7 +30,7 @@ const SourceMdlFn = function(User, SourceSrvc, Logger) {
 
 	return SourceMdl;
 };
-SourceMdlFn.$injector = ['model.User', 'service.Source', 'larch.Logger'];
+SourceMdlFn.$injector = ['service.Source', 'larch.Logger'];
 
 export default {
 	name: 'model.Sources',
