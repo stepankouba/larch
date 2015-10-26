@@ -97,7 +97,7 @@ const HTTPerFn = function(Cookies, Logger) {
 		},
 		post(url, data, conf = {}) {
 			return new Promise((resolve, reject) => {
-				const stringifiedData = JSON.stringify(data);
+				const stringifiedData = data ? JSON.stringify(data) : undefined;
 				const r = HTTPClass.create('POST', conf);
 				r.open(url, resolve, reject);
 
@@ -122,7 +122,7 @@ const HTTPerFn = function(Cookies, Logger) {
 		},
 		put(url, data, conf = {}) {
 			return new Promise((resolve, reject) => {
-				const stringifiedData = JSON.stringify(data);
+				const stringifiedData = data ? JSON.stringify(data) : undefined;
 				const r = HTTPClass.create('PUT', conf);
 				r.open(url, resolve, reject);
 
@@ -131,6 +131,7 @@ const HTTPerFn = function(Cookies, Logger) {
 				r.onload();
 
 				r.send(stringifiedData);
+
 			});
 		}
 	};
