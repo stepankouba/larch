@@ -1,5 +1,6 @@
 import AppDispatcher from '../larch.dispatcher.es6';
 import Form from '../lib/lib.form.es6';
+import UI from '../lib/lib.ui.es6';
 
 const ctrl = function(Dashboards, Logger) {
 	const logger = Logger.create('ui.modal.new');
@@ -7,34 +8,51 @@ const ctrl = function(Dashboards, Logger) {
 
 	Dashboards.on('dashboards.created', id => {
 		scope.newlyCreatedId = id;
-		this.recompile();
-		scope.modal.display();
+		Form.displayResults('.modal-detail:not(.hidden) .alert', {success: 'GENERAL_RESULT_OK'});
 	});
 
 	Dashboards.on('dashboards.created-not', errorText => {
-		scope.error = errorText;
-		this.recompile();
-		scope.modal.display();
-		delete scope.error;
+		Form.displayResults('.modal-detail:not(.hidden) .alert', {errors: errorText});
 	});
 
 	this.methods = {
+		saveBaseOnURL(e) {
+			e.preventDefault();
+
+			const errors = Form.testValues('new-ds-shared');
+			Form.displayResults('.modal-detail:not(.hidden) .alert', {errors});
+
+			if (!errors) {
+				AppDispatcher.dispatch('dashboards.create-from', Form.getValues('new-ds-shared').url);
+			}
+		},
 		save(e) {
 			e.preventDefault();
 
-			if (!Form.testValues('edit-dashboard-form')) {
-				return false;
+			const errors = Form.testValues('edit-dashboard-form');
+			Form.displayResults('.modal-detail:not(.hidden) .alert', {errors});
+
+			if (!errors) {
+				scope.ds = Form.getValues('edit-dashboard-form');
+
+				// dispatch save
+				AppDispatcher.dispatch('dashboards.create', scope.ds);
+			}
+		},
+		show: UI.showOption,
+		close(e) {
+			e.preventDefault();
+
+			scope.modal.hide();
+
+			if (scope.newlyCreatedId) {
+				scope.modal.resolve(scope.newlyCreatedId);
+			} else {
+				scope.modal.reject();
 			}
 
-			scope.ds = Form.getValues('edit-dashboard-form');
-
-			// dispatch save
-			AppDispatcher.dispatch('dashboards.create', scope.ds);
-		},
-		close(e) {
-			scope.modal.hide();
-			scope.modal.resolve(scope.newlyCreatedId);
 			delete scope.modal;
+			delete scope.newlyCreatedId;
 		}
 	};
 };
