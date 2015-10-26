@@ -12,16 +12,45 @@ const api = {
 		logger.info(`requesting dashboard.id = ${id}`);
 
 		if (!id) {
-			return next({responseCode: 404, msg: 'dashboard id not specified'});
+			return next({responseCode: 404, msg: 'GET_DS_NO_ID_ERR'});
+		}
+
+		r.branch(
+				r.db(conf.db.database)
+						.table('dashboards')
+						.get(id)
+					.hasFields('originId'),
+				r.db(conf.db.database)
+						.table('dashboards')
+						.getAll(id)
+					.eqJoin('originId', r.db(conf.db.database).table('dashboards'))
+					.without({right: 'id'})
+					.zip(),
+				r.db(conf.db.database)
+						.table('dashboards')
+						.get(id)
+			)
+			.run()
+			.then(dashboard => res.json(dashboard))
+			.catch(err => next(err));
+	},
+	getPublicDashboard(req, res, next) {
+		const logger = Service.instance.server.logger;
+		const conf = Service.instance.conf;
+		const id = req.params.id;
+
+		logger.info(`requesting public dashboard.id = ${id}`);
+
+		if (!id) {
+			return next({responseCode: 404, msg: 'GET_DS_NO_ID_ERR'});
 		}
 
 		r.db(conf.db.database)
 			.table('dashboards')
-			.get(id)
+			.filter({id, shared: 'public'})
 			.run()
-			.then(dashboard => res.json(dashboard))
+			.then(dashboard => res.json(dashboard.length ? dashboard[0] : {}))
 			.catch(err => next(err));
-			// .finally(() => r.getPool().drain());
 	},
 	getMyDashboards(req, res, next) {
 		const logger = Service.instance.server.logger;
@@ -31,16 +60,27 @@ const api = {
 		logger.info(`requesting all dashboards for user ${user}`);
 
 		if (!user || user !== req.user.username) {
-			return next({responseCode: 404, msg: 'user is not specified'});
+			return next({responseCode: 404, msg: 'GET_DS_NO_USER_ERR'});
 		}
 
+		// union both my dashboards and those, created based on shared
 		r.db(conf.db.database)
 			.table('dashboards')
-			.filter({owner: user})
-			.run()
+			.filter(
+				r.and(
+					r.row('owner').eq(user),
+					r.row.hasFields('originId').not()
+				)
+			).union(
+				r.db(conf.db.database)
+					.table('dashboards')
+					.filter({owner: user})
+					.eqJoin('originId', r.db(conf.db.database).table('dashboards'))
+					.without({right: 'id'})
+					.zip()
+			).run()
 			.then(dashboards => res.json(dashboards))
 			.catch(err => next(err));
-			// .finally(() => r.getPool().drain());
 	},
 	remove(req, res, next) {
 		const id = req.params.id;
@@ -48,7 +88,7 @@ const api = {
 		const owner = req.user.username;
 
 		if (!id || !owner) {
-			return next({responseCode: 404, msg: 'id or owner is not specified'});
+			return next({responseCode: 404, msg: 'REMOVE_NO_ID_ERR'});
 		}
 
 		r.db(conf.db.database)
@@ -60,7 +100,7 @@ const api = {
 				if (result.deleted === 1) {
 					return res.json({msg: 'deleted'});
 				} else {
-					return res.json({responseCode: 409, msg: 'can not delete, because you do not own it'});
+					return res.json({responseCode: 409, msg: 'REMOVE_NOT_OWNER_ERR'});
 				}
 			})
 			.catch(err => next(err));
@@ -75,7 +115,7 @@ const api = {
 		}
 
 		if (!id) {
-			return next({responseCode: 404, msg: 'missing dashboard id'});
+			return next({responseCode: 404, msg: 'UPDATE_MISSING_ID_ERR'});
 		}
 
 		r.db(conf.db.database)
@@ -86,11 +126,52 @@ const api = {
 			.then(result => res.json(result.changes[0].new_val))
 			.catch(err => next(err));
 	},
+	saveFromShared(req, res, next) {
+		const originUrl = req.body.url;
+		const re = /^https:\/\/anylarch.com\/public\/(.*)$/i;
+		const conf = Service.instance.conf;
+
+		// pars url
+		const m = originUrl.match(re);
+		const originId = m ? m[1] : undefined;
+
+		if (!originId) {
+			return next({responseCode: 404, msg: 'INVALID_PUBLIC_ID_ERR'});
+		}
+
+		r.db(conf.db.database)
+			.table('dashboards')
+			.get(originId)
+			.run()
+			.then(originDS => {
+				if (!originDS || originDS.shared === false) {
+					return next({responseCode: 404, msg: 'INVALID_PUBLIC_ID_ERR'});
+				}
+
+				const ds = {
+					originId: originDS.id,
+					owner: req.user.username,
+					fromShared: true
+				};
+
+				r.db(conf.db.database)
+					.table('dashboards')
+					.insert(ds, {returnChanges: true})
+					.run()
+					.then(result => res.json({responseCode: 200, msg: 'GENERAL_RESULT_OK', data: result}))
+					.catch(err => next(err));
+			})
+			.catch(err => next(err));
+	},
 	saveDashboard(req, res, next) {
 		const ds = req.body;
 		const logger = Service.instance.server.logger;
 		const conf = Service.instance.conf;
 		ds.owner = req.user.username;
+
+		if (ds.originId) {
+			return next({responseCode: 404, msg: 'UPDATE_FROM_SHARED_ERR'});
+		}
 
 		/**
 		 * testing, whether sent
@@ -112,7 +193,7 @@ const api = {
 		}
 
 		if (!ds && !hasAllRequired(ds)) {
-			return next({responseCode: 404, msg: 'dashboard is not properly defined'});
+			return next({responseCode: 404, msg: 'UPDATE_MISSING_FIELDS_ERR'});
 		}
 
 		// insert and if same name exists, return error
@@ -131,13 +212,14 @@ const api = {
 						ds,
 						r.error('SAME_NAME_EXISTS')
 						);
-				})
+				}),
+				{returnChanges: true}
 			)
 			.run()
-			.then(result => res.json({responseCode: 200, msg: 'inserted', data: result}))
+			.then(result => res.json({responseCode: 200, msg: 'GENERAL_RESULT_OK', data: result}))
 			.catch(err => {
 				if (/SAME_NAME_EXISTS/g.test(err)) {
-					return next({responseCode: 409, msg: 'SAME_NAME_EXISTS'});
+					return next({responseCode: 409, msg: 'SAME_NAME_EXISTS_ERR'});
 				} else {
 					return next(err);
 				}
