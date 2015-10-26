@@ -2,7 +2,7 @@
 	<ul class="sidebar-list">
 		<h6>I LIKE</h6>
 		{{#each-if dashboards "like" true}}
-			<li class="{{toggle-class this.id @root.route 'selected'}}">
+			<li class="link {{toggle-class this.id @root.route 'selected'}}">
 				<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}
 					{{#if this.shared}}
 						<span class="shared" title="this view is shared with many happy people"><i class="fa fa-share-alt"></i></span>
@@ -26,7 +26,7 @@
 	<ul class="sidebar-list">
 		<h6>SHARED WITH ME</h6>
 		{{#each-if dashboards "fromShared" true}}
-			<li class="{{toggle-class this.id @root.route 'selected'}}">
+			<li class="link {{toggle-class this.id @root.route 'selected'}}">
 				<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}</a>
 
 				{{#if-eq this.id @root.route}}
@@ -49,7 +49,7 @@
 		{{#each-if dashboards "like" false}}
 			{{#if this.fromShared}}
 			{{else}}
-				<li class="{{toggle-class this.id @root.route 'selected'}}">
+				<li class="link {{toggle-class this.id @root.route 'selected'}}">
 					<a href="" data-on-click="navigate('/dashboard/{{this.id}}')">{{this.name}}
 						{{#if this.shared}}
 							<span class="shared" title="this view is shared with many happy people"><i class="fa fa-share-alt"></i></span>
