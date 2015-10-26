@@ -10,5 +10,11 @@ export default [
 		httpMethod: 'POST',
 		requiresAuth: false,
 		middleware: [api.getData]
+	},
+	{
+		path: '/data/public/:dashboardId/:widgetId',
+		httpMethod: 'GET',
+		requiresAuth: false,
+		middleware: [api.getPublicData]
 	}
 ];

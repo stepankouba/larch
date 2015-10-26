@@ -1,6 +1,9 @@
-// import { Service } from '../../lib/';
+import { Service } from '../../lib/';
 import { transform, JSONParser } from 'larch.lib';
 import Path from './server.path.es6';
+import RethinkDb from 'rethinkdbdash';
+
+const r = RethinkDb();
 
 const api = {
 	/**
@@ -31,6 +34,23 @@ const api = {
 				}
 			});
 		};
+	},
+	getPublicData(req, res, next) {
+		const dashboardId = req.params.dashboarcId;
+		const widgetId = req.params.widgetId;
+		const conf = Service.instance.conf;
+
+		r.db(conf.db.database)
+			.table('data')
+			.filter({dashboardId, widgetId})
+			// get only the latest entry
+			.orderBy(r.desc('createdAt'))
+			.limit(1)
+			.pluck('data')
+			.run()
+			.then(result => res.json(result[0].data))
+			.catch(err => next(err));
+
 	},
 	getData(req, res, next) {
 		const widgetId = req.params.widgetId;
