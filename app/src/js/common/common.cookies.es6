@@ -1,5 +1,4 @@
 import Cookies from '../lib/lib.cookies.es6';
-import Errors from '../larch.errors.es6';
 
 const CookiesMdlFn = function() {
 	// create model object
