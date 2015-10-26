@@ -7,9 +7,12 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 
 	function updateHeader() {
 		const routeId = Router.getCurrentId();
+		const ds = routeId ? Dashboards.get(routeId) : {};
+
 		scope.user = User.current;
 		scope.hasDashboards = Dashboards.hasAny();
-		scope.hasLike = routeId ? Dashboards.get(routeId).like : undefined;
+		scope.hasLike = ds.like;
+		scope.isFromShared = ds.fromShared;
 		view.recompile();
 	}
 
@@ -60,7 +63,7 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 						Router.navigate(`/dashboard/${newId}`);
 					}
 				})
-				.catch(err => logger.error(err));
+				.catch(() => logger.log('closed modal new'));
 		},
 		shareDashboard(e) {
 			e.preventDefault();
