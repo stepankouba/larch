@@ -1,4 +1,5 @@
 import AppDispatcher from '../larch.dispatcher.es6';
+import UI from '../lib/lib.ui.es6';
 // import Form from '../lib/lib.form.es6';
 
 const ctrl = function(Dashboards, Router, Logger) {
@@ -39,21 +40,12 @@ const ctrl = function(Dashboards, Router, Logger) {
 			const dashboardId = Router.getCurrentId();
 			AppDispatcher.dispatch('dashboards.share', [dashboardId, 'public']);
 		},
-		show(e, option) {
-			// display detail
-			const el = document.querySelector('#modal-detail');
-			el.classList.toggle('hidden');
-			// select option
-			const div = document.querySelector(`#modal-option-${option}`);
-			div.classList.toggle('selected');
-
-			scope.selected = option;
-		},
+		show: UI.showOption,
 		close(e) {
 			if (e) {
 				e.preventDefault();
 			}
-			
+
 			scope.modal.hide();
 			scope.modal.resolve('modal closed');
 			delete scope.modal;
