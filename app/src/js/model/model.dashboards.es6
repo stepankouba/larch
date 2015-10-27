@@ -93,7 +93,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 				})
 				.catch(err => {
 					logger.error(err);
-					DashboardsMdl.emit('dashboards.created-not', 'CREATE_ERR');
+					DashboardsMdl.emit('dashboards.created-not', err.data.msg || 'CREATE_ERR');
 				});
 			// send request to the db
 		},
@@ -152,7 +152,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 					// emit event
 					DashboardsMdl.emit('dashboards.removed', id);
 				})
-				.catch(err => DashboardsMdl.emit('dashboards.not-removed', err));
+				.catch(err => DashboardsMdl.emit('dashboards.removed-not', err));
 		},
 		updateName([id, data]) {
 			logger.log(`udpating name for ${id}`, data);
@@ -229,6 +229,16 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 
 			DashboardsMdl._update(dashboardId, {shared: type}, 'dashboards.shared');
 		},
+		unshare(dashboardId) {
+			logger.log(`removing sharing of ${dashboardId}`);
+
+			DashboardSrvc.removeSharing(dashboardId)
+				.then(result => {
+					DashboardsMdl.cache[dashboardId] = result;
+					DashboardsMdl.emit('dashboards.shared', dashboardId);
+				})
+				.catch(err => DashboardsMdl.emit('dashboards.shared-not', err));
+		},
 		getLastSeenId() {
 			const username = User.current.username;
 			return Cookies.get(`${username}.lastSeenId`);
@@ -252,6 +262,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 	AppDispatcher.register('Dashboards', 'dashboards.like', DashboardsMdl.like);
 	AppDispatcher.register('Dashboards', 'dashboards.update-name', DashboardsMdl.updateName);
 	AppDispatcher.register('Dashboards', 'dashboards.share', DashboardsMdl.share);
+	AppDispatcher.register('Dashboards', 'dashboards.unshare', DashboardsMdl.unshare);
 	AppDispatcher.register('Dashboards', 'dashboards.settings', DashboardsMdl.setSettings);
 
 	return DashboardsMdl;
