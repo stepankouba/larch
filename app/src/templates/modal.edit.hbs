@@ -14,7 +14,7 @@
 						</div>
 
 						<div class="col-xs-6 modal-option enabled" id="modal-option-search" data-on-click="show('search')">
-							<h4>Search widgets repository</h4>
+							<h4>search widgets repository</h4>
 							{{!-- <p>Share only with your team mates.</p> --}}
 							<p class="description">Look for new widget</p>
 						</div>
@@ -82,11 +82,11 @@
 							<form class="form-horizontal" id="edit-widget-form">
 								{{#each version.general.params as |type settingName|}}
 									<div class="form-group">
-										<label class="col-sm-2 control-label">{{settingName}}</label>
 										<div class="col-sm-10">
 											{{#with @root.selectedWidgetSettings}}
 											<input data-model="{{settingName}}" class="settings form-control" placeholder="{{settingName}}" type="{{type}}"
 												value="{{lookup-property this settingName}}">
+											<span id="helpBlock" class="help-block">{{settingName}}</span>
 											{{/with}}
 										</div>
 									</div>
