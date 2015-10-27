@@ -23,7 +23,6 @@ const UI = {
 		div.classList.toggle('selected');
 	},
 	displayWidgetError(id, err) {
-		console.log(err);
 		const loader = document.querySelector(`[id="container-widget${id}"] > .loader`);
 
 		loader.innerHTML = err;
