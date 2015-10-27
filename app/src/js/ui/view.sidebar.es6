@@ -10,6 +10,7 @@ const ctrl = function(Dashboards, Router, Modal, Logger) {
 	};
 
 	// display all dashboards when loaded
+	Dashboards.on('dashboards.updated-name', () => updateSidebar('dashboards.updated.name'));
 	Dashboards.on('dashboards.updated', () => updateSidebar('dashboards.updated'));
 	Dashboards.on('dashboards.liked', () => updateSidebar('dashboards.liked'));
 	Dashboards.on('dashboards.shared', () => updateSidebar('dashboards.shared'));
