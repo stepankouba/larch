@@ -4,7 +4,72 @@
 
 .row-100 {
 	min-height: 250px;
-	height: 80%;
+	height: 99%;
+	padding: 0 10px; 
+
+	.chart-container {
+		height: 100%;
+
+		.chart-large {
+			.loader {
+				padding: 270px 0;
+			}
+		}
+	}
+}
+
+.row-80 {
+	min-height: 250px;
+	height: 79%;
+	padding: 0 10px;
+
+	.chart-container {
+		height: 100%;
+		border-width: 0 0 2px 0;
+		border-image: url('../images/border.png') 0 0 2 0 repeat;
+		border-image-outset: 0;
+
+		&.last {
+			border-width: 2px 0 0 0;
+			border-image: url('../images/border.png') 2 0 0 0 repeat;
+			border-image-outset: 0;			
+		}
+
+		.chart-large {
+			.loader {
+				padding: 170px 0;
+			}
+		}
+	}
+}
+
+.row-50 {
+	min-height: 250px;
+	height: 49%;
+	padding: 0 10px;
+
+	.chart-container {
+		height: 100%;
+
+		border-width: 0 0 2px 0;
+		border-image: url('../images/border.png') 0 0 2 0 repeat;
+		border-image-outset: 0;
+
+		&.last {
+			border: none;
+		}
+
+		.chart-large {
+			.loader {
+				padding: 170px 0;
+			}
+		}
+	}
+}
+
+.row-40 {
+	min-height: 250px;
+	height: 37%;
 	padding: 0 10px; 
 
 	.chart-container {
@@ -18,24 +83,11 @@
 			border-image: url('../images/border.png') 2 0 0 0 repeat;
 			border-image-outset: 0;			
 		}
-	}
-}
 
-.row-40 {
-	min-height: 250px;
-	height: 36%;
-	padding: 0 10px; 
-
-	.chart-container {
-		height: 100%;
-		border-width: 0 0 2px 0;
-		border-image: url('../images/border.png') 0 0 2 0 repeat;
-		border-image-outset: 0;
-
-		&.last {
-			border-width: 2px 0 0 0;
-			border-image: url('../images/border.png') 2 0 0 0 repeat;
-			border-image-outset: 0;			
+		.chart-large {
+			.loader {
+				padding: 170px 0;
+			}
 		}
 	}
 }
@@ -54,6 +106,12 @@
 
 		&.last {
 			border: none;
+		}
+
+		.chart-small {
+			.loader {
+				padding: 70px 0;
+			}
 		}
 	}
 	
