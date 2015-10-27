@@ -88,7 +88,7 @@ const WidgetsMdlFn = function(User, WidgetSrvc, DataSrvc, Logger) {
 					return DataSrvc.getPublicData(dashboard.id, widget.id);
 				} else {
 					return DataSrvc.getData(widget, widgetInstance.settings,
-						User.getSourceSetting(widget.version.source.name));
+						User.getSourceSetting({id: widgetInstance.sourceId}));
 				}
 			}
 

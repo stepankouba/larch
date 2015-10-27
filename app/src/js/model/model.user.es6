@@ -50,18 +50,27 @@ const UserMdlFn = function(UserSrvc, Cookies, Logger) {
 		},
 		/**
 		 * get particular setting for a source belonging to user
-		 * @param  {String} source source name
-		 * @return {String|Object} whatever is defined for a source in user's settings
+		 * @param  {Object} options filtering options
+		 * @param  {String} options.id id
+		 * @param  {String} options.source name of the source
+ 		 * @return {Array|Object} either object (if filtered by Id) or Array (if filtered by name)
 		 */
-		getSourceSetting(source) {
-			return UserMdl.current.settings.sources[source];
+		getSourceSetting({id = undefined, source = undefined}) {
+			let a;
+			if (id) {
+				a = UserMdl.current.sources.filter(s => s.id === id)[0];
+			} else if (source) {
+				a = UserMdl.current.sources.filter(s => s.source === source);
+			}
+
+			return a;
 		},
 		/**
 		 * get sources defined for the user
 		 * @return {[type]} [description]
 		 */
 		getSourcesSettings() {
-			return UserMdl.current.settings.sources;
+			return UserMdl.current.sources;
 		},
 		/**
 		 * check the password
