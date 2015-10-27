@@ -15,7 +15,7 @@
 				<li>
 					{{#if hasDashboards}}
 						{{#unless isFromShared}}
-							<a class="navbar-nav-link" href="" data-on-click="newDashboard()">edit</a>
+							<a class="navbar-nav-link" href="" data-on-click="settings()">settings</a>
 						{{/unless}}
 					{{/if}}
 				</li>
@@ -49,9 +49,7 @@
 				</li>
 				<li>
 					{{#if hasDashboards}}
-						{{#unless isFromShared}}
-							<a class="navbar-nav-link" href="" data-on-click="removeDashboard()">remove</a>
-						{{/unless}}
+						<a class="navbar-nav-link" href="" data-on-click="removeDashboard()">remove</a>
 					{{/if}}
 				</li>
 			</ul>
