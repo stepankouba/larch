@@ -1,6 +1,7 @@
 import RethinkDb from 'rethinkdbdash';
 import { Service } from '../../lib/';
 import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 
 const LENGTH = 512;
 // twenty minutes
@@ -202,13 +203,45 @@ const Auth = {
 	_sendEmail(user) {
 		const logger = Service.instance.server.logger;
 
+		// create reusable transporter object using SMTP transport
+		const transporter = nodemailer.createTransport({
+			service: 'gmail',
+			auth: {
+				user: 'stepank@anylarch.com',
+				pass: 'cPnaZupngCp2c91'
+			}
+		});
+
 		const text = [
-			'User has been succesfully created',
+			'Hello,',
+			`We\'re really glad you\'ve chosen www.anylarch.com. The only tool you need for sharing your view. Your e-mail address and username logging in is ${user.username}`,
 			'',
-			`You can start using the app immediatelly`,
+			`You can start using the app immediately: www.anylarch.com/app`,
+			'',
+			'I hope, you have a wonderful time with anylarch. If you have any questions or comments, feel free to write to us at support@anylarch.com',
+			'',
+			`Thanks and enjoy the app.`,
+			'',
+			`Stepan`,
+			'Founder of anylarch.com'
 		].join('\n');
 
-		logger.info(text);
+		// setup e-mail data with unicode symbols
+		const mailOptions = {
+			from: 'Stepan Kouba <stepank@anylarch.com>', // sender address
+			to: user.username, // list of receivers
+			subject: 'Welcome to www.anylarch.com', // Subject line
+			text // plaintext body
+		};
+
+		// send mail with defined transport object
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				return logger.error(error);
+			}
+
+			logger.log(`Message sent: ${info.response}`);
+		});
 
 		return Promise.resolve(user);
 	},
