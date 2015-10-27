@@ -30,12 +30,12 @@
 						<form class="form-horizontal" id="edit-dashboard-form">
 							<div class="form-group">
 								<div class="col-sm-12">
-									<input name="name" class="settings form-control" placeholder="put the name here" type="text" data-model="name" value="{{ds.name}}">
+									<input name="name" class="settings form-control" placeholder="put the name here" type="text" data-model="name" value="{{ds.name}}" data-error="SETT_NAME_MISSING_ERR">
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-sm-12">
-									<textarea name="desc" class="settings form-control" placeholder="this is my fancy new dashboard" data-model="desc">{{ds.desc}}</textarea>
+									<textarea name="desc" class="settings form-control" placeholder="this is my fancy new dashboard" data-model="desc" data-validate="dashboard-description">{{ds.desc}}</textarea>
 								</div>
 							</div>
 							<div class="form-group">
@@ -71,7 +71,6 @@
 					</form>
 				</div>
 			</div>
-		</div>
 		</div>
 	</div>
 </script>
