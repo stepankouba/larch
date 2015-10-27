@@ -1,29 +1,145 @@
 <script id="ui.modal.edit" type="text/x-handlebars-template">
 	<div class="modal larch-modal">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content" data-on-click="hideOpenDropdowns()">
-				<div class="modal-header">
-					<button type="button" class="close" data-on-click="close()" aria-label="Close"><span aria-hidden="true">done</span></button>
-					<ul class="nav nav-tabs">
-						<li role="presentation"><a href="" data-on-click="toggleTab('tab-dashboard', true)">dashboard</a></li>
-						<li role="presentation" class="active"><a href="" data-on-click="toggleTab('tab-widgets', true)">widget</a></li>
-						<li role="presentation"><a href="" data-on-click="toggleTab('tab-addwidget', true)">add widget</a></li>
-					</ul>
+		<div class="fullscreen-modal">
+			<div class="modal-close-button">
+				<a href="" class="close" data-on-click="close()"></a>
+			</div>
+			<div class="row">
+				<h3><i class="fa fa-pencil-square-o"></i> edit widgets</h3>
+				<div class="row modal-options">
+					<div class="col-xs-8 col-xs-offset-2">
+						<div class="col-xs-6 modal-option enabled {{#if selectedWidgetId}}selected{{/if}}" id="modal-option-edit" data-on-click="show('edit')">
+							<h4>widgets settings</h4>
+							<p class="description">Setup your widgets</p>
+						</div>
+
+						<div class="col-xs-6 modal-option enabled" id="modal-option-search" data-on-click="show('search')">
+							<h4>Search widgets repository</h4>
+							{{!-- <p>Share only with your team mates.</p> --}}
+							<p class="description">Look for new widget</p>
+						</div>
+					</div>
 				</div>
-				<div class="modal-body">
-					<div class="tab-content">
-						<div role="tabpanel" class="tab-pane row" id="tab-dashboard">
-							{{!-- add dashboard panel --}}
+			</div>
+
+			<div id="modal-detail-edit" class="modal-detail row {{#if selectedWidgetId}}selected{{else}}hidden{{/if}}">
+				{{!-- edit widget panel --}}
+				<div class="col-md-8 col-md-offset-2">
+					<div class="col-md-4">
+						{{#if-eq dashboard.layout.[0] "tall"}}
+						<ul class="sidebar-list" id="drag-drop-top">
+							<h6>TOP</h6>
+							{{#each-if dashboard.widgets "display.row" 0}}
+								{{#withHash @root.widgets id}}
+									<li class="{{toggle-class id @root.selectedWidgetId 'selected'}}">
+										<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
+									</li>
+								{{/withHash}}
+							{{else}}
+								<li> </li>
+							{{/each-if}}
+						</ul>
+						{{/if-eq}}
+
+						{{#if-eq dashboard.layout.[1] "short"}}
+						<ul class="sidebar-list" id="drag-drop-middle">
+							<h6>MIDDLE</h6>
+							{{#each-if dashboard.widgets "display.row" 1}}
+								{{#withHash @root.widgets id}}
+									<li class="{{toggle-class this.id @root.selectedWidgetId 'selected'}}">
+										<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
+									</li>
+								{{/withHash}}
+							{{else}}
+								<li> </li>
+							{{/each-if}}
+						</ul>
+						{{/if-eq}}
+
+
+						{{#if-eq dashboard.layout.[2] "tall"}}
+						<ul class="sidebar-list" id="drag-drop-bottom">
+							<h6>BOTTOM </h6>
+							{{#each-if dashboard.widgets "display.row" 2}}
+								{{#withHash @root.widgets id}}
+									<li class="{{toggle-class this.id @root.selectedWidgetId 'selected'}}">
+										<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
+									</li>
+								{{/withHash}}
+							{{else}}
+								<li> </li>
+							{{/each-if}}
+						</ul>
+						{{/if-eq}}
+					</div>
+
+					{{!-- detail form --}}
+					{{#each-if widgets "id" selectedWidgetId}}
+						<div id="widget-detail-{{id}}" class="col-md-8">
+							<div class="alert hidden">
+								<!-- errors -->
+							</div>
+							<form class="form-horizontal" id="edit-widget-form">
+								{{#each version.general.params as |type settingName|}}
+									<div class="form-group">
+										<label class="col-sm-2 control-label">{{settingName}}</label>
+										<div class="col-sm-10">
+											{{#with @root.selectedWidgetSettings}}
+											<input data-model="{{settingName}}" class="settings form-control" placeholder="{{settingName}}" type="{{type}}"
+												value="{{lookup-property this settingName}}">
+											{{/with}}
+										</div>
+									</div>
+								{{/each}}
+								<button type="button" class="btn btn-primary"
+									data-on-click="saveChanges()">Confirm changes</button>
+									{{#if @root.error}}
+										{{@root.error}}
+									{{/if}}
+									{{#if @root.updated}}
+										{{@root.updated}}
+									{{/if}}
+							</form>
 						</div>
-						<div role="tabpanel" class="tab-pane row" id="tab-addwidget">
-							{{!-- add widget panel --}}
-						</div>
-						<div role="tabpanel" class="tab-pane row active" id="tab-widgets">
-							{{!-- edit widget panel --}}
-						</div>
+					{{else}}
+						hello, anything to setup?
+					{{/each-if}}
+				</div>
+			</div>
+
+			<div id="modal-detail-search" class="modal-detail row {{toggle-class ds.shared 'search' 'displayed' 'hidden'}}">
+				<div class="col-md-8 col-md-offset-2">
+					<div class="col-md-6 col-md-offset-3">
+						<div class="modal-search">
+							<input id="search-box" autofocus="" autocomplete="false" aria-autocomplete="list" value="{{value}}"
+								placeholder="just type"
+								data-on-keyup="search()">
+						</div>	
+					</div>
+					<div class="results" id="result-list">
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+</script>
+<script id="ui.modal.edit.search.results" type="text/x-handlebars-template">
+	{{#each results}}
+	<div class="item">
+		<span class="name">{{this.name}}</span>
+		<span class="title">{{this.title}}</span>
+		<div>{{versions.0.description}} | latest version: {{versions.0.version}}</div>
+		
+		<div class="btn-group">
+			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">add widget<span class="caret"></span></button>
+			<ul class="dropdown-menu">
+				{{#withHash @root.emptySlots name}}
+					{{#each this}}
+						<li><a href="" data-add-widget="{{../../id}},{{this}}">{{get-position this}}</a></li>
+					{{/each}}
+				{{/withHash}}
+			</ul>
+		</div>
+	</div>
+	{{/each}}
 </script>
