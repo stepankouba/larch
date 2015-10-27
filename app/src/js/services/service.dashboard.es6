@@ -25,6 +25,10 @@ const DashSrvc = function(HTTPer, Logger) {
 		update(id, obj) {
 			logger.log(`request PUT to /api/dashboard/ sent`);
 			return HTTPer.put(`https://localhost:9101/api/dashboard/${id}`, obj, {json: true});
+		},
+		removeSharing(id) {
+			logger.log(`request PUT to /api/dashboard/${id}/unshare sent`);
+			return HTTPer.put(`https://localhost:9101/api/dashboard/${id}/unshare`, undefined ,{json: true});
 		}
 	};
 
