@@ -169,6 +169,8 @@ const Auth = {
 
 		user.password = password;
 		user.createdAt = new Date();
+		// added empty array for future sources accounts
+		user.sources = [];
 
 		return new Promise((resolve, reject) => {
 			r.branch(

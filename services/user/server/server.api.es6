@@ -194,13 +194,14 @@ const user = {
 					passport.use(source, new strategies[source].Strategy(
 						settings.params,
 						(accessToken, refreshToken, profile, done) => {
-							const update = {settings: {sources: {}}};
-							update.settings.sources[source] = accessToken;
+							const update = {id: r.uuid(), source, token: accessToken, createdAt: new Date()};
 
 							r.db(conf.db.database)
 								.table('users')
 								.get(user)
-								.update(update)
+								.update({
+									sources: r.row('sources').append(update)
+								})
 								.run()
 								.then(result => done(null, accessToken))
 								.catch(err => next(err));
