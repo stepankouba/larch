@@ -3,7 +3,7 @@ const WidgetSrvc = function(HTTPer, Logger) {
 
 	const srvc = {
 		getById(id) {
-			logger.log(`requesting widget data for id ${id}`);
+			logger.log(`requesting widget definition for id ${id}`);
 			return HTTPer.get(`https://localhost:9101/api/widget/${id}`, {json: true});
 		},
 		getByText(text) {
