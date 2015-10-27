@@ -33,7 +33,7 @@ const ctrl = function(Dashboards, Router, Logger) {
 		removeShared(e) {
 			logger.log('remove sharing');
 			const dashboardId = Router.getCurrentId();
-			AppDispatcher.dispatch('dashboards.share', [dashboardId, false]);
+			AppDispatcher.dispatch('dashboards.unshare', dashboardId);
 		},
 		sharePublic(e) {
 			logger.log('sharing dashboard');
