@@ -26,6 +26,8 @@ const Msgs = {
 	// load DS
 	'GET_DS_NO_USER_ERR': 'You have not specified the user',
 	'GET_DS_NO_ID_ERR': 'Hmm... How can I know, what to load, if there\'s no ID defined',
+	// settings
+	'SETT_NAME_MISSING_ERR': 'What about filling name of the view?',
 };
 
 export default {
