@@ -21,7 +21,21 @@ const UI = {
 		// select option
 		const div = document.querySelector(`#modal-option-${option}`);
 		div.classList.toggle('selected');
-	}
+	},
+	displayWidgetError(id, err) {
+		console.log(err);
+		const loader = document.querySelector(`[id="container-widget${id}"] > .loader`);
+
+		loader.innerHTML = err;
+	},
+	removeLoader(parentElementSelector) {
+		const loader = document.querySelector(`${parentElementSelector} > .loader`);
+
+		if (loader) {
+			document.querySelector(parentElementSelector)
+			.removeChild(loader);
+		}
+	},
 };
 
 export default UI;
