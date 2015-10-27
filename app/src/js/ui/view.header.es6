@@ -26,11 +26,11 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 
 	// define operations used in template
 	this.methods = {
-		authNewSource(e, ...val) {
+		settings(e, ...val) {
 			e.preventDefault();
-			logger.info('opening accounts modal');
+			logger.info('opening settings modal');
 
-			const m = Modal.create('accounts');
+			const m = Modal.create('settings');
 
 			m.open()
 				.then(result => {
