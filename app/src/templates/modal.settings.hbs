@@ -1,0 +1,44 @@
+<script id="ui.modal.settings" type="text/x-handlebars-template">
+	<div class="modal larch-modal">
+		<div class="fullscreen-modal">
+			<div class="modal-close-button">
+				<a href="" class="close" data-on-click="close()"></a>
+			</div>
+
+			<div class="row">
+				<h3><i class="fa fa-cogs"></i> update settings</h3>
+				{{!-- <div class="row modal-options">
+					<div class="col-xs-8 col-xs-offset-2">
+						<div class="col-md-6 modal-option enabled" id="modal-option-my" data-on-click="show('my')">
+							<h4>my view</h4>
+							<p class="description">Simply create new view</p>
+						</div>
+
+					</div>
+				</div> --}}
+			</div>
+
+			<div id="modal-detail-settings" class="row modal-detail">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="alert hidden">
+						<!-- errors -->
+					</div>
+					<form class="form-horizontal" id="settings-dashboard-form">
+						<div class="form-group">
+							<div class="col-sm-12">
+								<input class="settings form-control" placeholder="put the name here" type="text" data-model="name" value="{{ds.name}}" data-error="SETT_NAME_MISSING_ERR">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-12">
+								<textarea class="settings form-control" placeholder="this is my fancy new dashboard" data-model="desc" data-validate="dashboard-description">{{ds.desc}}</textarea>
+							</div>
+						</div>
+						<button type="button" class="btn btn-primary" data-on-click="update()">Update</button>
+					</form>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
