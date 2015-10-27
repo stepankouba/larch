@@ -141,7 +141,7 @@ const user = {
 			.then(result => res.json(result))
 			.catch(err => {
 				if (err.message.startsWith('existing user')) {
-					return next({responseCode: 400, msg: 'EXISTING_USER'});
+					return next({responseCode: 400, msg: 'EXISTING_USER_ERR'});
 				} else {
 					return next({responseCode: 400, msg: 'GENERAL_ERR'}, err);
 				}
