@@ -55,10 +55,14 @@ const api = {
 	getData(req, res, next) {
 		const widgetId = req.params.widgetId;
 		const widget = req.body.widget;
-		const token = req.body.security.token;
+		const token = req.body.security ? req.body.security.token : undefined;
 
 		if (!widgetId || !widget) {
 			return next({responseCode: 404, msg: 'widget id or settings is missing in the call'});
+		}
+
+		if (!token) {
+			return next({responseCode: 404, msg: 'WRONG_SECURITY_ERR'});
 		}
 
 		api._performRequests(widget, token, { settings: req.body.settings })
