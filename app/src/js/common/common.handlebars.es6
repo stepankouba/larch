@@ -65,8 +65,7 @@ Handlebars.registerHelper('each-if', function(list, key, condition, options) {
 		return options.inverse(this);
 	}
 
-	Object.keys(list).forEach(hashKey => {
-		const item = list[hashKey];
+	function getValue(item, key) {
 		let value;
 		if (key.length > 1) {
 			value = item;
@@ -75,12 +74,29 @@ Handlebars.registerHelper('each-if', function(list, key, condition, options) {
 			value = item[key[0]];
 		}
 
-		if (value === condition) {
-			// add id to the item, since it doesnot have it
-			item.id = hashKey;
-			result = result + options.fn(item);
-		}
-	});
+		return value;
+	}
+
+	if (Array.isArray(list)) {
+		list.forEach(item => {
+			const value = getValue(item, key);
+
+			if (value === condition) {
+				result = result + options.fn(item);
+			}
+		});
+	} else {
+		Object.keys(list).forEach(hashKey => {
+			const item = list[hashKey];
+			const value = getValue(item, key);
+
+			if (value === condition) {
+				// add id to the item, since it doesnot have it
+				// item.id = hashKey;
+				result = result + options.fn(item);
+			}
+		});
+	}
 
 	return result === '' ? options.inverse(this) : result;
 });
