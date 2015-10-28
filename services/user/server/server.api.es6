@@ -174,10 +174,15 @@ const user = {
 	authSource(req, res, next) {
 		const source = req.params.name;
 		const conf = Service.instance.conf;
-		const user = req.query.user;
+		const logger = Service.instance.server.logger;
+		const user = req.params.user;
 
 		if (!user) {
 			return next({responseCode: 404, msg: 'no user id specified'});
+		}
+
+		function getUser() {
+			return req.query.user;
 		}
 
 		// create strategy only when needed
@@ -187,32 +192,46 @@ const user = {
 			restler.get(`https://localhost:9101/api/source/${source}`,
 				{rejectUnauthorized: false})
 				.on('complete', data => {
+					logger.debug('received source definition', data);
 					// get source settings
 					const settings = data[0];
 					strategies[source].settings = settings;
+					settings.params.passReqToCallback = true;
 
 					passport.use(source, new strategies[source].Strategy(
 						settings.params,
-						(accessToken, refreshToken, profile, done) => {
-							const update = {id: r.uuid(), source, token: accessToken, createdAt: new Date()};
+						(req, accessToken, refreshToken, profile, done) => {
+							logger.debug(`received access token ${accessToken} with profile`, profile.username);
+
+							const update = {
+								id: r.uuid(),
+								source,
+								token: accessToken,
+								createdAt: new Date(),
+								name: profile.username
+							};
 
 							r.db(conf.db.database)
 								.table('users')
-								.get(user)
+								.get(req.params.user)
 								.update({
 									sources: r.row('sources').append(update)
-								})
+								}, {nonAtomic: true})
 								.run()
 								.then(result => done(null, accessToken))
 								.catch(err => next(err));
 						})
 					);
 
-					passport.authenticate(source)(req, res);
+					passport.authenticate(source, {
+						callbackURL: `https://localhost:9101/api/user/${user}/auth/${source}/callback`
+					})(req, res);
 				}
 			);
 		} else {
-			passport.authenticate(source)(req, res);
+			passport.authenticate(source,{
+				callbackURL: `https://localhost:9101/api/user/${user}/auth/${source}/callback`
+			})(req, res);
 		}
 	},
 	/**
@@ -227,9 +246,10 @@ const user = {
 	 */
 	authSourceCallback(req, res, next) {
 		const source = req.params.name;
+		const user = req.params.user;
 
-		if (!source) {
-			return next({responseCode: 404,msg: 'no code or source specified for the callback'});
+		if (!source || !user) {
+			return next({responseCode: 404,msg: 'no source or user specified for the callback'});
 		}
 
 		// auth callback

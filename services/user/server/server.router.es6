@@ -43,13 +43,13 @@ export default [
 		middleware: [api.signin]
 	},
 	{
-		path: '/user/auth/:name',
+		path: '/user/:user/auth/:name',
 		httpMethod: 'GET',
 		requiresAuth: false,
 		middleware: [api.authSource]
 	},
 	{
-		path: '/user/auth/:name/callback',
+		path: '/user/:user/auth/:name/callback',
 		httpMethod: 'GET',
 		requiresAuth: false,
 		middleware: [api.authSourceCallback]
