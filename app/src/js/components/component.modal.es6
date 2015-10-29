@@ -80,7 +80,7 @@ const ModalFn = function(Viewer, Logger) {
 				const keyHandler = e => {
 					if (e.keyCode === 27) {
 						// call default close method
-						return self._closeMethod(e);
+						self._closeMethod(e);
 					}
 				};
 				document.addEventListener('keyup', keyHandler);
