@@ -13,7 +13,7 @@
 							<p class="description">Setup your widgets</p>
 						</div>
 
-						<div class="col-xs-6 modal-option enabled" id="modal-option-search" data-on-click="show('search')">
+						<div class="col-xs-6 modal-option enabled {{#unless selectedWidgetId}}selected{{/unless}}" id="modal-option-search" data-on-click="show('search')">
 							<h4>search widgets repository</h4>
 							{{!-- <p>Share only with your team mates.</p> --}}
 							<p class="description">Look for new widget</p>
@@ -149,7 +149,7 @@
 				</div>
 			</div>
 
-			<div id="modal-detail-search" class="modal-detail row {{toggle-class ds.shared 'search' 'displayed' 'hidden'}}">
+			<div id="modal-detail-search" class="modal-detail row {{#unless selectedWidgetId}}selected{{else}}hidden{{/unless}}">
 				<div class="col-md-8 col-md-offset-2">
 					<div class="col-md-6 col-md-offset-3">
 						<div class="modal-search">

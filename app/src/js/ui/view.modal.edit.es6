@@ -46,10 +46,11 @@ const ctrl = function(Router, Viewer, Dashboards, Widgets, User, Logger) {
 
 		// by default first widget is selected
 		scope.selectedWidgetId = scope.selectedWidgetId || Dashboards.getFirstWidgetId(dashboardId);
-		scope.selectedWidget = {
-			settings: Widgets.getWidgetSettings(scope.dashboard.widgets[scope.selectedWidgetId]),
-			sourceId: scope.dashboard.widgets[scope.selectedWidgetId].sourceId
-		};
+		scope.selectedWidget = scope.selectedWidgetId ?
+			{
+				settings: Widgets.getWidgetSettings(scope.dashboard.widgets[scope.selectedWidgetId]),
+				sourceId: scope.dashboard.widgets[scope.selectedWidgetId].sourceId
+			} : undefined;
 
 		// middle rows unm
 		scope.middleRows = [0,1,2];
