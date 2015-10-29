@@ -11,10 +11,10 @@ const run = function(HTTPer, Logger) {
 
 	if (result) {
 		// it's the callback result
-		window.opener.larch.authSourceResponse('OK');
+		window.opener.larch.authSourceResponse(undefined, 'GENERAL_RESULT_OK');
 	} else if (source) {
 		// should initiate source
-		window.location = `https://localhost:9101/api/user/auth/${source}?user=${user}`;
+		window.location = `https://localhost:9101/api/user/${user}/auth/${source}`;
 	} else {
 		resultEl.innerHTML = 'didn\'t you forgot anything?';
 	}
