@@ -84,7 +84,7 @@ const user = {
 	 */
 	update(req, res, next) {
 		const obj = req.body;
-		const availableFields = ['name', 'auths', 'settings'];
+		const availableFields = ['settings'];
 		const update = {};
 		const conf = Service.instance.conf;
 
