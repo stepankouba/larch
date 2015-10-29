@@ -9,7 +9,7 @@ const ctrl = function(Dashboards, Router, Logger) {
 		this.methods.close();
 	});
 
-	Dashboards.on('dashboards.not-removed', () => {
+	Dashboards.on('dashboards.removed-not', () => {
 		scope.error = 'OTHER_ERROR';
 		this.recompile();
 		scope.modal.display();
