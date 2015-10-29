@@ -59,6 +59,8 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 
 			m.open()
 				.then(newId => {
+					logger.log(`newly created view with id ${newId}`);
+
 					if (newId) {
 						Router.navigate(`/dashboard/${newId}`);
 					}
@@ -85,7 +87,10 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 			m.open()
 				.then(id => {
 					logger.log('navigating to main after remove');
-					Router.navigate('/dashboard/home');
+					// forget the last seen
+					Dashboards.removeLastSeenId();
+					// simulate main navigate (catched by listeners defined in larch.init)
+					Router.emit('router.navigate-main');
 				})
 				.catch(err => logger.error(err));
 		},
@@ -98,6 +103,16 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 			e.preventDefault();
 
 			AppDispatcher.dispatch('user.logout');
+		},
+		userProfile(e) {
+			e.preventDefault();
+			logger.info('opening new dashboard modal');
+
+			const m = Modal.create('user');
+
+			m.open()
+				.then(() => {})
+				.catch(err => logger.error(err));
 		}
 	};
 };
