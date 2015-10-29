@@ -134,13 +134,14 @@
 										</div>
 									</div>
 								</div>
-
-								<button type="button" class="btn btn-primary"
-									data-on-click="saveChanges()">save changes</button>
-								<button type="button" class="btn btn-warning"
-								data-on-click="removeWidget()">more info on widget</button>
-								<button type="button" class="btn btn-danger pull-right"
-								data-on-click="removeWidget()">remove widget</button>
+								<div class="form-actions">
+									<button type="button" class="btn btn-primary"
+										data-on-click="saveChanges()">save changes</button>
+									<button type="button" class="btn btn-warning"
+									data-on-click="removeWidget()">more info on widget</button>
+									<button type="button" class="btn btn-danger"
+									data-on-click="removeWidget()">remove widget</button>
+								</div>
 							</form>
 						</div>
 					{{else}}
@@ -153,7 +154,7 @@
 				<div class="col-md-8 col-md-offset-2">
 					<div class="col-md-6 col-md-offset-3">
 						<div class="modal-search">
-							<input id="search-box" autofocus="" autocomplete="false" aria-autocomplete="list" value="{{value}}"
+							<input id="search-box" class="form-control" autofocus="" autocomplete="false" aria-autocomplete="list" value="{{value}}"
 								placeholder="just type"
 								data-on-keyup="search()">
 						</div>	

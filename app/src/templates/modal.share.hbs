@@ -15,35 +15,23 @@
 
 						<div class="col-md-4 modal-option disabled">
 							<h4>privately</h4>
-							{{!-- <p>Share only with your team mates.</p> --}}
 							<p class="description"><br>AVAILABLE SOONER</p>
 						</div>
 
 						<div class="col-md-4 modal-option disabled last">
 							<h4>as template</h4>
-							{{!-- <p>Share with team mates to make their own views.</p> --}}
 							<p class="description"><br>AVAILABLE SOON</p>
 						</div>
 					</div>
 				</div>
 			</div>
-			{{!-- <div class="row">
-				<h3>your view is publicly shared</h3>
-				<div class="row modal-options">
-					<div class="col-xs-8 col-xs-offset-2">
-						public link: https://www.dropbox.com/help/16
-					</div>
-					<button type="button" class="btn btn-danger">remove public sharing</button>
-				</div>
-
-			</div> --}}
 
 			<div id="modal-detail-public" class="modal-detail row {{toggle-class ds.shared 'public' 'displayed' 'hidden'}}">
 				<div class="col-md-6 col-md-offset-3">
 					<div class="alert hidden">
 						<!-- errors -->
 					</div>
-					<form>
+					<form class="form-horizontal centered">
 						{{#if ds.shared}}
 							<p>Your view is available to anyone at this URL:<br>
 							<a href="https://anylarch.com/public/{{ds.id}}" target="_blank">https://anylarch.com/public/{{ds.id}}</a></p>
