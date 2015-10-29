@@ -188,6 +188,13 @@ const api = {
 					.run()
 					.then(result => {
 						const newId = result.changes[0].new_val.id;
+
+						// deleting these fields manualy, because we have no r.without method here
+						// same as .without({right: 'id'}, {right: 'owner'}, {right: 'like'})
+						delete originDs.owner;
+						delete originDs.like;
+						delete originDs.id;
+
 						// we need to return merge of originDs and ds to the front end
 						result.changes[0].new_val = Object.assign(result.changes[0].new_val, originDs);
 						result.changes[0].new_val.id = newId;
