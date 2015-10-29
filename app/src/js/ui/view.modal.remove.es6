@@ -1,19 +1,16 @@
 import AppDispatcher from '../larch.dispatcher.es6';
+import Form from '../lib/lib.form.es6';
 
 const ctrl = function(Dashboards, Router, Logger) {
 	const logger = Logger.create('ui.modal.remove');
 	const scope = this.scope;
 
 	Dashboards.on('dashboards.removed', id => {
-		scope.removed = true;
-		this.methods.close();
+		Form.displayResults('.modal-detail:not(.hidden) .alert', {success: 'GENERAL_RESULT_OK'});
 	});
 
-	Dashboards.on('dashboards.removed-not', () => {
-		scope.error = 'OTHER_ERROR';
-		this.recompile();
-		scope.modal.display();
-		delete scope.error;
+	Dashboards.on('dashboards.removed-not', errorText => {
+		Form.displayResults('.modal-detail:not(.hidden) .alert', {errors: errorText});
 	});
 
 	this.methods = {

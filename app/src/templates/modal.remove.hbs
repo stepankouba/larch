@@ -1,18 +1,35 @@
 <script id="ui.modal.remove" type="text/x-handlebars-template">
 	<div class="modal larch-modal">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-on-click="close()" aria-label="Close"><span aria-hidden="true">done</span></button>
-					Remove a dashboard
-				</div>
-				<div class="modal-body">
-					Are you really angry with this dashboard, so that you want to delete it?
+		<div class="fullscreen-modal">
+			<div class="modal-close-button">
+				<a href="" class="close" data-on-click="close()"></a>
+			</div>
 
-					<button type="button" class="btn btn-danger" data-on-click="remove()">Delete {{dashboard.name}}</button>
+			<div class="row">
+				<h3><i class="fa fa-trash"></i> remove my view</h3>
+			</div>
+
+			<div id="modal-detail-remove" class="row modal-detail">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="alert hidden">
+						<!-- errors -->
+					</div>
+					<form class="form-horizontal centered" id="new-ds-shared">
+						<p>You are about to remove <strong>{{dashboard.name}}</strong> from your views. Are you sure?</p>
+
+						{{#if dashboard.fromShared}}
+							<p>This view is shared, so only your instance will be removed.</p>
+						{{/if}}
+
+						<p>&nbsp;</p>
+
+						<button type="button" class="btn btn-danger" data-on-click="remove()">remove {{dashboard.name}}</button>
 					</form>
 				</div>
 			</div>
 		</div>
 	</div>
+
+
+
 </script>

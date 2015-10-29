@@ -23,6 +23,7 @@ const Msgs = {
 	// remove DS
 	'REMOVE_NOT_OWNER_ERR': 'You can\'t remove something you don\'t own',
 	'REMOVE_NO_ID_ERR': 'You can\'t remove something you don\'t own',
+	'REMOVE_ERR': 'Well, something got wrong',
 	// load DS
 	'GET_DS_NO_USER_ERR': 'You have not specified the user',
 	'GET_DS_NO_ID_ERR': 'Hmm... How can I know, what to load, if there\'s no ID defined',
