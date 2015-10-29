@@ -15,7 +15,7 @@ const api = {
 		r.db(conf.db.database)
 			.table('sources')
 			.filter({name})
-			.pluck('id', 'name', 'title', 'desc', 'settings')
+			// .pluck('id', 'name', 'title', 'desc', 'settings')
 			.run()
 			.then(result => res.json(result))
 			.catch(err => next(err));
