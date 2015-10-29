@@ -70,7 +70,9 @@ const UserMdlFn = function(UserSrvc, Cookies, Logger) {
 		 * @return {[type]} [description]
 		 */
 		getSourcesSettings() {
-			return UserMdl.current.sources;
+			return UserMdl.current.sources.map(s => {
+				return {id: s.id, source: s.source, name: s.name};
+			});
 		},
 		/**
 		 * check the password
