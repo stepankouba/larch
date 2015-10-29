@@ -1,18 +1,43 @@
 import AppDispatcher from '../larch.dispatcher.es6';
 import Handlebars from '../common/common.handlebars.es6';
 import UI from '../lib/lib.ui.es6';
-import DragDrop from './dragdrop.es6';
 import Form from '../lib/lib.form.es6';
 
-const ctrl = function(Router, Viewer, Dashboards, Widgets, Logger) {
+const ctrl = function(Router, Viewer, Dashboards, Widgets, User, Logger) {
 	const logger = Logger.create('ui.modal.edit');
 	const scope = this.scope;
 	const view = this;
-	const SEARCH_BOX = 'search-box';
-	const input = document.getElementById(SEARCH_BOX);
-	const resultTemplate = Handlebars.compile(document.getElementById('ui.modal.edit.search.results').innerHTML);
-	const resultsEl = document.getElementById('result-list');
 	const dashboardId = Router.getCurrentId();
+	const input = document.getElementById('search-box');
+
+	/**
+	 * drag drop handler
+	 * @param  {Function} (el, target)       [description]
+	 * @return {[type]}        [description]
+	 */
+	// DragDrop.onDrop((el, target) => {
+	// 	const rows = ['drag-drop-top', 'drag-drop-middle', 'drag-drop-bottom'];
+	// 	const wi = {};
+
+	// 	rows.forEach((id, row) => {
+	// 		const el = document.getElementById(id);
+
+	// 		[].forEach.call(el.children, (ch, position) => {
+	// 			const widgetId = ch.getAttribute('data-position-widget-id');
+
+	// 			if (widgetId) {
+	// 				wi[widgetId] = {
+	// 					display: {
+	// 						row,
+	// 						position
+	// 					}
+	// 				};
+	// 			}
+	// 		});
+	// 	});
+
+	// 	AppDispatcher.dispatch('dashboards.settings', [dashboardId, undefined, wi]);
+	// });
 
 	function updateDetail() {
 		// display widgets for current dashboard
@@ -21,14 +46,18 @@ const ctrl = function(Router, Viewer, Dashboards, Widgets, Logger) {
 
 		// by default first widget is selected
 		scope.selectedWidgetId = scope.selectedWidgetId || Dashboards.getFirstWidgetId(dashboardId);
-		scope.selectedWidgetSettings = Widgets.getWidgetSettings(scope.dashboard.widgets[scope.selectedWidgetId]);
-		view.recompile();
+		scope.selectedWidget = {
+			settings: Widgets.getWidgetSettings(scope.dashboard.widgets[scope.selectedWidgetId]),
+			sourceId: scope.dashboard.widgets[scope.selectedWidgetId].sourceId
+		};
 
-		// add drag drop support
-		DragDrop.init();
-		DragDrop.onDrop((elMoved, sibling) => {
-			// id target
-		});
+		// middle rows unm
+		scope.middleRows = [0,1,2];
+
+		// for select
+		scope.allUserSources = User.getSourcesSettings();
+		logger.log(scope.selectedWidgetSettings);
+		view.recompile();
 	}
 
 	Dashboards.on('dashboards.updated-settings', id => {
@@ -59,6 +88,8 @@ const ctrl = function(Router, Viewer, Dashboards, Widgets, Logger) {
 	 * @return {Object[]} array of widget definitions
 	 */
 	function createResults(results) {
+		const resultsEl = document.getElementById('result-list');
+		const resultTemplate = Handlebars.compile(document.getElementById('ui.modal.edit.search.results').innerHTML);
 
 		if (results.length > 0) {
 			scope.emptySlots = {};
@@ -102,14 +133,23 @@ const ctrl = function(Router, Viewer, Dashboards, Widgets, Logger) {
 			// 	})
 			// 	.catch(err => logger.error(err));
 		},
-		add() {
-			const source = 'lo-github';
+		addAccount(e, source) {
 			const w = window.open(`http://localhost:3333/build/auth.html?source=${source}&user=${User.current.id}`,
 				'larch_auth_source', 'height=800, width=1000, top=500, left=200, scrollable=yes, menubar=yes, resizable=yes');
 
-			window.larch.authSourceResponse = function(result) {
-				logger.log('result from window w is:', result);
+			window.larch.authSourceResponse = function(err, result) {
+				logger.log(err, result);
+				if (err) {
+					// do something
+					return logger.log(err);
+				}
+
 				w.close();
+				User.getCurrent()
+					.then(() => {
+						updateDetail();
+						scope.modal.display();
+					});
 			};
 
 			return false;
@@ -120,12 +160,28 @@ const ctrl = function(Router, Viewer, Dashboards, Widgets, Logger) {
 			logger.log('showing settings', scope);
 			scope.selectedWidgetId = id;
 			updateDetail();
+			scope.modal.display();
 		},
 		saveChanges(e) {
 			const widgetId = scope.selectedWidgetId;
-			const settings = Form.getValues('edit-widget-form');
 
-			AppDispatcher.dispatch('dashboards.settings', [dashboardId, widgetId, settings]);
+			const errors = Form.testValues('edit-widget-form');
+			Form.displayResults('.modal-detail:not(.hidden) .alert', {errors});
+
+			if (!errors) {
+				const values = Form.getValues('edit-widget-form');
+				const sourceId = values.sourceId;
+				delete values.sourceId;
+
+				const settings = {
+					[widgetId]: {
+						settings: values,
+						sourceId
+					}
+				};
+
+				AppDispatcher.dispatch('dashboards.settings', [dashboardId, undefined, settings]);
+			}
 		},
 		show: UI.showOption,
 		close(e) {
@@ -140,7 +196,7 @@ const ctrl = function(Router, Viewer, Dashboards, Widgets, Logger) {
 
 	updateDetail();
 };
-ctrl.$injector = ['larch.Router', 'larch.Viewer', 'model.Dashboards', 'model.Widgets', 'larch.Logger'];
+ctrl.$injector = ['larch.Router', 'larch.Viewer', 'model.Dashboards', 'model.Widgets', 'model.User', 'larch.Logger'];
 
 export default {
 	id: 'ui.modal.edit',
