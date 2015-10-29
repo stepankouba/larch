@@ -16,7 +16,7 @@ const ctrl = function(Router, Widgets, Dashboards, Chart, Logger) {
 	}
 
 	// handle router in sidebar
-	Router.on('router.navigate', router => reloadDashboard('router.navigate'));
+	Router.on('router.navigate', () => reloadDashboard('router.navigate'));
 
 	// on loading all dashboards, show the selected one
 	Dashboards.on('dashboards.updated', () => reloadDashboard('dashboards.updated'));
