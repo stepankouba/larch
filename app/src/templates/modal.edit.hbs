@@ -24,81 +24,123 @@
 
 			<div id="modal-detail-edit" class="modal-detail row {{#if selectedWidgetId}}selected{{else}}hidden{{/if}}">
 				{{!-- edit widget panel --}}
-				<div class="col-md-8 col-md-offset-2">
+				<div class="col-xs-8 col-xs-offset-2">
 					<div class="col-md-4">
 						{{#if-eq dashboard.layout.[0] "tall"}}
-						<ul class="sidebar-list" id="drag-drop-top">
+						<ul class="sidebar-list">
 							<h6>TOP</h6>
+							<div id="drag-drop-top">
 							{{#each-if dashboard.widgets "display.row" 0}}
-								{{#withHash @root.widgets id}}
-									<li class="{{toggle-class id @root.selectedWidgetId 'selected'}}">
+								{{#with-hash @root.widgets id}}
+									<li class="link {{toggle-class id @root.selectedWidgetId 'selected' ''}}" data-position-widget-id="{{id}}">
 										<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
 									</li>
-								{{/withHash}}
+								{{/with-hash}}
 							{{else}}
-								<li> </li>
+								<li>empty slot</li>
 							{{/each-if}}
+							</div>
 						</ul>
 						{{/if-eq}}
 
 						{{#if-eq dashboard.layout.[1] "short"}}
-						<ul class="sidebar-list" id="drag-drop-middle">
+						<ul class="sidebar-list">
 							<h6>MIDDLE</h6>
+							<div id="drag-drop-middle">
 							{{#each-if dashboard.widgets "display.row" 1}}
-								{{#withHash @root.widgets id}}
-									<li class="{{toggle-class this.id @root.selectedWidgetId 'selected'}}">
-										<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
-									</li>
-								{{/withHash}}
-							{{else}}
-								<li> </li>
+								{{#each @root.middleRows}}
+									{{#if-eq this ../this.display.position}}
+										{{#with-hash @root.widgets ../../this.id}}
+											<li class="link {{toggle-class id @root.selectedWidgetId 'selected' ''}}" data-position-widget-id="{{id}}">
+												<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
+											</li>
+										{{/with-hash}}
+									{{else}}
+										<li>empty slot</li>
+									{{/if-eq}}
+								{{/each}}
 							{{/each-if}}
+							
+							</div>
 						</ul>
 						{{/if-eq}}
 
-
 						{{#if-eq dashboard.layout.[2] "tall"}}
-						<ul class="sidebar-list" id="drag-drop-bottom">
+						<ul class="sidebar-list">
 							<h6>BOTTOM </h6>
+							<div id="drag-drop-bottom">
 							{{#each-if dashboard.widgets "display.row" 2}}
-								{{#withHash @root.widgets id}}
-									<li class="{{toggle-class this.id @root.selectedWidgetId 'selected'}}">
+								{{#with-hash @root.widgets id}}
+									<li class="link {{toggle-class id @root.selectedWidgetId 'selected' ''}}" data-position-widget-id="{{id}}">
 										<a href="" data-on-click="showSettings('{{id}}')">{{name}}</a>
 									</li>
-								{{/withHash}}
+								{{/with-hash}}
 							{{else}}
-								<li> </li>
+								<li>empty slot</li>
 							{{/each-if}}
+							<div>
 						</ul>
 						{{/if-eq}}
 					</div>
 
 					{{!-- detail form --}}
 					{{#each-if widgets "id" selectedWidgetId}}
-						<div id="widget-detail-{{id}}" class="col-md-8">
+						<div id="widget-detail-{{id}}" class="col-xs-8">
 							<div class="alert hidden">
 								<!-- errors -->
 							</div>
 							<form class="form-horizontal" id="edit-widget-form">
 								{{#each version.general.params as |type settingName|}}
 									<div class="form-group">
-										<div class="col-sm-10">
-											{{#with @root.selectedWidgetSettings}}
-											<input data-model="{{settingName}}" class="settings form-control" placeholder="{{settingName}}" type="{{type}}"
-												value="{{lookup-property this settingName}}">
-											<span id="helpBlock" class="help-block">{{settingName}}</span>
-											{{/with}}
+										<div class="row">
+											<div class="col-sm-10 col-sm-offset-1">
+												{{#with @root.selectedWidget.settings}}
+												<input data-model="{{settingName}}" class="settings form-control" placeholder="{{settingName}}" type="{{type}}"
+													value="{{lookup-property this settingName}}">
+												<span id="helpBlock" class="help-block">{{settingName}}</span>
+												{{/with}}
+											</div>
 										</div>
 									</div>
 								{{/each}}
+								<div class="form-group">
+									<div class="row">
+										<div class="col-sm-7 col-sm-offset-1">
+											<select data-model="sourceId" class="settings form-control">
+												{{#unless @root.selectedWidget.sourceId}}
+													<option value="undefined" selected>no source selected</option>
+												{{/unless}}
+												{{#each-if @root.allUserSources "source" version.source.name}}
+													<option value="'{{id}}'" {{#if-eq @root.selectedWidget.sourceId id}}selected{{/if-eq}}>
+														{{source}} ({{name}})
+													</option>
+												{{/each-if}}
+											</select>
+											<span id="helpBlock" class="help-block">source system</span>
+										</div>
+										<div class="col-sm-3">
+											<button type="button" class="btn btn-primary" data-on-click="addAccount('{{version.source.name}}')">add account</button>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="row">
+										<div class="col-sm-10 col-sm-offset-1">
+											<ul class="nav nav-pills">
+												<li role="presentation" class="active"><a href="#">bottom</a></li>
+												<li role="presentation"><a href="#">top</a></li>
+											</ul>
+											<span id="helpBlock" class="help-block">position</span>
+										</div>
+									</div>
+								</div>
+
 								<button type="button" class="btn btn-primary"
-									data-on-click="saveChanges()">Confirm changes</button>
-									{{#if @root.error}}
-										{{@root.error}}
-									{{/if}}
-									{{#if @root.updated}}
-										{{@root.updated}}
-									{{/if}}
+									data-on-click="saveChanges()">save changes</button>
+								<button type="button" class="btn btn-warning"
+								data-on-click="removeWidget()">more info on widget</button>
+								<button type="button" class="btn btn-danger pull-right"
+								data-on-click="removeWidget()">remove widget</button>
 							</form>
 						</div>
 					{{else}}
@@ -133,11 +175,11 @@
 		<div class="btn-group">
 			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">add widget<span class="caret"></span></button>
 			<ul class="dropdown-menu">
-				{{#withHash @root.emptySlots name}}
+				{{#with-hash @root.emptySlots name}}
 					{{#each this}}
 						<li><a href="" data-add-widget="{{../../id}},{{this}}">{{get-position this}}</a></li>
 					{{/each}}
-				{{/withHash}}
+				{{/with-hash}}
 			</ul>
 		</div>
 	</div>
