@@ -21,6 +21,8 @@ const ctrl = function(Dashboards, Router, Logger) {
 			AppDispatcher.dispatch('dashboards.remove', Router.getCurrentId());
 		},
 		close(e) {
+			e.preventDefault();
+
 			scope.modal.hide();
 			scope.modal.resolve(true);
 			delete scope.modal;
