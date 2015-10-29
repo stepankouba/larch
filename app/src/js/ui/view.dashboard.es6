@@ -1,4 +1,6 @@
 import AppDispatcher from '../larch.dispatcher.es6';
+import UI from '../lib/lib.ui.es6';
+import Msg from '../larch.messages.es6';
 
 const ctrl = function(Router, Widgets, Dashboards, Chart, Logger) {
 	const logger = Logger.create('ui.dashboard');
@@ -19,7 +21,7 @@ const ctrl = function(Router, Widgets, Dashboards, Chart, Logger) {
 	// on loading all dashboards, show the selected one
 	Dashboards.on('dashboards.updated', () => reloadDashboard('dashboards.updated'));
 
-	Widgets.on('widgets.data-loaded-not', err => logger.log(err));
+	Widgets.on('widgets.data-loaded-not', (id, err) => UI.displayWidgetError(id, Msg.get(err)));
 
 	// handle loaded widget event
 	Widgets.on('widgets.data-loaded', widget => {
@@ -29,7 +31,7 @@ const ctrl = function(Router, Widgets, Dashboards, Chart, Logger) {
 		if (widget.data) {
 			const chart = Chart.create(widget);
 
-			chart.removeLoader(`[id="container-widget${widget.id}"]`);
+			UI.removeLoader(`[id="container-widget${widget.id}"]`);
 
 			chart.append(`[id="widget${widget.id}"]`);
 		}
