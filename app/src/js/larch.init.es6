@@ -21,7 +21,7 @@ const init = function(User, Dashboards, Cookies, Router, Logger) {
 			Router.navigate(`/dashboard/${Dashboards.get(0).id}`);
 		} else {
 			// use has no dashboard at all
-			logger.log('here', Dashboards.hasAny(), lastId, Dashboards.get(lastId), Dashboards.cache);
+			Router.navigate(`/dashboard/`);
 		}
 	});
 
