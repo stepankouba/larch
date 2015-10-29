@@ -172,6 +172,10 @@ const Auth = {
 		user.createdAt = new Date();
 		// added empty array for future sources accounts
 		user.sources = [];
+		// add default settings
+		user.settings = {
+			allowEmails: true
+		};
 
 		return new Promise((resolve, reject) => {
 			r.branch(
