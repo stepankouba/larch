@@ -37,13 +37,13 @@ const WidgetsMdlFn = function(User, WidgetSrvc, DataSrvc, Logger) {
 				.then(data => {
 					// test that anything is there
 					if (data.length === 0) {
-						WidgetMdl.emit('widgets.data-not-added', widgetId);
+						WidgetMdl.emit('widgets.data-added-not', widgetId);
 					}
 
 					WidgetMdl.cache[widgetId] = data[0];
 					WidgetMdl.emit('widgets.added', data[0]);
 				})
-				.catch(err => WidgetMdl.emit('widgets.data-not-added', err));
+				.catch(err => WidgetMdl.emit('widgets.data-added-not', err));
 		},
 		/**
 		 * get widgets
@@ -61,7 +61,7 @@ const WidgetsMdlFn = function(User, WidgetSrvc, DataSrvc, Logger) {
 				.then(data => {
 					// test that anything is there
 					if (data.length === 0) {
-						WidgetMdl.emit('widgets.data-not-loaded', widget);
+						WidgetMdl.emit('widgets.data-loaded-not', 'NO_DATA_LOADED_ERR', id);
 					}
 
 					widget = data[0];
@@ -77,7 +77,7 @@ const WidgetsMdlFn = function(User, WidgetSrvc, DataSrvc, Logger) {
 					WidgetMdl.emit('widgets.data-loaded', WidgetMdl.cache[widget.id]);
 				})
 				.catch(err => {
-					WidgetMdl.emit('widgets.data-loaded-not', err);
+					WidgetMdl.emit('widgets.data-loaded-not', id, err.msg || err.data.msg || 'NO_DATA_LOADED_ERR');
 				});
 		},
 		getData(widget, widgetInstance, dashboard) {
