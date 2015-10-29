@@ -29,6 +29,13 @@ Handlebars.registerHelper('get-position', (num, options) => {
 	return new Handlebars.SafeString(POSITIONS[num]);
 });
 
+Handlebars.registerHelper('format-date', (date, options) => {
+	const d = new Date(date);
+
+	return new Handlebars.SafeString(`${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`);
+});
+
+
 Handlebars.registerHelper('if-eq', function(v1, v2, options) {
 	if (v1 === v2) {
 		return options.fn(this);
