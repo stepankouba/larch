@@ -83,8 +83,9 @@ const ctrl = function(User, Dashboards, HTTPer, Modal, Router, Logger) {
 			const m = Modal.create('remove');
 
 			m.open()
-				.then(() => {
-					Router.navigateToMain();
+				.then(id => {
+					logger.log('navigating to main after remove');
+					Router.navigate('/dashboard/home');
 				})
 				.catch(err => logger.error(err));
 		},
