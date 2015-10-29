@@ -27,6 +27,8 @@ const ModalFn = function(Viewer, Logger) {
 
 				// store link to modal for the view
 				view.scope.modal = this;
+				// use default close method for ESC key pressed event
+				this._closeMethod = view.methods.close;
 
 				this.display();
 
@@ -61,6 +63,7 @@ const ModalFn = function(Viewer, Logger) {
 			 * @param  {Function} reject  Promise rejection
 			 */
 			_run(resolve, reject) {
+				const self = this;
 				this._addEventListeners('[data-dismiss]','click', e => {
 					e.preventDefault();
 					this.hide();
@@ -76,10 +79,8 @@ const ModalFn = function(Viewer, Logger) {
 				// default modal esc keyup handler
 				const keyHandler = e => {
 					if (e.keyCode === 27) {
-						e.preventDefault();
-						this.hide();
-						document.removeEventListener('keyup', keyHandler);
-						return reject('modal closed by keyboard');
+						// call default close method
+						return self._closeMethod(e);
 					}
 				};
 				document.addEventListener('keyup', keyHandler);
