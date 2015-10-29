@@ -39,7 +39,7 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 		 * remove item from a cache
 		 * @param  {String} id
 		 */
-		removeFromChache(id) {
+		removeFromCache(id) {
 			delete DashboardsMdl.cache[id];
 		},
 		/**
@@ -146,13 +146,13 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 			DashboardSrvc.remove(id)
 				.then(res => {
 					// remove from cache
-					DashboardsMdl.removeFromChache(id);
+					DashboardsMdl.removeFromCache(id);
 					// remove cookie
 					DashboardsMdl.removeLastSeenId();
 					// emit event
 					DashboardsMdl.emit('dashboards.removed', id);
 				})
-				.catch(err => DashboardsMdl.emit('dashboards.removed-not', err));
+				.catch(err => DashboardsMdl.emit('dashboards.removed-not', err.data.msg || 'REMOVE_ERR'));
 		},
 		updateName([id, data]) {
 			logger.log(`udpating name for ${id}`, data);
