@@ -42,9 +42,7 @@ const ctrl = function(Dashboards, Router, Logger) {
 		},
 		show: UI.showOption,
 		close(e) {
-			if (e) {
-				e.preventDefault();
-			}
+			e.preventDefault();
 
 			scope.modal.hide();
 			scope.modal.resolve('modal closed');
