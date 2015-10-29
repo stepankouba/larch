@@ -205,6 +205,12 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 		},
 		/**
 		 * update settings of a widgets instances
+		 * if widgetId undefined, method assumes, that newSettings is complete widgets object of dashboard object
+		 * i.e.: {
+		 * 		"id": {settings},
+		 * 		"id": {settings}
+		 * }
+		 *
 		 * @param {Array} payload
 		 * @param {String} payload[0] dashboardId
 		 * @param {String} payload[1] widgetId
@@ -213,14 +219,19 @@ const DashboardsMdlFn = function(User, DashboardSrvc, Cookies, Logger) {
 		setSettings([dashboardId, widgetId, newSettings]) {
 			logger.log(`saving settings for ${dashboardId}`, newSettings);
 			const currentDashboard = DashboardsMdl.get(dashboardId);
+			let widgets;
 
-			// this is the simplest way of cloning objects
-			const widgets = JSON.parse(JSON.stringify(currentDashboard.widgets));
-			widgets[widgetId].settings = [widgetId].settings || {};
+			if (widgetId) {
+				// this is the simplest way of cloning objects
+				widgets = JSON.parse(JSON.stringify(currentDashboard.widgets));
+				widgets[widgetId].settings = [widgetId].settings || {};
 
-			Object.keys(newSettings).forEach(k => {
-				widgets[widgetId].settings[k] = newSettings[k];
-			});
+				Object.keys(newSettings).forEach(k => {
+					widgets[widgetId].settings[k] = newSettings[k];
+				});
+			} else {
+				widgets = newSettings;
+			}
 
 			DashboardsMdl._update(dashboardId, { widgets }, 'dashboards.updated-settings');
 		},
