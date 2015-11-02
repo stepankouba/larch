@@ -6,6 +6,7 @@ import ModalNewView from './ui/view.modal.new.es6';
 import ModalSettingsView from './ui/view.modal.settings.es6';
 import ModalRemoveView from './ui/view.modal.remove.es6';
 import ModalShareView from './ui/view.modal.share.es6';
+import ModalUserView from './ui/view.modal.user.es6';
 
 export default [
 	SidebarView,
@@ -21,5 +22,6 @@ export default [
 	ModalNewView,
 	ModalSettingsView,
 	ModalRemoveView,
-	ModalShareView
+	ModalShareView,
+	ModalUserView
 ];

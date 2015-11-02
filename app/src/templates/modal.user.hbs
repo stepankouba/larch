@@ -1,0 +1,114 @@
+<script id="ui.modal.user" type="text/x-handlebars-template">
+	<div class="modal larch-modal">
+		<div class="fullscreen-modal">
+			<div class="modal-close-button">
+				<a href="" class="close" data-on-click="close()"></a>
+			</div>
+			<div class="row">
+				<h3><i class="fa fa-user"></i> user profile</h3>
+				<div class="row modal-options">
+					<div class="col-xs-8 col-xs-offset-2">
+						<div class="col-md-4 modal-option enabled" id="modal-option-profile" data-on-click="show('profile')">
+							<h4>settings</h4>
+							<p class="description">Modify my settings</p>
+						</div>
+
+						<div class="col-md-4 modal-option enabled" id="modal-option-accounts" data-on-click="show('accounts')">
+							<h4>source accounts</h4>
+							<p class="description">View all my source accounts</p>
+						</div>
+
+						<div class="col-md-4 modal-option enabled" id="modal-option-password" data-on-click="show('password')">
+							<h4>change password</h4>
+							<p class="description">Change my password</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+			<div id="modal-detail-profile" class="row modal-detail hidden">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="alert hidden">
+						<!-- errors -->
+					</div>
+					<form class="form-horizontal" id="profile-edit-form">
+						<div class="form-group">
+							<div class="col-sm-10 col-sm-offset-1">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" data-model="allowEmails" checked>
+										Anylarch.com can send me newsletters over e-mail
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-actions">
+				            <button class="btn btn-primary" data-on-click="save('profile-edit-form')">update</button>
+				        </div>
+					</form>
+				</div>
+			</div>
+
+			<div id="modal-detail-accounts" class="row modal-detail hidden">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="alert hidden">
+						<!-- errors -->
+					</div>
+					
+					{{#if user.sources.length}}
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>source</th>
+									<th>account</th>
+									<th>date</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								{{#each user.sources}}
+									<tr>
+										<td>{{this.source}}</td>
+										<td>{{this.name}}</td>
+										<td>{{format-date this.createdAt}}</td>
+										<td>
+											<button type="button" class="btn btn-danger btn-xs" data-on-click="removeAccount('{{this.id}}')">
+												<i class="fa fa-times"></i>
+											</button>
+										</td>
+									</tr>
+								{{/each}}
+							</tbody>
+						</table>
+					{{else}}
+						<p>no sources so far...</p>
+					{{/if}}
+				</div>
+			</div>
+
+			<div id="modal-detail-password" class="row modal-detail hidden">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="alert hidden">
+						<!-- errors -->
+					</div>
+					<form class="form-horizontal" id="new-ds-shared">
+						<div class="form-group">
+				            <input type="text" placeholder="current password" data-model="oldPassword" class="form-control" required value=""/>
+				        </div>
+				        <div class="form-group" >
+				            <input type="password" placeholder="new password" data-model="password" class="form-control" required value=""/>
+				        </div>
+				        <div class="form-group" >
+				            <input type="password" placeholder="confirm new password" data-model="confirmPassword" class="form-control" required value="" />
+				        </div>
+				        <div class="form-actions">
+				            <button class="btn btn-primary" data-on-click="updatePass()">update</button>
+				        </div>
+					</form>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</script>
