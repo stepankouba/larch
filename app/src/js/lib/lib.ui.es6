@@ -2,6 +2,11 @@ const UI = {
 	showOption(e, option) {
 		e.preventDefault();
 
+		// if option is link, open new window
+		if (option.startsWith('http')) {
+			return window.open(option, `larch_window`);
+		}
+
 		// un-highlight previously selected
 		const d = document.querySelector(`.modal-detail:not(.hidden)`);
 		if (d) {
