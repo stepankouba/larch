@@ -211,8 +211,8 @@ const Auth = {
 		const transporter = nodemailer.createTransport({
 			service: 'gmail',
 			auth: {
-				user: 'support@anylarch.com',
-				pass: 'Jxqx6H2zqrGemB1'
+				user: 'stepan@anylarch.com',
+				pass: 'aKvV2hRB2DDjPF'
 			}
 		});
 
@@ -232,7 +232,7 @@ const Auth = {
 
 		// setup e-mail data with unicode symbols
 		const mailOptions = {
-			from: 'Stepan Kouba <support@anylarch.com>', // sender address
+			from: 'Stepan Kouba <stepan@anylarch.com>', // sender address
 			to: user.username, // list of receivers
 			subject: 'Welcome to www.anylarch.com', // Subject line
 			text // plaintext body
