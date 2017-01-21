@@ -45,4 +45,4 @@ const Logger = {
 	}
 };
 
-export default Logger.create('PROD');
+export default Logger.create('DEBUG');

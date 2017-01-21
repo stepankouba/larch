@@ -41,14 +41,14 @@ function properUsage(cmd, args = []) {
 	}
 
 	// if command requires checking of args
-	if (larch[cmd].argsLength !== false) {
-		logger.log('command requires checking of args length');
+	// if (larch[cmd].argsLength !== false) {
+	// 	logger.log('command requires checking of args length');
 
-		if (args.length !== larch[cmd].argsLength) {
-			logger.log('wrong length of arguments');
-			return false;
-		}
-	}
+	// 	if (args.length !== larch[cmd].argsLength) {
+	// 		logger.log('wrong length of arguments');
+	// 		return false;
+	// 	}
+	// }
 
 	logger.log('right command invoke');
 	return true;
